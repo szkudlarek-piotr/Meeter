@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <header>
+            Baza danych spotkań
+        </header>
+        <div class="container">
+            <nav class="left-menu">
+                <div class="left_option" id="mainPage">
+                    Strona główna
+                </div>
+                <div class="left_option" id="addNewHuman" onclick="menuAddNewHuman()">
+                    Dodaj nowego człowieka
+                </div>
+                <div class="left_option" id="addNewMeeting" onclick="menuAddNewMeeting()">
+                    Dodaj nowe spotkanie
+                </div>
+                <div class="left_option" id="addNewClique" onclick="menuAddNewClique()">
+                    Dodaj nową klikę
+                </div>
+                <div class="left_option" id="showAllPeople" onclick="menuShowAllPeople()">
+                    Zobacz wszystkich ludzi
+                </div>
+                <div class="left_option" id="showAllCliques"onclick="menuShowAllCliques()">
+                    Zobacz wszystkie kliki
+                </div>
+            </nav>
+            <main class="content" id="main_content">
+                <!-- Main content goes here -->
+            </main>
+            <aside class="right-menu">
+                <!-- Right menu content goes here -->
+            </aside>
+        </div>
+        <script>
+            function menuAddNewHuman() {
+                console.log("Teraz będziesz dodawał nowego człowieka.")
+            }
+            function menuAddNewMeeting() {
+                console.log("Teraz będziesz dodawał nowe spotkanie.")
+                let html_to_add = ""
+                html_to_add += "Wybierz datę:"
+                html_to_add += '<input type="date" id="meeting_start" value="2024-03-01" min="2023-12-01"/><br>'
+                html_to_add += 'Podaj liczbę gości:'
+                html_to_add +=  '<input type="text" id="guestsNumber"><br>'
+                html_to_add += 'Podaj długość wizyty (w dniach): '
+                html_to_add +=  '<input type="text" id="daysNumber">'
+                html_to_add += '<button type="button" onclick="validateVisitForm()">Zatwierdź!</button><br>'
+
+                let content_box = document.getElementById("main_content")
+                content_box.innerHTML = html_to_add
+            }
+            function validateVisitForm() {
+                let content_box = document.getElementById("main_content")
+                let numberOfGuests = document.getElementById("guestsNumber").value
+                let numberOfDays = document.getElementById("daysNumber").value
+                var humanInputFields =  document.getElementById('guests_inputs');
+                if (humanInputFields == null)
+                {
+                    console.log("test1")
+                    var humanInputFields = document.createElement("div")
+                    humanInputFields.setAttribute("class", "humanInputFields")
+                    humanInputFields.setAttribute("id", "guests_inputs")
+                    content_box.appendChild(humanInputFields)
+                }
+                else {
+                    humanInputFields.innerHTML = ""
+                }
+                for (let i=0; i < numberOfGuests; i++) {
+                    let inputFieldID = `input_field_${i.toString()}`
+                    humanInputFields.innerHTML += `<input type="text" id=${inputFieldID}><br>`
+                }
+                humanInputFields.innerHTML += `<button type="button" onclick="confirmGuests()">Zatwierdź listę gości!</button>`
+            }
+            function confirmGuests() {
+                console.log("foo")
+            }
+            function menuAddNewClique() {
+                console.log("Teraz będziesz dodawał nową klikę.")
+            }
+            function menuShowAllPeople() {
+                console.log("Za chwilę zobaczysz wszystkich party_people.")
+            }
+            function menuShowAllCliques() {
+                console.log("Za chwilę pokażę Ci wszystki kliki.")
+            }
+        </script>
+    </body>
+</html>
