@@ -1,5 +1,6 @@
 var mysql      = require('mysql2');
 const path = require('path')
+const fs = require('fs')
 var dotenv = require('dotenv');
 //const { request } = require('http');
 dotenv.config()
@@ -18,6 +19,9 @@ async function getCliqueHumanPhotosTable() {
         const nameAndSurname = analyzedRecod.name + " " + analyzedRecod.surname
         const humanPhotoName = analyzedRecod.ID.toString() + ".jpg"
         let pathOfHumanPhoto = path.join(__dirname, "photos", humanPhotoName)
+        if (!fs.existsSync(pathOfHumanPhoto)) {
+            pathOfHumanPhoto = path.join(__dirname, "photos", "anonymous.jpg")
+        }
         const humanKnownFrom = analyzedRecod.known_from
         newRecordToAdd["photoDir"] = pathOfHumanPhoto
         newRecordToAdd["known_from"] = humanKnownFrom

@@ -3,8 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <title>Meeter - portal dla wszystkich oprócz Amerykanów</title>
+        <script src="add_human.js" defer></script>
         <link rel="stylesheet" href="styles.css">
-        <script src="getLeftMenu.js" defer></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
@@ -12,9 +12,6 @@
         <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
     </head>
     <body>
-        <header>
-            Baza danych spotkań
-        </header>
         <div class="container">
             <nav class="left-menu">
                 <div class="left_option" id="mainPage">
@@ -40,13 +37,64 @@
                 </div>
             </nav>
             <main class="content" id="main_content">
-                <!-- Main content goes here -->
+                <form action="javascript:;" onsubmit=" addHuman( this ) " enctype="multipart/form-data">
+                    <fieldset>
+                        <h3>Imię</h3>
+                        <input type="text" id="nameInputField" placeholder="Imię">
+                        <h3>Nazwisko</h3>
+                        <input type="text" id="surnameInputField" placeholder="Nazwisko">
+                        <h3>Płeć</h3>
+                        <div><label><input type="radio" name="gender" value="M">Mężczyzna</label></div><br>
+                        <div><label><input type="radio" name="gender" value="F">Kobieta</label></div>
+                        <h3>Klika</h3>
+                        <div id="cliqueInputDiv">
+                            <input type="text" id="cliqueInputField" onkeyup="getSuggestedCliques()" placeholder="Skąd znasz?">
+                            <div id="cliqueSuggestionsContainer"></div>
+                        </div>
+                        <h3>Mieszka w...</h3>
+                        <input type="text" id="cityInputField" placeholder="Miasto">
+                        <h3>Link do Facbooka</h3>
+                        <input type="text" id="fbInputField" placeholder="Wklej link do FB">
+                        <h3>Dodaj zdjęcie:</h3>
+                        <input type="file" name="humanPhotoInput"/><br><br><br>
+                        <input type="submit" value="Dodaj!">
+                    </fieldset>
+                </form>
             </main>
             <aside class="right-menu">
                 <!-- Right menu content goes here -->
             </aside>
         </div>
         <script>
+            function clearSuggestionsDiv() {
+                let suggestionsContainer =  document.getElementById("cliqueSuggestionsContainer")
+                suggestionsContainer.innerHTML = ""
+            }
+            async function getSuggestedCliques() {
+                clearSuggestionsDiv()
+                const deliveredInput = document.getElementById("cliqueInputField").value
+                let suggestionsDiv = document.getElementById("cliqueSuggestionsContainer")
+                if (deliveredInput.length > 0) {
+                    const response = await fetch(`http://localhost:3000/suggested_cliques?subs=${deliveredInput}`)
+                    const obtainedData = await response.json()
+                    for (clique of obtainedData) {
+                        let createdCliqueSuggestion = document.createElement("div")
+                        createdCliqueSuggestion.setAttribute("class", "cliqueSuggestion")
+                        suggestionsDiv.appendChild(createdCliqueSuggestion)
+                        let createdNameDiv = document.createElement("div")
+                        createdNameDiv.innerHTML = clique.known_from
+                        createdNameDiv.setAttribute("class", "nameOfClique")
+                        createdCliqueSuggestion.appendChild(createdNameDiv)
+                        let divForImg = document.createElement("div")
+
+                        let imageOfClique = document.createElement("img")
+                        imageOfClique.setAttribute("src", clique.clique_photo)
+                        divForImg.appendChild(imageOfClique)
+                        divForImg.setAttribute("class", "photoOfClique")
+                        createdCliqueSuggestion.appendChild(divForImg)
+                    }
+                }
+            }
             function createLeftMenu() {
                 const menuButtonsArray = [{"id":"mainPage","text": "Strona główna", "onclick": "showMainPage()"}, {"id":"addNewHuman","href": "add_human.html", "text": "Dodaj nowego człowieka"}, {"id": "calendar","onclick": "makeCalendar()", "text": "Zobacz kalendarz"}, {"id": "showAllCliques","onclick": "menuShowAllCliques()", "text": "Pokaż wszystkie kliki"}, {"id": "showAllPeople","onclick": "getPeople()", "text": "Zobacz wszystkich ludzi"}, {"id": "addNewMeeting", "href": "add_meeting.html", "text": "Dodaj nowe spotanie"}, {"id": "addNewClique", "href": "add_new_clique.html", "text": "Dodaj nową klikę"}]
                 //póki co testuję to na prawym menu, stąd ten mindfuck
@@ -75,7 +123,9 @@
             }
             createLeftMenu()
             function menuAddNewHuman() {
+                debugger
                 clearMainContent()
+                debugger
                 createHumanForm()
             }
             function validateVisitForm() {
@@ -109,6 +159,7 @@
                 console.log("Foo")
             }
             function menuShowAllPeople() {
+                console.log("Za chwilę zobaczysz wszystkich party_people.")
                 getPeople()
             }
             async function menuShowAllCliques() {
@@ -122,22 +173,6 @@
                 }
                 addHumansToClique()
             }
-            function createDateId(recievedDate) {
-                const dateToProcess = new Date(recievedDate)
-                const numberOfDay = dateToProcess.getDate()
-                const numberOfMonth = dateToProcess.getMonth()
-                const fullMonth = dateToProcess.getFullYear()
-                const monthJson = {0: "Styczeń", 1:"Luty", 2: "Marzec", 3: "Kwiecień", 4: "Maj", 5: "Czerwiec", 6:"Lipiec", 7: "Sierpień", 8:"Wrzesień", 9:"Październik", 10: "Listopad", 11:"Grudzień"}
-                const returnedId = `${numberOfDay}_${monthJson[numberOfMonth].substring(0,3)}_${fullMonth}`
-                return returnedId
-            }
-            function paintToday() {
-                const todaysDate = Date()
-                const todaysDateId = createDateId(todaysDate)
-                let todaysCalendarDiv = document.getElementById(todaysDateId)
-                todaysCalendarDiv.style["background-color"] = "red"
-            }
-            createDateId(Date())
             function createCliqueDiv(analzyedCliqueJson) {
                 let main_content = document.getElementById("main_content")
                 
@@ -163,38 +198,6 @@
             function clearMainContent() {
                 let mainContentDiv = document.getElementById("main_content")
                 mainContentDiv.innerHTML = ""
-            }
-            async function addMeetingsToCalendar() {
-                const requestAllMeetings = await fetch("http://localhost:3000/meetings")
-                const meetingsJson = await requestAllMeetings.json()
-                for (const record in meetingsJson) {
-                    const dateId = createDateId(record)
-                    const jsonOfMeeting = meetingsJson[record]
-                    let modifiedDiv = document.getElementById(dateId)
-                    modifiedDiv.innerHTML = ""
-                    let createdSlider = document.createElement("div")
-                    createdSlider.setAttribute("class", "slider")
-                    const sliderId = dateId + "_slider"
-                    createdSlider.setAttribute("id", sliderId)
-                    modifiedDiv.appendChild(createdSlider)
-                    let imgInsideSlider = document.createElement("img")
-                    imgInsideSlider.setAttribute("src", jsonOfMeeting["photos"][0])
-                    imgInsideSlider.setAttribute("title", jsonOfMeeting["names"][0])
-                    createdSlider.appendChild(imgInsideSlider)
-                    modifiedDiv.style["background-color"] = "#8882ee"
-                    const milisecondsCurrentTime = new Date()
-                    const milisecondsDayTime = new Date(record)
-                    const timeDifference = milisecondsDayTime - milisecondsCurrentTime
-                    const milisecondsInDay = 3600*1000*24
-                    const milisecondsInThirtyDays = milisecondsInDay * 30
-                    if (timeDifference > milisecondsInDay && timeDifference < milisecondsInThirtyDays) {
-                        const substractedFraction = timeDifference / milisecondsInThirtyDays / 2
-                        const opacityValue = 1 - substractedFraction
-                        imgInsideSlider.style["opacity"] = opacityValue
-                        //console.log(opacityValue)
-                    }
-                    //console.log(milisecondsInDay)
-                }
             }
             function makeCalendar() {
                 clearMainContent()
@@ -223,10 +226,12 @@
                             containerForCalendar.appendChild(nameOfWeekdayDiv)
                         }
                         const dayOfWeek = day.getDay()
+                        debugger
                         if (dayOfWeek != 0) {
                             numberOfGhostDays = dayOfWeek - 1
                         }
-                        //dodaję przezroczyste kartki kalndarza, aby poniedziałek zawsze był poniedziałkiem
+                        debugger
+                        //dodaję przeźroczyste kartki kalndarza, aby poniedziałek zawsze był poniedziałkiem
                         for (let i = 0; i < numberOfGhostDays; i++) {
                             let ghostDayToAdd = document.createElement("div")
                             ghostDayToAdd.setAttribute("class", "ghostDayRectangle")
@@ -237,14 +242,10 @@
                     let thing_to_write = `${dayOfMonth} ${startOfMonth}`
                     let date_id = `${dayOfMonth}_${startOfMonth}_${day.getFullYear()}`
                     addedDayRectangle.innerHTML = thing_to_write
-
                     addedDayRectangle.setAttribute("id", date_id)
                     containerForCalendar.appendChild(addedDayRectangle)
                 }
                 getPhotosJson()
-                addWeddingsToCalendar()
-                paintToday()
-                addMeetingsToCalendar()
             }
             async function getPhotosJson() {
                 const monthJson = {0: "Styczeń", 1:"Luty", 2: "Marzec", 3: "Kwiecień", 4: "Maj", 5: "Czerwiec", 6:"Lipiec", 7: "Sierpień", 8:"Wrzesień", 9:"Październik", 10: "Listopad", 11:"Grudzień"}
@@ -254,43 +255,23 @@
                 const datesOfVisists = Object.keys(datePhotosJson)
                 for (let i = 0; i < datesOfVisists.length; i++) {
                     const dateOfVisit = new Date(datesOfVisists[i])
+                    console.log(typeof(dateOfVisit))
                     const dayOfVisit = dateOfVisit.getDate()
                     const startOfMonth = monthJson[dateOfVisit.getMonth()].substring(0, 3)
                     const fullYear = dateOfVisit.getFullYear()
                     const checkedDateId = `${dayOfVisit}_${startOfMonth}_${fullYear}`
                     let modifiedDiv = document.getElementById(checkedDateId)
+                    console.log(modifiedDiv)
                     modifiedDiv.innerHTML = ""
                     let curSlider = document.createElement("div")
                     curSlider.setAttribute("class", "slider")
-                    const idOfSlider = checkedDateId + "_slider"
-                    curSlider.setAttribute("id", idOfSlider)
                     modifiedDiv.appendChild(curSlider)
                     modifiedDiv.style['background-color'] = "#90EE90"
-                    const todaysDate = new Date()
-                    const divDate = new Date(dateOfVisit)
-                    const timeDifferenceForVisit = divDate - todaysDate
-                    const milisecondsInDay = 3600*1000*24
-                    const milisecondsInThirtyDays = milisecondsInDay * 30
-                    if (timeDifferenceForVisit > milisecondsInDay && timeDifferenceForVisit < milisecondsInThirtyDays) {
-                        const fractionToSubstract = timeDifferenceForVisit /milisecondsInThirtyDays / 2
-                        const opacityValue = 1 - fractionToSubstract
-                        modifiedDiv.style["opacity"] = opacityValue
-                    }
+                    //Na początek tylko jdna fotka
                     const photosOfTheDay = datePhotosJson[dateOfVisit]
-                    let imgInGivenSlider = document.createElement("img")
-                    imgInGivenSlider.setAttribute("src", datePhotosJson[dateOfVisit][0])
-                    curSlider.appendChild(imgInGivenSlider)
-                    function photoSlider() {
-                        let index = 0
-                        function newImage() {
-                            imgInGivenSlider.setAttribute("src", photosOfTheDay[index])
-                            index = (index + 1) % photosOfTheDay.length
-                            curSlider.appendChild(imgInGivenSlider)
-                        }
-                        setInterval(newImage,2000)
-                    }
-                    photoSlider()
                     const fisrtPhotoDirectory = photosOfTheDay[0]
+                    const addedPhotoElement = document.createElement("img")
+                    addedPhotoElement.setAttribute("src", fisrtPhotoDirectory)
                     if (photosOfTheDay.length > 1 && 1==2) {
                         let leftArrowDiv = document.createElement("div")
                         leftArrowDiv.setAttribute("class", "left_arrow_div")
@@ -301,40 +282,7 @@
                         rightArrowDiv.innerHTML = `<span class="material-symbols-outlined">arrow_forward</span>`
                         modifiedDiv.appendChild(rightArrowDiv)
                     }
-                    //curSlider.appendChild(addedPhotoElement)
-                }
-            }
-            async function addWeddingsToCalendar() {
-                const monthJson = {0: "Styczeń", 1:"Luty", 2: "Marzec", 3: "Kwiecień", 4: "Maj", 5: "Czerwiec", 6:"Lipiec", 7: "Sierpień", 8:"Wrzesień", 9:"Październik", 10: "Listopad", 11:"Grudzień"}
-                const weekdaysArray = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]
-                const weddingsReq = await fetch("http://localhost:3000/weddings")
-                const weddingsJson = await weddingsReq.json()
-                const numberOfWeddings = weddingsJson.length
-                const weddingRingsDir = "C:/Users/piotr/OneDrive/Pulpit/projekty/req_tst/backend/functionalPhotos/rings.png"
-                for (wedding of weddingsJson) {
-                    let weddingDate = new Date(wedding.date)
-                    let manPhoto = wedding.manPhoto
-                    let womanPhoto = wedding.womanPhoto
-                    let dayOfMonth = weddingDate.getDate().toString()
-                    let trimmedMonth = monthJson[weddingDate.getMonth()].substring(0,3)
-                    let fullYear = weddingDate.getFullYear().toString()
-                    const modifiedDayRectangleId = `${dayOfMonth}_${trimmedMonth}_${fullYear}`
-                    const divToModify = document.getElementById(modifiedDayRectangleId)
-                    divToModify.innerHTML = ""
-                    divToModify.style["background-color"] = "#eb73d7a6"
-                    let imgOfMan = document.createElement("img")
-                    imgOfMan.setAttribute("src", manPhoto)
-                    imgOfMan.setAttribute("class", "weddingManPhoto")
-                    divToModify.appendChild(imgOfMan)
-                    let imgOfWoman = document.createElement("img")
-                    imgOfWoman.setAttribute("src", womanPhoto)
-                    imgOfWoman.setAttribute("class", "weddingWomanPhoto")
-                    divToModify.appendChild(imgOfWoman)
-                    let imgOfRings = document.createElement("img")
-                    imgOfRings.setAttribute("class", "ringsPhoto")
-                    imgOfRings.setAttribute("src", weddingRingsDir)
-                    divToModify.appendChild(imgOfRings)
-                    divToModify.setAttribute("title", wedding.info_after_hover)
+                    curSlider.appendChild(addedPhotoElement)
                 }
             }
             async function addHumansToClique() {
@@ -352,6 +300,8 @@
                         let analyzedElement = all_cliques[j]
                         let placeForHumanPhotos = analyzedElement.getElementsByClassName("placeForHumanPhotos")
                         const nameOnDIv = analyzedElement.getAttribute("nameOfClique")
+
+                        console.log(nameOnDIv)
                          if (nameOnDIv == nameOfCheckedClique) {
                             let aForPhoto = document.createElement("a")
                             aForPhoto.setAttribute("href", analyzedRecord.fb_link)
@@ -360,6 +310,7 @@
                             photoToAdd.setAttribute("src", photoDir)
                             photoToAdd.setAttribute("class", "humanInClique")
                             photoToAdd.setAttribute("title", nameOfGuy)
+                            //debugger
                             placeForHumanPhotos[0].appendChild(aForPhoto)
                             aForPhoto.appendChild(photoToAdd)
                          }
@@ -439,6 +390,32 @@
                     }
                 } 
             }
+            createLeftMenu()
+            async function addHuman() {
+                const nameToSend = document.getElementById("nameInputField").value
+                const surnameToSend = document.getElementById("surnameInputField").value
+                const cityToSend = document.getElementById("cityInputField").value
+                const fbLinkToSend = document.getElementById("fbInputField").value
+                const cliqueNumber = document.getElementById("cliqueInputField").value
+                const gender = document.querySelector('input[name="gender"]:checked').value
+                let jsonToSend = {}
+                jsonToSend["name"] = nameToSend
+                jsonToSend["surnname"] = surnameToSend
+                jsonToSend["city"] = cityToSend
+                jsonToSend["fb"] = fbLinkToSend
+                jsonToSend["clique"] = cliqueNumber
+                jsonToSend["gender"] = gender
+                const insertRequest = await fetch(`http://localhost:3000/add_human?name=${nameToSend}&surname=${surnameToSend}&city=${cityToSend}&fb=${fbLinkToSend}&clique=${cliqueNumber}&gender=${gender}`, {method: "POST"})
+                clearMainContent()
+                const idOfAddedHuman = await fetch(`http://localhost:3000/get_id?name=${nameToSend}&surname=${surnameToSend}&fb_link=${fbLinkToSend}`)
+                const obtainedData = await idOfAddedHuman.json()
+                alert(`Spróbowałem dodać osob o personaliach ${nameToSend} ${surnameToSend} do bazy danych.`)
+                console.log(obtainedData[0]["ID"])
+            }
+            function suggestCliques() {
+                const currentValue = document.getElementById("cliqueInputField").value
+            }
+
         </script>
     </body>
 </html>
