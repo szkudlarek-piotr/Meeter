@@ -1,29 +1,29 @@
-function getAllPeople() {
-    var mysql      = require('mysql');
-    var connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    database : 'test'
-    });
-    let all_humans = []
-    connection.connect();
-    let test_query = "SELECT * FROM party_people;"
-    connection.query(test_query, function (error, results, fields) {
-    if (error)   throw error;
-    for (let i=0; i<results.length; i++) {
-        new_human = {}
-        let photo_path = `./photos/${results[i].ID}.jpg`
-        new_human["id"] = results[i].ID
-        new_human["name"] = results[i].name
-        new_human["surname"] = results[i].surname
-        new_human["lives_in"] = results[i].lives_in
-        new_human["facebook_link"] = results[i].fb_link
-        new_human["clique"] = results[i].klika_id
-        new_human["photography_path"] = photo_path
-        all_humans.push(new_human)
+var mysql      = require('mysql2');
+const path = require('path')
+var dotenv = require('dotenv');
+const { request } = require('http');
+dotenv.config()
+const pool = mysql.createPool({
+    host     : process.env.host,
+    user     : process.env.MYSQL_USER,
+    database : process.env.MYSQL_DATABASE
+}).promise()
+
+async function getPeople() {
+    let returnedArray = []
+    const [databaseArray] = await pool.query("SELECT * FROM party_people ORDER BY surname")
+    for (let i=0; i < databaseArray.length; i++) {
+        let person = databaseArray[i]
+        let jsonToAdd = {}
+        jsonToAdd["id"] = person.ID
+        jsonToAdd["name"] = person.name
+        jsonToAdd["surname"] = person.surname
+        jsonToAdd["fbLink"] = person.fb_link
+        let photoDir = path.join(__dirname, "photos", person.ID.toString() + ".jpg")
+        jsonToAdd["photoDir"] = photoDir
+        returnedArray.push(jsonToAdd)
     }
-    });
-    connection.end();
-    return JSON.stringify(all_humans)
+    return returnedArray
 }
-module.exports = getAllPeople
+//getPeople()
+module.exports = getPeople

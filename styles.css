@@ -1,6 +1,3 @@
-/* styles.css */
-
-/* Global styles */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -14,7 +11,7 @@ body {
 header {
     width: 100%;
     font-size: 80px;
-    background-color: #333;
+    background-color: black;
     color: #fff;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -33,9 +30,12 @@ aside.right-menu {
 
 main.content {
     flex: 1; /* Main content will take up the remaining space */
-    padding: 20px;
+    padding: 60px;
     min-height: 1600px;
     text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
 }
 .left_option {
     font-family: 'Times New Roman', Times, serif;
@@ -47,3 +47,164 @@ main.content {
 .left_option:hover {
     font-weight: 600;
 }
+.human {
+    width: 26%;
+    margin-bottom: 40px;
+    border-radius: 35px;
+    aspect-ratio: 2/3;
+    text-align: center;
+    border: 1px solid black;
+}
+.human:hover {
+    background-color: red;
+}
+.human:hover>.person_photo {
+    opacity: 100%;
+}
+.person_photo {
+    margin-top: 10%;
+    width: 80%;
+    opacity: 80%;
+    border-radius: 35px;
+    border: 1px solid black;
+}
+
+.nameDiv {
+    text-align: center;
+    padding-bottom: 10px;
+    font-size: 24px;
+    position: relative;
+    top:10px;
+    font-family: "Patrick Hand";
+}
+
+.patrick-hand-regular {
+    font-family: "Patrick Hand", cursive;
+    font-weight: 400;
+    font-style: normal;
+  }
+  .content_title {
+    font-size: 50;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    text-align: center;
+  }
+  .visits_number {
+    font-family: "Patrick Hand";
+    text-align: center;
+    font-size: 24px;
+    position: relative;
+    top: -10px;
+  }
+  .clique_div {
+    width: 26%;
+    margin-bottom: 40px;
+    border-radius: 35px;
+    aspect-ratio: 20/25;
+    text-align: center;
+    border: 1px solid black;
+  }
+  .clique_div:hover {
+    background-color: red;
+  }
+  .clique_photo {
+    margin-top: 10%;
+    width: 80%;
+    aspect-ratio: 1/1;
+    border: 1px solid black;
+}
+input[type=text] {
+    width: 80%;
+    min-height: 20px;
+}
+input[type=submit] {
+    max-height: 30px;
+    width: 60%;
+}
+form {
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+.clique_photo_in_human_tile {
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid black;
+    aspect-ratio: 1/1;
+}
+.humanInClique {
+    height: 30px;
+    border-radius: 3px;
+    border: 1px solid black;
+    aspect-ratio: 1/1;
+    margin-top: 5px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+.placeForHumanPhotos {
+    margin-left: 10%;
+    width: 80%;
+}
+.calendarContainer {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+.dayRectangle {
+    width: 11%;
+    display: flex;
+    background-color: antiquewhite;
+    align-items: center;
+    justify-content: center;
+    margin-left: 2%;
+    aspect-ratio: 1/1;
+    border: 2px solid black;
+    margin-bottom: 10px;
+    border-radius: 5%;
+}
+.ghostDayRectangle {
+    width: calc(11% + 3px);
+    margin-left: 2%;
+    aspect-ratio: 1/1;
+    margin-bottom: 10px;
+}
+.calendarContainer>h2 {
+    width: 100%;
+}
+.nameOfWeekdayDiv {
+    width: 11% ;
+    border: 2px solid black;
+    margin-left: 2%;
+    margin-bottom: 10px;
+    aspect-ratio: 3/1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+}
+.slider {
+    width: 80%;
+}
+.slider>img {
+    width: 100%;
+    margin-top: 10%;
+    border-radius: 3px;
+}
+.left_arrow_div {
+    width: 10%;
+    position: relative;
+    right: 96%;
+    z-index: 20;
+    background-color: red;
+}
+.right_arrow_div {
+    width: 10%;
+    position: relative;
+    right: 16%;
+    z-index: 20;
+}
+

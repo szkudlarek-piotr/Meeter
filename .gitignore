@@ -1,2 +1,4 @@
 node_modules/
 backend/photos/
+backend/cliques_photos/
+backend/.env
