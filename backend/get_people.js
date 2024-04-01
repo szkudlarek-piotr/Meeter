@@ -29,5 +29,4 @@ async function getPeople() {
     }
     return returnedArray
 }
-//getPeople()
 module.exports = getPeople

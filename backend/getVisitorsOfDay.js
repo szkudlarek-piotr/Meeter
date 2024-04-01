@@ -1,9 +1,8 @@
 var mysql      = require('mysql2');
 const path = require('path')
-const fs = require('fs')
 var dotenv = require('dotenv');
-const date = require('date-and-time');
-
+const datetime = require('date-and-time')
+//const { request } = require('http');
 dotenv.config()
 const pool = mysql.createPool({
     host     : process.env.host,
@@ -18,11 +17,11 @@ async function getVisitorsOfTheDay() {
     for (let i = 0; i < requestedData.length; i++) {
         const checkedRecord = requestedData[i]
         const timeFromDatabase = checkedRecord.visit_date
+        console.log(timeFromDatabase)
         //on to czyta jakby brał datę z UK, czyli wychodzi dzień wcześniej o 23
-        const dateOfVisitStart = date.addHours(timeFromDatabase,13)
+        const dateOfVisitStart = datetime.addHours(timeFromDatabase,13)
         const guestId = checkedRecord.guest_id.toString()
         const visitDuration = checkedRecord.visit_duration
-        //console.log(dateOfVisitStart)
         const pathToHumanPhoto = path.join(__dirname, "photos", guestId + ".jpg")
         if (!returnedJson.hasOwnProperty(dateOfVisitStart)) {
             returnedJson[dateOfVisitStart] = [pathToHumanPhoto]
@@ -31,17 +30,16 @@ async function getVisitorsOfTheDay() {
             returnedJson[dateOfVisitStart].push(pathToHumanPhoto)
         }
         if (visitDuration > 1) {
-            const lastDayDate = date.addDays(dateOfVisitStart, visitDuration)
-            let dateIterator = date.addDays(dateOfVisitStart,1)
-            while (!date.isSameDay(dateIterator, lastDayDate)) {
-                //console.log(`Dodaję ${dateIterator}`)
+            const lastDayDate = datetime.addDays(dateOfVisitStart, visitDuration)
+            let dateIterator = datetime.addDays(dateOfVisitStart,1)
+            while (!datetime.isSameDay(dateIterator, lastDayDate)) {
                 if (!returnedJson.hasOwnProperty(dateIterator)) {
                     returnedJson[dateIterator] = [pathToHumanPhoto]
                 }
                 else {
                     returnedJson[dateIterator].push(pathToHumanPhoto)
                 }
-                dateIterator = date.addDays(dateIterator, 1)
+                dateIterator = datetime.addDays(dateIterator, 1)
             }
         }
     }

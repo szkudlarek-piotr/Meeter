@@ -14,7 +14,9 @@ const getAllWeddings = require('./getAllWeddings.js')
 const getSuggestedCliques = require('./getSuggestestedCliques.js')
 const getMeetings = require('./getAllMeetings.js')
 const addHuman = require('./addHuman.js')
+const addMeeting = require('./addMeeting.js')
 const getIdFromIdentifiers = require('./getIdFromIdentifiers.js')
+const getMeetingId = require('./getMeetingId.js')
 const addPersonToMeeting = require('./addPersonToMeting.js')
 app.use((err,req,res,next) => {
     console.error(err.stack)
@@ -41,7 +43,6 @@ app.get('/all_cliques', async (req, res) => {
     res.send(JSON.stringify(arrayOfCliques))
 })
 app.get('/suggested_cliques', async (req, res) => {
-    //console.log(req.query.subs)
     const returnedCliques = await getSuggestedCliques(req.query.subs)
     res.send(JSON.stringify(returnedCliques))
 })
@@ -69,7 +70,6 @@ app.post('/add_human_to_meeting', async (req, res) => {
 
 app.get('/meetings', async (req, res) => {
     const allMeetings = await getMeetings()
-    console.log(allMeetings)
     res.json(allMeetings)
 })
 app.get('/get_id', async (req, res) => {
@@ -80,8 +80,19 @@ app.get('/get_id', async (req, res) => {
     res.json(idFromDatabase)
 })
 
+app.post('/add_meeting', async (req, res) => {
+    const placeOfMeeting = req.query.place
+    const dateOfMeeting = req.query.date
+    res.send(`Otrzymałem dane o spotkaniu w dniu ${dateOfMeeting} w ${placeOfMeeting}.`)
+    await addMeeting(placeOfMeeting, dateOfMeeting)
+})
+app.get('/meeting_id_from_date', async (req, res) => {
+    const dateToSend = req.query.date
+    const idInTable = await getMeetingId(dateToSend)
+    res.send(idInTable)
+})
+
 app.post('/add_human', async (req, res) => {
-    console.log(req.query)
     const nameToSave = req.query.name
     const surnameToSave = req.query.surname
     const genderToSave = req.query.gender

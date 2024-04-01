@@ -32,4 +32,3 @@ async function getCliqueHumanPhotosTable() {
     return returnedArray
 }
 module.exports = getCliqueHumanPhotosTable
-//getCliqueHumanPhotosTable()

@@ -1,0 +1,115 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+header {
+    width: 100%;
+    font-size: 80px;
+    background-color: black;
+    color: #fff;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding: 10px;
+    text-align: center;
+    min-height: 100px;
+}
+
+nav.left-menu,
+aside.right-menu {
+    flex: 0 0 15%; /* Adjust the width of left and right menus as needed */
+    background-color: #f4f4f4;
+    padding: 20px;
+    min-height: 1600px;
+}
+
+main.content {
+    flex: 1; /* Main content will take up the remaining space */
+    padding: 60px;
+    min-height: 1600px;
+    text-align: center;
+    justify-content: space-evenly;
+}
+.left_option {
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: 300;
+    font-size: 18px;
+    text-align: center;
+    padding-bottom: 10px;
+}
+.left_option:hover {
+    font-weight: 600;
+}
+input[type=text] {
+    width: 80%;
+    min-height: 30px;
+}
+input[type=submit] {
+    max-height: 30px;
+    width: 60%;
+}
+a {
+    text-decoration: none;
+    color: black;
+}
+#place_for_suggested_people {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+#place_for_chosen_people {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+.person_tile {
+    width: 30%;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    text-align: center;
+    border: 1px solid black;
+}
+.person_tile:hover {
+    background-color: aquamarine;
+}
+.person_tile>.name_in_tile {
+    font-size: 24px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.photo_in_tile>img {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+.chosen_person_tile {
+    width: 30%;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: rgb(168, 172, 160);
+    margin-top: 10px;
+    text-align: center;
+    border: 1px solid black;
+}
+.chosen_person_tile>.name_in_tile {
+    font-size: 24px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
