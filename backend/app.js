@@ -14,6 +14,7 @@ const getSuggestedCliques = require('./getSuggestestedCliques.js')
 const getMeetings = require('./getAllMeetings.js')
 const addHuman = require('./addHuman.js')
 const getIdFromIdentifiers = require('./getIdFromIdentifiers.js')
+const addPersonToMeeting = require('./addPersonToMeting.js')
 app.use((err,req,res,next) => {
     console.error(err.stack)
     res.status(500).send('something broke')
@@ -56,6 +57,13 @@ app.get('/add_humans_to_clique', async (req, res) => {
 app.get('/add_photos_to_calendar', async (req, res) => {
     const daysPhotosJson = await getVisitorsOfTheDay()
     res.send(JSON.stringify(daysPhotosJson))
+})
+app.post('/add_human_to_meeting', async (req, res) => {
+    const meeting = req.query.meeting
+    const human = req.query.human
+    console.log(meeting)
+    console.log(human)
+    addPersonToMeeting(meeting, human)
 })
 
 app.get('/meetings', async (req, res) => {
