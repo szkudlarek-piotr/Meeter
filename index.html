@@ -191,10 +191,15 @@
                         const substractedFraction = timeDifference / milisecondsInThirtyDays / 2
                         const opacityValue = 1 - substractedFraction
                         imgInsideSlider.style["opacity"] = opacityValue
-                        //console.log(opacityValue)
+                            imgInsideSlider.setAttribute("src", jsonOfMeeting["photos"][index])
+                            index = (index + 1) % jsonOfMeeting["photos"].length
+                            curSlider.appendChild(imgInsideSlider)
+                        }
+                        setInterval(newImage,2000)
                     }
-                    //console.log(milisecondsInDay)
+                    photoSlider()
                 }
+
             }
             function makeCalendar() {
                 clearMainContent()
@@ -226,7 +231,6 @@
                         if (dayOfWeek != 0) {
                             numberOfGhostDays = dayOfWeek - 1
                         }
-                        //dodaję przezroczyste kartki kalndarza, aby poniedziałek zawsze był poniedziałkiem
                         for (let i = 0; i < numberOfGhostDays; i++) {
                             let ghostDayToAdd = document.createElement("div")
                             ghostDayToAdd.setAttribute("class", "ghostDayRectangle")
@@ -301,7 +305,6 @@
                         rightArrowDiv.innerHTML = `<span class="material-symbols-outlined">arrow_forward</span>`
                         modifiedDiv.appendChild(rightArrowDiv)
                     }
-                    //curSlider.appendChild(addedPhotoElement)
                 }
             }
             async function addWeddingsToCalendar() {
@@ -348,7 +351,6 @@
                     const photoDir = analyzedRecord.photoDir
                     const nameOfGuy = analyzedRecord.nameAndSurname
                     for (let j = 0; j < all_cliques.length; j++) {
-                        //const nameOfCheckedClique = all_cliques[j].getAttribute("nameOfClique")
                         let analyzedElement = all_cliques[j]
                         let placeForHumanPhotos = analyzedElement.getElementsByClassName("placeForHumanPhotos")
                         const nameOnDIv = analyzedElement.getAttribute("nameOfClique")
