@@ -4,7 +4,6 @@
         <meta charset="UTF-8">
         <title>Meeter - portal dla wszystkich oprócz Amerykanów</title>
         <link rel="stylesheet" href="styles.css">
-        <script src="getLeftMenu.js" defer></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
@@ -17,27 +16,6 @@
         </header>
         <div class="container">
             <nav class="left-menu">
-                <div class="left_option" id="mainPage">
-                    Strona główna
-                </div>
-                <div class="left_option" id="addNewHuman" onclick="menuAddNewHuman()">
-                    Dodaj nowego człowieka
-                </div>
-                <div class="left_option" id="addNewMeeting" onclick="menuAddNewMeeting()">
-                    Dodaj nowe spotkanie
-                </div>
-                <div class="left_option" id="addNewClique" onclick="menuAddNewClique()">
-                    Dodaj nową klikę
-                </div>
-                <div class="left_option" id="showAllPeople" onclick="getPeople()">
-                    Zobacz wszystkich ludzi
-                </div>
-                <div class="left_option" id="showAllCliques"onclick="menuShowAllCliques()">
-                    Zobacz wszystkie kliki
-                </div>
-                <div class="left_option" id="calendar"onclick="makeCalendar()">
-                    Zobacz kalendarz!
-                </div>
             </nav>
             <main class="content" id="main_content">
                 <!-- Main content goes here -->
@@ -48,9 +26,8 @@
         </div>
         <script>
             function createLeftMenu() {
-                const menuButtonsArray = [{"id":"mainPage","text": "Strona główna", "onclick": "showMainPage()"}, {"id":"addNewHuman","href": "add_human.html", "text": "Dodaj nowego człowieka"}, {"id": "calendar","onclick": "makeCalendar()", "text": "Zobacz kalendarz"}, {"id": "showAllCliques","onclick": "menuShowAllCliques()", "text": "Pokaż wszystkie kliki"}, {"id": "showAllPeople","onclick": "getPeople()", "text": "Zobacz wszystkich ludzi"}, {"id": "addNewMeeting", "href": "add_meeting.html", "text": "Dodaj nowe spotanie"}, {"id": "addNewClique", "href": "add_new_clique.html", "text": "Dodaj nową klikę"}]
-                //póki co testuję to na prawym menu, stąd ten mindfuck
-                let leftMenu = document.getElementsByClassName("right-menu")[0]
+                const menuButtonsArray = [{"id":"mainPage","text": "Strona główna", "onclick": "showMainPage()"}, {"id":"addNewHuman","href": "add_human.html", "text": "Dodaj nowego człowieka"}, {"id": "calendar","onclick": "makeCalendar()", "text": "Zobacz kalendarz"}, {"id": "showAllCliques","onclick": "menuShowAllCliques()", "text": "Pokaż wszystkie kliki"}, {"id": "showAllPeople","onclick": "getPeople()", "text": "Zobacz wszystkich ludzi"}, {"id": "addNewMeeting", "href": "add_meeting.html", "text": "Dodaj nowe spotanie"}, {"id": "addNewClique", "href": "add_new_clique.html", "text": "Dodaj nową klikę"}, {"id": "addHumansToMeeting", "text": "Dodaj ludzi do spotkania", "href": "add_humans_to_meeting.html"}]
+                let leftMenu = document.getElementsByClassName("left-menu")[0]
                 leftMenu.innerHTML = ""
                 for (singleButton of menuButtonsArray) {
                     const idOfDIv = singleButton.id
@@ -191,6 +168,10 @@
                         const substractedFraction = timeDifference / milisecondsInThirtyDays / 2
                         const opacityValue = 1 - substractedFraction
                         imgInsideSlider.style["opacity"] = opacityValue
+                    }
+                    function photoSlider() {
+                        let index = 0
+                        function newImage() {
                             imgInsideSlider.setAttribute("src", jsonOfMeeting["photos"][index])
                             index = (index + 1) % jsonOfMeeting["photos"].length
                             curSlider.appendChild(imgInsideSlider)
