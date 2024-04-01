@@ -13,7 +13,7 @@ const pool = mysql.createPool({
 async function getAllMeetings() {
     let jsonOfDays = {}
     let [ dataFromDatabase ] = await pool.query("SELECT meetings.meeting_date, meeting_human.human_id, party_people.name, party_people.surname FROM meeting_human JOIN meetings ON meetings.ID = meeting_human.meeting_id JOIN party_people ON meeting_human.human_id = party_people.id")
-    //znowu mi to zwraca to jakbym czas zapisał dla północy w Greenwitch, wiec tutaj zmieniam
+    //I am adding hours to a date due to timezone issues
     for (meeting of dataFromDatabase) {
         const oldTime = meeting["meeting_date"]
         const oldTimeFormated = new Date(oldTime)
@@ -27,8 +27,6 @@ async function getAllMeetings() {
             jsonOfDays[newTime]["photos"].push(`${path.join(__dirname, "photos", meeting.human_id + ".jpg")}`)
         }
     }
-    //console.log(jsonOfDays)
     return jsonOfDays
 }
-//getAllMeetings()
 module.exports = getAllMeetings
