@@ -6,6 +6,7 @@ app.use(cors())
 const getPeople = require('./get_people.js')
 const getNumberOfVisists = require('./getNumberOfVisits.js')
 const getAllCliques = require('./getAllCliques.js')
+const peopleFromString = require('./selectPeopleFromSubstring.js')
 const getHumanClique = require('./addCliquesToHumans.js')
 const getHumanFromClique = require('./addHumansToClique.js')
 const getVisitorsOfTheDay = require('./getVisitorsOfDay.js')
@@ -89,6 +90,12 @@ app.post('/add_human', async (req, res) => {
     const cityToSave = req.query.city
     const serverResonse = await addHuman(nameToSave,surnameToSave,genderToSave,fbToSave,cityToSave,cliqueToSave)
     res.send(serverResonse)
+})
+
+app.get('/people_from_substring', async (req, res) => {
+    const deliveredString = req.query.substring
+    const resultOfQUery = await peopleFromString(deliveredString)
+    res.send(resultOfQUery)
 })
 
 app.listen(3000, () => {
