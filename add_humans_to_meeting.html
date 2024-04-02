@@ -9,6 +9,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
         <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
     </head>
     <body>
@@ -121,6 +122,12 @@
                 }
                 
             }
+            function removeDiv(id) {
+                console.log(id)
+                let removedElement = document.getElementById(id)
+                console.log(removedElement)
+                removedElement.remove()
+            }
             async function addPeopleToMeeting() {
                 let listOfCheckedPeopleDivs = document.getElementsByClassName("chosen_person_tile")
                 const dateOfMeeting = document.getElementById("dateInputField").value
@@ -131,7 +138,7 @@
                     let arrayOfSelectedPeople = document.getElementsByClassName("chosen_person_tile")
                     for (chosenDiv of arrayOfSelectedPeople) {
                         const idOfChosenDiv = chosenDiv["id"]
-                        const idOfChosenPerson = idOfChosenDiv.replace("_chosen", "")
+                        const idOfChosenPerson = idOfChosenDiv.replace("-chosen", "")
                         console.log(idOfChosenPerson)
                         addSinglePerson(idOfChosenMeeting, idOfChosenPerson)
                     }
@@ -146,7 +153,7 @@
                 console.log(`Dodałem ${humanId} do spotkania ${meetingId}.`)
             }
             function addToChosen(nameAndSurname, id, photoDir) {
-                const chosenPersonTileId = id.toString() + "_chosen"
+                const chosenPersonTileId = id.toString() + "-chosen"
                 if (!document.getElementById(chosenPersonTileId)) {
                     let placeForAddedPeople = document.getElementById("place_for_chosen_people")
                     let createdDiv = document.createElement("div")
@@ -163,6 +170,11 @@
                     divForName.setAttribute("class", "name_in_tile")
                     divForName.innerText = nameAndSurname
                     createdDiv.appendChild(divForName)
+                    let closingDiv = document.createElement("div")
+                    closingDiv.innerHTML = "x"
+                    closingDiv.setAttribute("onclick", `removeDiv("${chosenPersonTileId}")`)
+                    closingDiv.setAttribute("class", "closing_div")
+                    createdDiv.appendChild(closingDiv)
                     if (!document.getElementById("accept_people_button")) {
                         let divForAcceptButton = document.getElementById("divForAcceptButton")
                         let createdButton = document.createElement("button")
@@ -170,7 +182,7 @@
                         createdButton.setAttribute("onclick", "addPeopleToMeeting()")
                         createdButton.style["margin-bottom"] = "20px"
                         createdButton.innerHTML = "Zaakceptuj!"
-                        divForAcceptButton.appendChild(createdButton)
+                        divForAcceptButton.appendChild(createdButton)                      
                     }
                 }
                 else {
