@@ -4,6 +4,7 @@ app = express()
 app.use(cors())
 
 const getPeople = require('./get_people.js')
+const getLeftMenu = require('./sendLeftMenu.js')
 const getNumberOfVisists = require('./getNumberOfVisits.js')
 const getAllCliques = require('./getAllCliques.js')
 const peopleFromString = require('./selectPeopleFromSubstring.js')
@@ -38,6 +39,10 @@ app.get('/weddings', async (req, res) =>{
     res.send(JSON.stringify(arrayOfWeddings))
 })
 
+app.get('/left_menu', async (req, res) => {
+    const jsonOfButtons = await getLeftMenu()
+    res.send(JSON.stringify(jsonOfButtons))
+})
 app.get('/all_cliques', async (req, res) => {
     const arrayOfCliques = await getAllCliques()
     res.send(JSON.stringify(arrayOfCliques))
