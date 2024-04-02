@@ -156,7 +156,7 @@
                     modifiedDiv.appendChild(createdSlider)
                     let imgInsideSlider = document.createElement("img")
                     imgInsideSlider.setAttribute("src", jsonOfMeeting["photos"][0])
-                    imgInsideSlider.setAttribute("title", jsonOfMeeting["names"][0])
+                    imgInsideSlider.setAttribute("title", jsonOfMeeting["title_after_hover"])
                     createdSlider.appendChild(imgInsideSlider)
                     modifiedDiv.style["background-color"] = "#8882ee"
                     const milisecondsCurrentTime = new Date()
@@ -174,7 +174,7 @@
                         function newImage() {
                             imgInsideSlider.setAttribute("src", jsonOfMeeting["photos"][index])
                             index = (index + 1) % jsonOfMeeting["photos"].length
-                            curSlider.appendChild(imgInsideSlider)
+                            createdSlider.appendChild(imgInsideSlider)
                         }
                         setInterval(newImage,2000)
                     }
