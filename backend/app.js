@@ -88,8 +88,9 @@ app.get('/get_id', async (req, res) => {
 app.post('/add_meeting', async (req, res) => {
     const placeOfMeeting = req.query.place
     const dateOfMeeting = req.query.date
+    const description = req.query.description
     res.send(`Otrzymałem dane o spotkaniu w dniu ${dateOfMeeting} w ${placeOfMeeting}.`)
-    await addMeeting(placeOfMeeting, dateOfMeeting)
+    await addMeeting(placeOfMeeting, dateOfMeeting, description)
 })
 app.get('/meeting_id_from_date', async (req, res) => {
     const dateToSend = req.query.date

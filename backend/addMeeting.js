@@ -10,7 +10,7 @@ const pool = mysql.createPool({
     database : process.env.MYSQL_DATABASE
 }).promise()
 
-async function addMeeting(place, dateOfMeeting) {
-    await pool.query("INSERT INTO `meetings` (`ID`, `meeting_date`, `Place`, `Food`, `Drinks`) VALUES (NULL, ?, ?, '-', '-');", [dateOfMeeting, place])
+async function addMeeting(place, dateOfMeeting, description) {
+    await pool.query("INSERT INTO `meetings` (`ID`, `meeting_date`, `Place`, `Food`, `Drinks`, `title_after_hover`) VALUES (NULL, ?, ?, '-', '-', ?);", [dateOfMeeting, place, description])
 }
 module.exports = addMeeting
