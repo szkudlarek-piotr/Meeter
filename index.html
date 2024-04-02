@@ -69,18 +69,7 @@
                 }
                 humanInputFields.innerHTML += `<button type="button" onclick="confirmGuests()">Zatwierdź listę gości!</button>`
             }
-            function confirmGuests() {
-                console.log("foo")
-            }
-            function menuAddNewClique() {
-                console.log("Teraz będziesz dodawał nową klikę.")
-            }
-            function sendOnePerson() {
-                console.log("Foo")
-            }
-            function menuShowAllPeople() {
-                getPeople()
-            }
+
             async function menuShowAllCliques() {
                 clearMainContent()
                 const local_fetch = await fetch("http://localhost:3000/all_cliques")
@@ -92,22 +81,7 @@
                 }
                 addHumansToClique()
             }
-            function createDateId(recievedDate) {
-                const dateToProcess = new Date(recievedDate)
-                const numberOfDay = dateToProcess.getDate()
-                const numberOfMonth = dateToProcess.getMonth()
-                const fullMonth = dateToProcess.getFullYear()
-                const monthJson = {0: "Styczeń", 1:"Luty", 2: "Marzec", 3: "Kwiecień", 4: "Maj", 5: "Czerwiec", 6:"Lipiec", 7: "Sierpień", 8:"Wrzesień", 9:"Październik", 10: "Listopad", 11:"Grudzień"}
-                const returnedId = `${numberOfDay}_${monthJson[numberOfMonth].substring(0,3)}_${fullMonth}`
-                return returnedId
-            }
-            function paintToday() {
-                const todaysDate = Date()
-                const todaysDateId = createDateId(todaysDate)
-                let todaysCalendarDiv = document.getElementById(todaysDateId)
-                todaysCalendarDiv.style["background-color"] = "red"
-            }
-            createDateId(Date())
+ 
             function createCliqueDiv(analzyedCliqueJson) {
                 let main_content = document.getElementById("main_content")
                 
@@ -134,96 +108,8 @@
                 let mainContentDiv = document.getElementById("main_content")
                 mainContentDiv.innerHTML = ""
             }
-            async function addMeetingsToCalendar() {
-                const requestAllMeetings = await fetch("http://localhost:3000/meetings")
-                const meetingsJson = await requestAllMeetings.json()
-                for (const record in meetingsJson) {
-                    const dateId = createDateId(record)
-                    const jsonOfMeeting = meetingsJson[record]
-                    let modifiedDiv = document.getElementById(dateId)
-                    modifiedDiv.innerHTML = ""
-                    let createdSlider = document.createElement("div")
-                    createdSlider.setAttribute("class", "slider")
-                    const sliderId = dateId + "_slider"
-                    createdSlider.setAttribute("id", sliderId)
-                    modifiedDiv.appendChild(createdSlider)
-                    let imgInsideSlider = document.createElement("img")
-                    imgInsideSlider.setAttribute("src", jsonOfMeeting["photos"][0])
-                    imgInsideSlider.setAttribute("title", jsonOfMeeting["title_after_hover"])
-                    createdSlider.appendChild(imgInsideSlider)
-                    modifiedDiv.style["background-color"] = "#8882ee"
-                    const milisecondsCurrentTime = new Date()
-                    const milisecondsDayTime = new Date(record)
-                    const timeDifference = milisecondsDayTime - milisecondsCurrentTime
-                    const milisecondsInDay = 3600*1000*24
-                    const milisecondsInThirtyDays = milisecondsInDay * 30
-                    if (timeDifference > milisecondsInDay && timeDifference < milisecondsInThirtyDays) {
-                        const substractedFraction = timeDifference / milisecondsInThirtyDays / 2
-                        const opacityValue = 1 - substractedFraction
-                        imgInsideSlider.style["opacity"] = opacityValue
-                    }
-                    function photoSlider() {
-                        let index = 0
-                        function newImage() {
-                            imgInsideSlider.setAttribute("src", jsonOfMeeting["photos"][index])
-                            index = (index + 1) % jsonOfMeeting["photos"].length
-                            createdSlider.appendChild(imgInsideSlider)
-                        }
-                        setInterval(newImage,2000)
-                    }
-                    photoSlider()
-                }
-
-            }
-            function makeCalendar() {
-                clearMainContent()
-                const startDay = new Date("12/01/2023")
-                const lastDay = new Date("12/31/2024")
-                let currentDay = new Date(startDay)
-                let daysCounter = 0
-                const monthJson = {0: "Styczeń", 1:"Luty", 2: "Marzec", 3: "Kwiecień", 4: "Maj", 5: "Czerwiec", 6:"Lipiec", 7: "Sierpień", 8:"Wrzesień", 9:"Październik", 10: "Listopad", 11:"Grudzień"}
-                const weekdaysArray = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]
-                const trimDays = weekdaysArray.map((nameOfWeek) => nameOfWeek.substring(0,3) + ".")
-                let main_content = document.getElementById("main_content")
-                let containerForCalendar = document.createElement("div")
-                containerForCalendar.setAttribute("class", "calendarContainer")
-                main_content.appendChild(containerForCalendar)
-                for (let day = startDay; day <= lastDay; day.setDate(day.getDate() + 1)) {
-                    let addedDayRectangle = document.createElement("div")
-                    addedDayRectangle.setAttribute("class", "dayRectangle")
-                    const dayOfMonth = day.getDate().toString()
-                    if (dayOfMonth == 1) {
-                        let numberOfGhostDays = 6
-                        containerForCalendar.innerHTML += `<h2>${monthJson[day.getMonth()]} ${day.getFullYear()}</h2>`
-                        for (const name of trimDays) {
-                            let nameOfWeekdayDiv = document.createElement("div")
-                            nameOfWeekdayDiv.setAttribute("class", "nameOfWeekdayDiv")
-                            nameOfWeekdayDiv.innerHTML = name
-                            containerForCalendar.appendChild(nameOfWeekdayDiv)
-                        }
-                        const dayOfWeek = day.getDay()
-                        if (dayOfWeek != 0) {
-                            numberOfGhostDays = dayOfWeek - 1
-                        }
-                        for (let i = 0; i < numberOfGhostDays; i++) {
-                            let ghostDayToAdd = document.createElement("div")
-                            ghostDayToAdd.setAttribute("class", "ghostDayRectangle")
-                            containerForCalendar.appendChild(ghostDayToAdd)
-                        }
-                    }
-                    const startOfMonth = monthJson[day.getMonth()].substring(0, 3)
-                    let thing_to_write = `${dayOfMonth} ${startOfMonth}`
-                    let date_id = `${dayOfMonth}_${startOfMonth}_${day.getFullYear()}`
-                    addedDayRectangle.innerHTML = thing_to_write
-
-                    addedDayRectangle.setAttribute("id", date_id)
-                    containerForCalendar.appendChild(addedDayRectangle)
-                }
-                getPhotosJson()
-                addWeddingsToCalendar()
-                paintToday()
-                addMeetingsToCalendar()
-            }
+            
+            
             async function getPhotosJson() {
                 const monthJson = {0: "Styczeń", 1:"Luty", 2: "Marzec", 3: "Kwiecień", 4: "Maj", 5: "Czerwiec", 6:"Lipiec", 7: "Sierpień", 8:"Wrzesień", 9:"Październik", 10: "Listopad", 11:"Grudzień"}
                 const addPhotosReq = await fetch("http://localhost:3000/add_photos_to_calendar")
@@ -281,39 +167,7 @@
                     }
                 }
             }
-            async function addWeddingsToCalendar() {
-                const monthJson = {0: "Styczeń", 1:"Luty", 2: "Marzec", 3: "Kwiecień", 4: "Maj", 5: "Czerwiec", 6:"Lipiec", 7: "Sierpień", 8:"Wrzesień", 9:"Październik", 10: "Listopad", 11:"Grudzień"}
-                const weekdaysArray = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]
-                const weddingsReq = await fetch("http://localhost:3000/weddings")
-                const weddingsJson = await weddingsReq.json()
-                const numberOfWeddings = weddingsJson.length
-                const weddingRingsDir = "C:/Users/piotr/OneDrive/Pulpit/projekty/req_tst/backend/functionalPhotos/rings.png"
-                for (wedding of weddingsJson) {
-                    let weddingDate = new Date(wedding.date)
-                    let manPhoto = wedding.manPhoto
-                    let womanPhoto = wedding.womanPhoto
-                    let dayOfMonth = weddingDate.getDate().toString()
-                    let trimmedMonth = monthJson[weddingDate.getMonth()].substring(0,3)
-                    let fullYear = weddingDate.getFullYear().toString()
-                    const modifiedDayRectangleId = `${dayOfMonth}_${trimmedMonth}_${fullYear}`
-                    const divToModify = document.getElementById(modifiedDayRectangleId)
-                    divToModify.innerHTML = ""
-                    divToModify.style["background-color"] = "#eb73d7a6"
-                    let imgOfMan = document.createElement("img")
-                    imgOfMan.setAttribute("src", manPhoto)
-                    imgOfMan.setAttribute("class", "weddingManPhoto")
-                    divToModify.appendChild(imgOfMan)
-                    let imgOfWoman = document.createElement("img")
-                    imgOfWoman.setAttribute("src", womanPhoto)
-                    imgOfWoman.setAttribute("class", "weddingWomanPhoto")
-                    divToModify.appendChild(imgOfWoman)
-                    let imgOfRings = document.createElement("img")
-                    imgOfRings.setAttribute("class", "ringsPhoto")
-                    imgOfRings.setAttribute("src", weddingRingsDir)
-                    divToModify.appendChild(imgOfRings)
-                    divToModify.setAttribute("title", wedding.info_after_hover)
-                }
-            }
+
             async function addHumansToClique() {
                 const addHumansReq = await fetch("http://localhost:3000/add_humans_to_clique")
                 const humanPhotoCliqueNameJson = await addHumansReq.json()
@@ -342,79 +196,7 @@
                     }
                 }
             }
-            async function getPeople() {
-                clearMainContent()
-                const local_fetch = await fetch("http://localhost:3000/people")
-                const people_json = await local_fetch.json()
-                const numberOfPeople = people_json.length
-                for (let i=0; i < numberOfPeople; i++) {
-                    let humanJson = people_json[i]
-                    humanJsonToTile(humanJson)
-                }
-                writeNumberOfVisits()
-                addCliquesPhotos()
-            }
-            async function addCliquesPhotos() {
-                const photosFetch = await fetch("http://localhost:3000/get_human_cliques")
-                const humanCliquesJson = await photosFetch.json()
-                let allPeopleDivs = document.getElementsByClassName("human")
-                for (let i = 0; i < humanCliquesJson.length; i++) {
-                    const recordFromDatabase = humanCliquesJson[i]
-                    const idOfHuman = recordFromDatabase.humanId
-                    const dirOfCliquePhoto = recordFromDatabase.photoDir
-                    let newCliquePhoto = document.createElement("img")
-                    newCliquePhoto.setAttribute("src", dirOfCliquePhoto)
-                    newCliquePhoto.setAttribute("class", "clique_photo_in_human_tile")
-                    for (let j = 0; j < allPeopleDivs.length; j++) {
-                        let checked_div = allPeopleDivs[j]
-                        const idOfPerson = checked_div.getAttribute("person_id")
-                        if (idOfPerson == idOfHuman) {
-                            checked_div.appendChild(newCliquePhoto)
-                            break
-                        }
-                    }
-                }
-            }
-            async function humanJsonToTile(jsonOfHuman) {
-                let main_content = document.getElementById("main_content")
-                let newHumanTile = document.createElement("div")
-                newHumanTile.setAttribute("class", "human")
-                let idOfPerson = jsonOfHuman.id
-                newHumanTile.setAttribute("person_id", idOfPerson)
-                let photoDiv = document.createElement("img")
-                const photoDirectory = jsonOfHuman.photoDir
-                photoDiv.setAttribute("src", photoDirectory)
-                photoDiv.setAttribute("class", "person_photo")
-                newHumanTile.appendChild(photoDiv)
-                const nameAndSurname = `${jsonOfHuman.name} ${jsonOfHuman.surname}`
-                let nameDiv = document.createElement("div")
-                nameDiv.setAttribute("class", "nameDiv")
-                nameDiv.innerHTML = nameAndSurname
-                newHumanTile.appendChild(nameDiv)
-                main_content.appendChild(newHumanTile)
-            }
-            async function writeNumberOfVisits() {
-                const visitsNumberFetch = await fetch("http://localhost:3000/visits")
-                const visitsNumbersJson = await visitsNumberFetch.json()
-                const numberOfPeople = visitsNumbersJson.length
-                const allPeopleDivs = document.getElementsByClassName("human")
-                for (let i=0; i < numberOfPeople; i++) {
-                    const numbersToUse = visitsNumbersJson[i]
-                    const text_to_write = `Liczba wizyt: ${numbersToUse["visit_count"]}`
-                    const searched_person_id = numbersToUse["ID"]
-                    for (let j=0; j < numberOfPeople ; j++) {
-                        let checked_div = allPeopleDivs[j]
-                        let personal_id = checked_div.getAttribute('person_id')
-                        if (personal_id == searched_person_id) {
-                            let visits_number = document.createElement("div")
-                            visits_number.setAttribute("class", "visits_number")
-                            visits_number.innerHTML = text_to_write
-                            checked_div.appendChild(visits_number)
-                            break
-                        }
-                    }
-                } 
-            }
+
         </script>
     </body>
 </html>
