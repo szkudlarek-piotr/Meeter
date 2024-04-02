@@ -1,3 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Meeter - portal dla wszystkich oprócz Amerykanów</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <header>
+            Baza danych spotkań
+        </header>
+        <div class="container">
+            <nav class="left-menu">
+            </nav>
+            <main class="content" id="main_content">
+                <!-- Main content goes here -->
+            </main>
+            <aside class="right-menu">
+                <!-- Right menu content goes here -->
+            </aside>
+        </div>
+    </body>
+    <script>
+        async function humanJsonToTile(jsonOfHuman) {
+                let main_content = document.getElementById("main_content")
+                let newHumanTile = document.createElement("div")
+                newHumanTile.setAttribute("class", "human")
+                let idOfPerson = jsonOfHuman.id
+                newHumanTile.setAttribute("person_id", idOfPerson)
+                let photoDiv = document.createElement("img")
+                const photoDirectory = jsonOfHuman.photoDir
+                photoDiv.setAttribute("src", photoDirectory)
+                photoDiv.setAttribute("class", "person_photo")
+                newHumanTile.appendChild(photoDiv)
+                const nameAndSurname = `${jsonOfHuman.name} ${jsonOfHuman.surname}`
+                let nameDiv = document.createElement("div")
+                nameDiv.setAttribute("class", "nameDiv")
+                nameDiv.innerHTML = nameAndSurname
+                newHumanTile.appendChild(nameDiv)
+                main_content.appendChild(newHumanTile)
+            }
+        async function getPeople() {
+                const local_fetch = await fetch("http://localhost:3000/people")
+                const people_json = await local_fetch.json()
+                const numberOfPeople = people_json.length
+                for (let i=0; i < numberOfPeople; i++) {
+                    let humanJson = people_json[i]
+                    humanJsonToTile(humanJson)
+                }
+                writeNumberOfVisits()
+                addCliquesPhotos()
+            }
+        getPeople()
+        async function addCliquesPhotos() {
+                const photosFetch = await fetch("http://localhost:3000/get_human_cliques")
+                const humanCliquesJson = await photosFetch.json()
+                let allPeopleDivs = document.getElementsByClassName("human")
+                for (let i = 0; i < humanCliquesJson.length; i++) {
+                    const recordFromDatabase = humanCliquesJson[i]
+                    const idOfHuman = recordFromDatabase.humanId
+                    const dirOfCliquePhoto = recordFromDatabase.photoDir
+                    let newCliquePhoto = document.createElement("img")
+                    newCliquePhoto.setAttribute("src", dirOfCliquePhoto)
+                    newCliquePhoto.setAttribute("class", "clique_photo_in_human_tile")
+                    for (let j = 0; j < allPeopleDivs.length; j++) {
+                        let checked_div = allPeopleDivs[j]
+                        const idOfPerson = checked_div.getAttribute("person_id")
+                        if (idOfPerson == idOfHuman) {
+                            checked_div.appendChild(newCliquePhoto)
+                            break
+                        }
+                    }
+                }
+            }
+        async function writeNumberOfVisits() {
+                const visitsNumberFetch = await fetch("http://localhost:3000/visits")
+                const visitsNumbersJson = await visitsNumberFetch.json()
+                const numberOfPeople = visitsNumbersJson.length
+                console.log(numberOfPeople)
+                const allPeopleDivs = document.getElementsByClassName("human")
+                for (let i=0; i < numberOfPeople; i++) {
+                    const numbersToUse = visitsNumbersJson[i]
+                    const text_to_write = `Liczba wizyt: ${numbersToUse["visit_count"]}`
+                    const searched_person_id = numbersToUse["ID"]
+                    for (let j=0; j < numberOfPeople ; j++) {
+                        let checked_div = allPeopleDivs[j]
+                        let personal_id = checked_div.getAttribute('person_id')
+                        if (personal_id == searched_person_id) {
+                            let visits_number = document.createElement("div")
+                            visits_number.setAttribute("class", "visits_number")
+                            visits_number.innerHTML = text_to_write
+                            checked_div.appendChild(visits_number)
+                            break
+                        }
+                    }
+                } 
+            }
+        
         async function getLeftMenu() {
             let leftMenu = document.getElementsByClassName("left-menu")[0]
             const arrrayOfButtons = await fetch("http://localhost:3000/left_menu")
@@ -21,3 +124,5 @@
             }
         }
         getLeftMenu()
+    </script>
+</html>
