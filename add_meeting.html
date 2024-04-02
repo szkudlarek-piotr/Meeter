@@ -32,33 +32,29 @@
             </aside>
         </div>
         <script>
-            function createLeftMenu() {
-                const menuButtonsArray = [{"id":"mainPage","text": "Strona główna", "onclick": "showMainPage()"}, {"id":"addNewHuman","href": "add_human.html", "text": "Dodaj nowego człowieka"}, {"id": "calendar","onclick": "makeCalendar()", "text": "Zobacz kalendarz"}, {"id": "showAllCliques","onclick": "menuShowAllCliques()", "text": "Pokaż wszystkie kliki"}, {"id": "showAllPeople","onclick": "getPeople()", "text": "Zobacz wszystkich ludzi"}, {"id": "addNewMeeting", "href": "add_meeting.html", "text": "Dodaj nowe spotanie"}, {"id": "addNewClique", "href": "add_new_clique.html", "text": "Dodaj nową klikę"}, {"id": "addHumansToMeeting", "text": "Dodaj ludzi do spotkania", "href": "add_humans_to_meeting.html"}]
-                //póki co testuję to na prawym menu, stąd ten mindfuck
+            async function getLeftMenu() {
                 let leftMenu = document.getElementsByClassName("left-menu")[0]
-                leftMenu.innerHTML = ""
-                for (singleButton of menuButtonsArray) {
-                    const idOfDIv = singleButton.id
-                    const textOfDiv = singleButton.text
-                    let newCreatedButton = document.createElement("div")
-                    newCreatedButton.setAttribute("id", idOfDIv)
-                    newCreatedButton.innerText = textOfDiv
-                    newCreatedButton.setAttribute("class", "left_option")
-                    if (singleButton.hasOwnProperty("onclick")) {
-                        newCreatedButton.setAttribute("onclick", singleButton.onclick)
-                        leftMenu.appendChild(newCreatedButton)
+                const arrrayOfButtons = await fetch("http://localhost:3000/left_menu")
+                const jsonOfButtons = await arrrayOfButtons.json()
+                for (button of jsonOfButtons) {
+                    let newButton = document.createElement("div")
+                    newButton.setAttribute("class", "left_option")
+                    newButton.setAttribute("id", button.id)
+                    newButton.innerText = button.text
+                    if (button.hasOwnProperty("onclick")) {
+                        newButton.setAttribute("onclick", button.onclick)
+                        leftMenu.appendChild(newButton)
                     }
-                    if (singleButton.hasOwnProperty("href")) {
+                    if (button.hasOwnProperty("href")) {
                         let encapsulatingA = document.createElement("a")
-                        encapsulatingA.setAttribute("href", singleButton.href)
-                        encapsulatingA.appendChild(newCreatedButton)
+                        encapsulatingA.setAttribute("href", button.href)
                         leftMenu.appendChild(encapsulatingA)
-                        newCreatedButton.setAttribute("href", singleButton.href)
+                        encapsulatingA.appendChild(newButton)
                     }
+                    
                 }
-
             }
-            createLeftMenu()
+        getLeftMenu()
             function clearMainContent() {
                 let mainContentDiv = document.getElementById("main_content")
                 mainContentDiv.innerHTML = ""

@@ -237,6 +237,17 @@
                 divToModify.setAttribute("title", wedding.info_after_hover)
             }
         }
+        async function getPeople() {
+                const local_fetch = await fetch("http://localhost:3000/people")
+                const people_json = await local_fetch.json()
+                const numberOfPeople = people_json.length
+                for (let i=0; i < numberOfPeople; i++) {
+                    let humanJson = people_json[i]
+                    humanJsonToTile(humanJson)
+                }
+                writeNumberOfVisits()
+                addCliquesPhotos()
+            }
         function paintToday() {
             const todaysDate = Date()
             const todaysDateId = createDateId(todaysDate)

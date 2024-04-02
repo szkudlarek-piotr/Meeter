@@ -1,0 +1,23 @@
+        async function getLeftMenu() {
+            let leftMenu = document.getElementsByClassName("left-menu")[0]
+            const arrrayOfButtons = await fetch("http://localhost:3000/left_menu")
+            const jsonOfButtons = await arrrayOfButtons.json()
+            for (button of jsonOfButtons) {
+                let newButton = document.createElement("div")
+                newButton.setAttribute("class", "left_option")
+                newButton.setAttribute("id", button.id)
+                newButton.innerText = button.text
+                if (button.hasOwnProperty("onclick")) {
+                    newButton.setAttribute("onclick", button.onclick)
+                    leftMenu.appendChild(newButton)
+                }
+                if (button.hasOwnProperty("href")) {
+                    let encapsulatingA = document.createElement("a")
+                    encapsulatingA.setAttribute("href", button.href)
+                    leftMenu.appendChild(encapsulatingA)
+                    encapsulatingA.appendChild(newButton)
+                }
+                
+            }
+        }
+        getLeftMenu()
