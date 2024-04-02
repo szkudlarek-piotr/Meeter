@@ -11,6 +11,12 @@ const pool = mysql.createPool({
 
 async function getNumberOfVisists() {
     const [databaseArray] = await pool.query("SELECT pp.ID, COUNT(vg.guest_id) AS visit_count FROM party_people pp LEFT JOIN visit_guest vg ON pp.ID = vg.guest_id GROUP BY pp.ID;")
-    return databaseArray
+    let arrayWithoutMe = []
+    for (record of databaseArray) {
+        if (record["ID"] != 77)
+        arrayWithoutMe.push(record)
+    }
+    return arrayWithoutMe
 }
+//getNumberOfVisists()
 module.exports = getNumberOfVisists
