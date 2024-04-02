@@ -12,7 +12,7 @@ const pool = mysql.createPool({
 
 async function getPeople() {
     let returnedArray = []
-    const [databaseArray] = await pool.query("SELECT * FROM party_people ORDER BY surname, name")
+    const [databaseArray] = await pool.query("SELECT * FROM party_people WHERE ID !=77 ORDER BY surname, name")
     for (let i=0; i < databaseArray.length; i++) {
         let person = databaseArray[i]
         let jsonToAdd = {}
