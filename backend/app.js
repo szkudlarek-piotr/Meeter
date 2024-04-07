@@ -4,6 +4,8 @@ app = express()
 app.use(cors())
 
 const getPeople = require('./get_people.js')
+const addVisit = require('./addVisit.js')
+const getVisitId = require('./getVisitId.js')
 const getLeftMenu = require('./sendLeftMenu.js')
 const getNumberOfVisists = require('./getNumberOfVisits.js')
 const getAllCliques = require('./getAllCliques.js')
@@ -32,6 +34,15 @@ app.get("/people", async (req, res) => {
 app.get('/visits', async (req, res) => {
     const arrayOfVisits = await getNumberOfVisists()
     res.send(JSON.stringify(arrayOfVisits))
+})
+
+app.get('/get_visit_id', async (req, res) => {
+    console.log(req.query)
+    const date = req.query.date
+    const duration = req.query.duration
+    const description = req.query.description
+    const obtainedId = await getVisitId(date, duration, description)
+    res.send(obtainedId)
 })
 
 app.get('/weddings', async (req, res) =>{
@@ -64,6 +75,11 @@ app.get('/add_humans_to_clique', async (req, res) => {
 app.get('/add_photos_to_calendar', async (req, res) => {
     const daysPhotosJson = await getVisitorsOfTheDay()
     res.send(JSON.stringify(daysPhotosJson))
+})
+app.post ('/add_guest_to_visit', async (req, res) => {
+    const idOfGuest = req.query.guest_id
+    const idOfVisit = req.query.visit_id
+    await addGuestToVisit(idOfVisit, idOfGuest)
 })
 app.post('/add_human_to_meeting', async (req, res) => {
     const meeting = req.query.meeting
@@ -109,10 +125,18 @@ app.post('/add_human', async (req, res) => {
     res.send(serverResonse)
 })
 
+app.post('/add_visit', async (req,res) => {
+    const date = req.query.date
+    const duration = req.query.duration
+    const description = req.query.description
+    const postRequest = addVisit(date, duration, description)
+    //res.send(postRequest.status)
+    res.send(postRequest)
+})
 app.get('/people_from_substring', async (req, res) => {
     const deliveredString = req.query.substring
-    const resultOfQUery = await peopleFromString(deliveredString)
-    res.send(resultOfQUery)
+    const resultOfQuery = await peopleFromString(deliveredString)
+    res.send(resultOfQuery)
 })
 
 app.listen(3000, () => {

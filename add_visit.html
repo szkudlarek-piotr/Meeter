@@ -1,0 +1,192 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Meeter - portal dla wszystkich oprócz Amerykanów</title>
+        <script src="add_human.js" defer></script>
+        <link rel="stylesheet" href="style_add_to_meeting.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <header>
+            Baza danych spotkań
+        </header>
+        <div class="container">
+            <nav class="left-menu">
+                
+            </nav>
+            <main class="content" id="main_content">
+                <form action="javascript:;" onsubmit=" addVisit( this ) " enctype="multipart/form-data">
+                    <fieldset>
+                        <h3>Data</h3>
+                        <input type="date" id="visitDateInputField"></br></br>
+                        <h3>Czas trwania wizyty</h3>
+                        <input type="text" id="visitDurationInputField" placeholder="Podaj w dniach (liczbowo) długość trwania wizyty"></br></br>
+                        <h3>Krótki opis wizyty</h3>
+                        <input type="text" id="visitDescriptionInput"></br></br>
+                        <input type="submit" value="Dodaj wizytę!"></br></br>
+                        <h3 id="titleOfNameInputField"></h3></br></br>
+                        <div id="placeForNameInput"></div>
+                        <h3 id="titleOfSuggesionsDiv"></h3></br></br>
+                        <div id="place_for_suggested_people"></div>
+                        <h3 id="titleOfChosen"></h3></br></br>
+                        <div id="place_for_chosen_people"></div>
+                        <div id="div_for_accept_button"></div>
+                    </fieldset>
+                </form>
+            </main>
+            <aside class="right-menu">
+                <!-- Right menu content goes here -->
+            </aside>
+        </div>
+        <script>
+            function clearSuggestions() {
+                const placeForPeopleSuggestions = document.getElementById("place_for_suggested_people")
+                placeForPeopleSuggestions.innerHTML = ""
+            }
+            async function getSuggestedPeople() {
+                clearSuggestions()
+                const stringToSearch = document.getElementById("inputToSearchPeople").value
+                if (stringToSearch.length > 1) {
+                    const suggestedPeopleRequest = await fetch(`http://localhost:3000/people_from_substring?substring=${stringToSearch}`)
+                    const jsonOfSuggestions = await suggestedPeopleRequest.json()
+                    console.log(jsonOfSuggestions)
+                    for (person of jsonOfSuggestions) {
+                        let suggestedPeopleContainer = document.getElementById("place_for_suggested_people")
+                        let createdPersonTile = document.createElement("div")
+                        createdPersonTile.setAttribute("class", "person_tile")
+                        createdPersonTile.setAttribute("addedToChosen", false)
+                        createdPersonTile.setAttribute("id", `human_tile_${person.id}`)
+                        const photoDirWithForwardSlashes = person.photoDir.replace(/\\/g, '/');
+                        createdPersonTile.setAttribute("onclick", `addToChosen("${person.nameAndSurname}", "${person.id}", "${photoDirWithForwardSlashes}")`)
+                        suggestedPeopleContainer.appendChild(createdPersonTile)
+                        
+                        let divForPhoto = document.createElement("div")
+                        divForPhoto.setAttribute("class", "photo_in_tile")
+                        createdPersonTile.appendChild(divForPhoto)
+                        
+                        let photoOfPrerson = document.createElement("img")
+                        photoOfPrerson.setAttribute("src", person.photoDir)
+                        divForPhoto.appendChild(photoOfPrerson)
+                        
+                        let nameOfHuman = document.createElement("div")
+                        nameOfHuman.innerText = person.nameAndSurname
+                        nameOfHuman.setAttribute("class", "name_in_tile")
+                        createdPersonTile.appendChild(nameOfHuman)
+                    }
+                }        
+            }
+            function addToChosen(nameAndSurname, id, photoDir) {
+                const chosenPersonTileId = id.toString() + "-chosen"
+                if (!document.getElementById(chosenPersonTileId)) {
+                    let placeForAddedPeople = document.getElementById("place_for_chosen_people")
+                    let createdDiv = document.createElement("div")
+                    createdDiv.setAttribute("class", "chosen_person_tile")
+                    createdDiv.setAttribute("id", chosenPersonTileId)
+                    placeForAddedPeople.appendChild(createdDiv)
+                    let divForPhoto = document.createElement("div")
+                    divForPhoto.setAttribute("class", "photo_in_tile")
+                    createdDiv.appendChild(divForPhoto)
+                    let photoOfPerson = document.createElement("img")
+                    photoOfPerson.setAttribute("src", photoDir)
+                    divForPhoto.appendChild(photoOfPerson)
+                    let divForName = document.createElement("div")
+                    divForName.setAttribute("class", "name_in_tile")
+                    divForName.innerText = nameAndSurname
+                    createdDiv.appendChild(divForName)
+                    let closingDiv = document.createElement("div")
+                    closingDiv.innerHTML = "x"
+                    closingDiv.setAttribute("onclick", `removeDiv("${chosenPersonTileId}")`)
+                    closingDiv.setAttribute("class", "closing_div")
+                    createdDiv.appendChild(closingDiv)
+                    if (!document.getElementById("accept_people_button")) {
+                        let divForAcceptButton = document.getElementById("div_for_accept_button")
+                        let createdButton = document.createElement("button")
+                        createdButton.id = "accept_people_button"
+                        createdButton.setAttribute("onclick", "addPeopleToMeeting()")
+                        createdButton.style["margin-bottom"] = "20px"
+                        createdButton.innerHTML = "Zaakceptuj!"
+                        divForAcceptButton.appendChild(createdButton)                      
+                    }
+                }
+                else {
+                    console.log("Dodałeś już tę osobę.")
+                }
+            }
+            function removeDiv(id) {
+                console.log(id)
+                let removedElement = document.getElementById(id)
+                console.log(removedElement)
+                removedElement.remove()
+            }
+            function createHumanSearch() {
+                const divForInputTitle = document.getElementById("titleOfNameInputField")
+                divForInputTitle.innerText = "Wpisz imię lub nazwisko osoby, którą chcesz dodać"
+                
+                const divForInputField = document.getElementById("placeForNameInput")
+                let nameInputField = document.createElement("input")
+                nameInputField.type = "text"
+                nameInputField.setAttribute("placeholder", "Wyszukaj osobę...")
+                nameInputField.id = "inputToSearchPeople"
+                nameInputField.setAttribute("onkeyup", "getSuggestedPeople()")
+                divForInputField.appendChild(nameInputField)
+
+                let titleOfSuggesionsDiv = document.getElementById("titleOfSuggesionsDiv")
+                titleOfSuggesionsDiv.innerText ="Proponowani ludzie"
+
+                let titleOfChosenPeople = document.getElementById("titleOfChosen")
+                titleOfChosenPeople.innerText = "Wybrani ludzie"
+            }
+        async function getLeftMenu() {
+                let leftMenu = document.getElementsByClassName("left-menu")[0]
+                const arrrayOfButtons = await fetch("http://localhost:3000/left_menu")
+                const jsonOfButtons = await arrrayOfButtons.json()
+                for (button of jsonOfButtons) {
+                    let newButton = document.createElement("div")
+                    newButton.setAttribute("class", "left_option")
+                    newButton.setAttribute("id", button.id)
+                    newButton.innerText = button.text
+                    if (button.hasOwnProperty("onclick")) {
+                        newButton.setAttribute("onclick", button.onclick)
+                        leftMenu.appendChild(newButton)
+                    }
+                    if (button.hasOwnProperty("href")) {
+                        let encapsulatingA = document.createElement("a")
+                        encapsulatingA.setAttribute("href", button.href)
+                        leftMenu.appendChild(encapsulatingA)
+                        encapsulatingA.appendChild(newButton)
+                    }
+                    
+                }
+        }
+        getLeftMenu()
+        function clearMainContent() {
+                let mainContentDiv = document.getElementById("main_content")
+                mainContentDiv.innerHTML = ""
+            }
+        async function addVisit() {
+            const dateOfVisit = document.getElementById("visitDateInputField").value
+            const decriptionOfVisit = document.getElementById("visitDescriptionInput").value
+            let duration = document.getElementById("visitDurationInputField"). value
+            const stringToSend = encodeURI(decriptionOfVisit)
+            if (duration == "") {
+                duration = 1
+            }
+            const addedMeetingRequest = await fetch(`http://localhost:3000/add_visit?date=${dateOfVisit}&description=${stringToSend}&duration=${duration}`, {method: "POST"})
+            const encapsulatedVisitId = await getOwnVisitId(dateOfVisit, duration, stringToSend)
+            const idOfAddedMeeting = encapsulatedVisitId[0]["visit_id"]
+            createHumanSearch()
+        }
+        async function getOwnVisitId(dateOfVisit, duration, description) {
+            const idOfMeeting = await fetch(`http://localhost:3000/get_visit_id?date=${dateOfVisit}&description=${description}&duration=${duration}`)
+            const encapsulatedVisitId = await idOfMeeting.json()
+            console.log(encapsulatedVisitId)
+            return encapsulatedVisitId
+        }
+        </script>
+    </body>
+</html>
