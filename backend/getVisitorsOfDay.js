@@ -11,7 +11,7 @@ const pool = mysql.createPool({
 }).promise()
 
 async function getVisitorsOfTheDay() {
-    const myRequest = "SELECT visits.visit_date, visits.visit_duration, visit_guest.guest_id FROM visit_guest JOIN visits ON visits.visit_id = visit_guest.visit_id"
+    const myRequest = "SELECT visits.visit_date, visits.title_afte_hover, visits.visit_duration, visit_guest.guest_id FROM visit_guest JOIN visits ON visits.visit_id = visit_guest.visit_id"
     const [ requestedData ] = await pool.query(myRequest)
     let returnedJson = {}
     for (let i = 0; i < requestedData.length; i++) {
