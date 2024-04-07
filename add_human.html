@@ -12,6 +12,9 @@
         <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
     </head>
     <body>
+        <header>
+            Baza danych spotkań
+        </header>
         <div class="container">
             <nav class="left-menu">
                 
@@ -28,7 +31,7 @@
                         <div><label><input type="radio" name="gender" value="F">Kobieta</label></div>
                         <h3>Klika</h3>
                         <div id="cliqueInputDiv">
-                            <input type="text" id="cliqueInputField" onkeyup="getSuggestedCliques()" placeholder="Skąd znasz?">
+                            <input type="text" id="cliqueInputField" onkeyup="suggestCliques()" placeholder="Skąd znasz?">
                             <div id="cliqueSuggestionsContainer"></div>
                         </div>
                         <h3>Mieszka w...</h3>
@@ -83,6 +86,8 @@
                 const nameToSend = document.getElementById("nameInputField").value
                 const surnameToSend = document.getElementById("surnameInputField").value
                 const cityToSend = document.getElementById("cityInputField").value
+                const addedImage = document.getElementById("humanPhotoInput").files[0].name
+                console.log(addedImage)
                 const fbLinkToSend = document.getElementById("fbInputField").value
                 const cliqueNumber = document.getElementById("cliqueInputField").value
                 const gender = document.querySelector('input[name="gender"]:checked').value
@@ -96,8 +101,7 @@
                 const insertRequest = await fetch(`http://localhost:3000/add_human?name=${nameToSend}&surname=${surnameToSend}&city=${cityToSend}&fb=${fbLinkToSend}&clique=${cliqueNumber}&gender=${gender}`, {method: "POST"})
                 const idOfAddedHuman = await fetch(`http://localhost:3000/get_id?name=${nameToSend}&surname=${surnameToSend}&fb_link=${fbLinkToSend}`)
                 const obtainedData = await idOfAddedHuman.json()
-                alert(`Spróbowałem dodać osob o personaliach ${nameToSend} ${surnameToSend} do bazy danych.`)
-                console.log(obtainedData[0]["ID"])
+                alert(`Dodałem tę osobę. Jej ID jest równe ${obtainedData[0]["ID"]}.`)
                 document.getElementById("nameInputField").value = ""
                 document.getElementById("surnameInputField").value = ""
                 document.getElementById("cityInputField").value = ""
@@ -106,6 +110,8 @@
             }
             function suggestCliques() {
                 const currentValue = document.getElementById("cliqueInputField").value
+                console.log(currentValue)
+
             }
 
         </script>
