@@ -94,6 +94,7 @@
                     const idOfSlider = checkedDateId + "_slider"
                     curSlider.setAttribute("id", idOfSlider)
                     modifiedDiv.appendChild(curSlider)
+                    modifiedDiv.setAttribute("title", datePhotosJson[dateOfVisit])
                     modifiedDiv.style['background-color'] = "#90EE90"
                     const todaysDate = new Date()
                     const divDate = new Date(dateOfVisit)
