@@ -7,6 +7,7 @@ const getPeople = require('./get_people.js')
 const addVisit = require('./addVisit.js')
 const getVisitId = require('./getVisitId.js')
 const getLeftMenu = require('./sendLeftMenu.js')
+const getAllMeetingsDates = require('./getAllMeetingsDates.js')
 const getNumberOfVisists = require('./getNumberOfVisits.js')
 const getAllCliques = require('./getAllCliques.js')
 const peopleFromString = require('./selectPeopleFromSubstring.js')
@@ -53,6 +54,11 @@ app.get('/weddings', async (req, res) =>{
 app.get('/left_menu', async (req, res) => {
     const jsonOfButtons = await getLeftMenu()
     res.send(JSON.stringify(jsonOfButtons))
+})
+
+app.get('/all_meetings_dates', async (req, res) => {
+    const allDates = await getAllMeetingsDates()
+    res.send(allDates)
 })
 app.get('/all_cliques', async (req, res) => {
     const arrayOfCliques = await getAllCliques()
@@ -132,6 +138,14 @@ app.post('/add_visit', async (req,res) => {
     const postRequest = addVisit(date, duration, description)
     //res.send(postRequest.status)
     res.send(postRequest)
+})
+app.get('/get_meeting_id', async (res, req) => {
+    const date = req.query.date
+    const duration = req.query.duration
+    const description = req.query.description
+    console.log(req.query)
+    const getVIsitIdResponse = await getVisitId(date, duration, description)
+    res.send(getVIsitIdResponse)
 })
 app.get('/people_from_substring', async (req, res) => {
     const deliveredString = req.query.substring

@@ -20,7 +20,7 @@
                 
             </nav>
             <main class="content" id="main_content">
-                <form action="javascript:;" onsubmit=" addVisit( this ) " enctype="multipart/form-data">
+                <form action="javascript:;" enctype="multipart/form-data">
                     <fieldset>
                         <h3>Data</h3>
                         <input type="date" id="visitDateInputField"></br></br>
@@ -28,7 +28,7 @@
                         <input type="text" id="visitDurationInputField" placeholder="Podaj w dniach (liczbowo) długość trwania wizyty"></br></br>
                         <h3>Krótki opis wizyty</h3>
                         <input type="text" id="visitDescriptionInput"></br></br>
-                        <input type="submit" value="Dodaj wizytę!"></br></br>
+                        <input type="submit" onclick="addVisit()" value="Dodaj wizytę!"></br></br>
                         <h3 id="titleOfNameInputField"></h3></br></br>
                         <div id="placeForNameInput"></div>
                         <h3 id="titleOfSuggesionsDiv"></h3></br></br>
@@ -102,7 +102,7 @@
                     closingDiv.innerHTML = "x"
                     closingDiv.setAttribute("onclick", `removeDiv("${chosenPersonTileId}")`)
                     closingDiv.setAttribute("class", "closing_div")
-                    createdDiv.appendChild(closingDiv)
+                    createdDiv.prepend(closingDiv)
                     if (!document.getElementById("accept_people_button")) {
                         let divForAcceptButton = document.getElementById("div_for_accept_button")
                         let createdButton = document.createElement("button")
@@ -171,7 +171,7 @@
         async function addVisit() {
             const dateOfVisit = document.getElementById("visitDateInputField").value
             const decriptionOfVisit = document.getElementById("visitDescriptionInput").value
-            let duration = document.getElementById("visitDurationInputField"). value
+            let duration = document.getElementById("visitDurationInputField").value
             const stringToSend = encodeURI(decriptionOfVisit)
             if (duration == "") {
                 duration = 1
@@ -186,6 +186,28 @@
             const encapsulatedVisitId = await idOfMeeting.json()
             console.log(encapsulatedVisitId)
             return encapsulatedVisitId
+        }
+        async function addPeopleToMeeting() {
+            const dateOfVisit = document.getElementById("visitDateInputField").value
+            const duration = document.getElementById("visitDurationInputField").value
+            const decriptionOfVisit = document.getElementById("visitDescriptionInput").value
+            const stringToSend = encodeURI(decriptionOfVisit)
+            const getMeetingIdRequest = await getOwnVisitId(dateOfVisit, duration, stringToSend)
+            //const encapsulatedVisitId = await getMeetingIdRequest.json()
+            const idOfAddedMeeting = getMeetingIdRequest[0]["visit_id"]
+            const arrayOfAllChosenPeople = []
+            const allChosenPeopleDivs = document.getElementsByClassName("chosen_person_tile")
+            console.log(allChosenPeopleDivs)
+            for (humanTile of allChosenPeopleDivs) {
+                arrayOfAllChosenPeople.push(humanTile.getAttribute("id").replace("-chosen", ""))
+            }
+            for (let i=0; i<arrayOfAllChosenPeople.length; i++) {
+                const humanId = arrayOfAllChosenPeople[i]
+                addSingleGuest(humanId, idOfAddedMeeting)
+            }
+        }
+        async function addSingleGuest(humanId, visitId) {
+            const postReq = await fetch(`http://localhost:3000/add_guest_to_visit?visit_id=${visitId}&guest_id=${humanId}`, {method: "POST"})
         }
         </script>
     </body>
