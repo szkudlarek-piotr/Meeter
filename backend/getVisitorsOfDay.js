@@ -1,8 +1,9 @@
 var mysql      = require('mysql2');
 const path = require('path')
+const fs = require('fs')
 var dotenv = require('dotenv');
 const datetime = require('date-and-time')
-//const { request } = require('http');
+
 dotenv.config()
 const pool = mysql.createPool({
     host     : process.env.host,
@@ -22,7 +23,10 @@ async function getVisitorsOfTheDay() {
         const dateOfVisitStart = datetime.addHours(timeFromDatabase,13)
         const guestId = checkedRecord.guest_id.toString()
         const visitDuration = checkedRecord.visit_duration
-        const pathToHumanPhoto = path.join(__dirname, "photos", guestId + ".jpg")
+        let pathToHumanPhoto = path.join(__dirname, "photos", guestId + ".jpg")
+        if (!fs.existsSync(pathToHumanPhoto)) {
+            pathToHumanPhoto = path.join(__dirname, "photos", "anonymous.jpg")
+        }
         if (!returnedJson.hasOwnProperty(dateOfVisitStart)) {
             returnedJson[dateOfVisitStart] = [pathToHumanPhoto]
         }
