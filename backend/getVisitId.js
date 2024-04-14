@@ -14,5 +14,4 @@ async function getVisitId(dateFromRequest, duration, description) {
     const [ idOfMeeting ] = await pool.query(writtenRequest, [dateInProperFormat, duration,  description])
     return idOfMeeting
 }
-//getVisitId("2024-04-25", "1", ":Knskdjn")
 module.exports = getVisitId
