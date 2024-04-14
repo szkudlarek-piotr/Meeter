@@ -32,7 +32,6 @@ async function getAllMeetings() {
             jsonOfDays[newTime]["photos"].push(`${photoDir}`)
         }
     }
-    console.log(jsonOfDays)
     return jsonOfDays
 }
 module.exports = getAllMeetings
