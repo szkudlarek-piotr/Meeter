@@ -177,7 +177,7 @@
                     closingDiv.innerHTML = "x"
                     closingDiv.setAttribute("onclick", `removeDiv("${chosenPersonTileId}")`)
                     closingDiv.setAttribute("class", "closing_div")
-                    createdDiv.appendChild(closingDiv)
+                    createdDiv.prepend(closingDiv)
                     if (!document.getElementById("accept_people_button")) {
                         let divForAcceptButton = document.getElementById("divForAcceptButton")
                         let createdButton = document.createElement("button")
