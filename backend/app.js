@@ -78,9 +78,9 @@ app.get('/add_humans_to_clique', async (req, res) => {
     res.send(JSON.stringify(cliqueNamePhotoDir))
 })
 
-app.get('/add_photos_to_calendar', async (req, res) => {
-    const daysPhotosJson = await getVisitorsOfTheDay()
-    res.send(JSON.stringify(daysPhotosJson))
+app.get('/add_visits_to_calendar', async (req, res) => {
+    const daysVisitsJson = await getVisitors()
+    res.send(JSON.stringify(daysVisitsJson))
 })
 app.post ('/add_guest_to_visit', async (req, res) => {
     const idOfGuest = req.query.guest_id
