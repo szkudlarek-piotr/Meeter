@@ -77,7 +77,7 @@
         makeCalendar()
         async function getPhotosJson() {
                 const monthJson = {0: "Styczeń", 1:"Luty", 2: "Marzec", 3: "Kwiecień", 4: "Maj", 5: "Czerwiec", 6:"Lipiec", 7: "Sierpień", 8:"Wrzesień", 9:"Październik", 10: "Listopad", 11:"Grudzień"}
-                const addPhotosReq = await fetch("http://localhost:3000/add_photos_to_calendar")
+                const addPhotosReq = await fetch("http://localhost:3000/add_visits_to_calendar")
                 const datePhotosJson = await addPhotosReq.json()
                 const allDaysDivs = document.getElementsByClassName("dayRectangle")
                 const datesOfVisists = Object.keys(datePhotosJson)
