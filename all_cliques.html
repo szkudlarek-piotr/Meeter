@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Meeter - portal dla wszystkich oprócz Amerykanów</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <header>
+            Baza danych spotkań
+        </header>
+        <div class="container">
+            <nav class="left-menu">
+            </nav>
+            <main class="content" id="main_content">
+                <!-- Main content goes here -->
+            </main>
+            <aside class="right-menu">
+                <!-- Right menu content goes here -->
+            </aside>
+        </div>
+        <script>
+            async function getLeftMenu() {
+                let leftMenu = document.getElementsByClassName("left-menu")[0]
+                const arrrayOfButtons = await fetch("http://localhost:3000/left_menu")
+                const jsonOfButtons = await arrrayOfButtons.json()
+                for (button of jsonOfButtons) {
+                    let newButton = document.createElement("div")
+                    newButton.setAttribute("class", "left_option")
+                    newButton.setAttribute("id", button.id)
+                    newButton.innerText = button.text
+                    if (button.hasOwnProperty("onclick")) {
+                        newButton.setAttribute("onclick", button.onclick)
+                        leftMenu.appendChild(newButton)
+                    }
+                    if (button.hasOwnProperty("href")) {
+                        let encapsulatingA = document.createElement("a")
+                        encapsulatingA.setAttribute("href", button.href)
+                        leftMenu.appendChild(encapsulatingA)
+                        encapsulatingA.appendChild(newButton)
+                    }
+                    
+                }
+        }
+        getLeftMenu()
+        menuShowAllCliques()
+        async function menuShowAllCliques() {
+                const local_fetch = await fetch("http://localhost:3000/all_cliques")
+                const cliques_json = await local_fetch.json()
+                const numberOfCliques = cliques_json.length
+                for (let i = 0; i < numberOfCliques; i++) {
+                    const analzyedClique = cliques_json[i]
+                    createCliqueDiv(analzyedClique)
+                }
+                addHumansToClique()
+            }
+ 
+            function createCliqueDiv(analzyedCliqueJson) {
+                let main_content = document.getElementById("main_content")
+                
+                let newCliqueDiv = document.createElement("div")
+                newCliqueDiv.setAttribute("class", "clique_div")
+                main_content.appendChild(newCliqueDiv)
+                
+                let photoDiv = document.createElement("img")
+                photoDiv.setAttribute("class", "clique_photo")
+                photoDiv.setAttribute("src", analzyedCliqueJson["photoPath"])
+                newCliqueDiv.appendChild(photoDiv)
+
+                let nameDiv = document.createElement("div")
+                nameDiv.setAttribute("class", "nameDiv")
+                const nameOfClique = analzyedCliqueJson["known_from"]
+                newCliqueDiv.setAttribute("nameOfClique", nameOfClique)
+                nameDiv.innerHTML = nameOfClique
+                newCliqueDiv.appendChild(nameDiv)
+                let placeForHumanPhotos = document.createElement("div")
+                placeForHumanPhotos.setAttribute("class", "placeForHumanPhotos")
+                newCliqueDiv.appendChild(placeForHumanPhotos)
+            }
+            async function addHumansToClique() {
+                const addHumansReq = await fetch("http://localhost:3000/add_humans_to_clique")
+                const humanPhotoCliqueNameJson = await addHumansReq.json()
+                const numberOfPeople = humanPhotoCliqueNameJson.length
+                let all_cliques = document.getElementsByClassName("clique_div")
+                for (let i = 0; i < numberOfPeople; i++) {
+                    const analyzedRecord = humanPhotoCliqueNameJson[i]
+                    const nameOfCheckedClique = analyzedRecord.known_from
+                    const photoDir = analyzedRecord.photoDir
+                    const nameOfGuy = analyzedRecord.nameAndSurname
+                    for (let j = 0; j < all_cliques.length; j++) {
+                        let analyzedElement = all_cliques[j]
+                        let placeForHumanPhotos = analyzedElement.getElementsByClassName("placeForHumanPhotos")
+                        const nameOnDIv = analyzedElement.getAttribute("nameOfClique")
+                         if (nameOnDIv == nameOfCheckedClique) {
+                            let aForPhoto = document.createElement("a")
+                            aForPhoto.setAttribute("href", analyzedRecord.fb_link)
+                            aForPhoto.setAttribute("target", "_blank")
+                            let photoToAdd = document.createElement("img")
+                            photoToAdd.setAttribute("src", photoDir)
+                            photoToAdd.setAttribute("class", "humanInClique")
+                            photoToAdd.setAttribute("title", nameOfGuy)
+                            placeForHumanPhotos[0].appendChild(aForPhoto)
+                            aForPhoto.appendChild(photoToAdd)
+                         }
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>
