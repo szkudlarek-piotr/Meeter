@@ -2,7 +2,6 @@ var mysql      = require('mysql2');
 const path = require('path')
 const fs = require('fs')
 var dotenv = require('dotenv');
-const { request } = require('http');
 dotenv.config()
 const pool = mysql.createPool({
     host     : process.env.host,
@@ -27,5 +26,4 @@ async function getAllCliques() {
     }
     return returnedArray
 }
-//getAllCliques()
 module.exports = getAllCliques
