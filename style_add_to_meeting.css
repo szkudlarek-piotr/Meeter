@@ -113,12 +113,23 @@ a {
     margin-top: 15px;
     margin-bottom: 15px;
 }
+header {
+    width: 100%;
+    font-size: 80px;
+    background-color: black;
+    color: #fff;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding: 10px;
+    text-align: center;
+    min-height: 100px;
+}
 .closing_div {
     font-size: 10px;
     font-weight: 600;
     width: 12px;
-    left: 93%;
-    bottom: 93%;
+    left: 92%;
+    top: 15px;
     border-radius: 8px;
     position: relative;
     border: 1px solid black;
