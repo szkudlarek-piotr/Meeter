@@ -18,5 +18,4 @@ async function getNumberOfVisists() {
     }
     return arrayWithoutMe
 }
-//getNumberOfVisists()
 module.exports = getNumberOfVisists
