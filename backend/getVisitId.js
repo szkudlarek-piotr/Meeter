@@ -12,7 +12,6 @@ async function getVisitId(dateFromRequest, duration, description) {
     const modifiedTime = datetime.addHours(dateInProperFormat, 12)
     const writtenRequest = "SELECT visit_id FROM visits WHERE DATE(visit_date) = DATE(?) AND visit_duration = ? AND title_afte_hover = ?"
     const [ idOfMeeting ] = await pool.query(writtenRequest, [dateInProperFormat, duration,  description])
-    //console.log(writtenRequest)
     return idOfMeeting
 }
 //getVisitId("2024-04-25", "1", ":Knskdjn")
