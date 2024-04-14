@@ -12,7 +12,6 @@ const pool = mysql.createPool({
 async function addMeeting(date, duration, description) {
     let dateInProperFormat = new Date(date)
     const realDate = datetime.addHours(dateInProperFormat, 12)
-    console.log(realDate)
     const postRequest = pool.query("INSERT INTO `visits` (`visit_id`, `visit_date`, `visit_duration`, `title_afte_hover`) VALUES (NULL, ?, ?, ?)", [date, duration, description])
 }
 module.exports = addMeeting
