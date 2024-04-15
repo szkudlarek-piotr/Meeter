@@ -3,4 +3,4 @@ backend/photos/
 backend/cliques_photos/
 backend/.env
 backend/trips
-backend/functionalPhotos
+backend/functionalPhotos/

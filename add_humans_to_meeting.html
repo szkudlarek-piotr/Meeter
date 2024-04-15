@@ -93,6 +93,11 @@
                 let suggestedPeopleContainer = document.getElementById("place_for_suggested_people")
                 suggestedPeopleContainer.innerHTML = ""
             }
+            async function paintMeetingsDates() {
+                let datepicker = document.getElementById("dateInputField")
+                let meetingsDates = await fetch("http://localhost:3000/all_meetings_dates")
+                const datesJson = meetingsDates.json()
+            }
             async function suggestPeople() {
                 let suggestedPeopleContainer = document.getElementById("place_for_suggested_people")
                 clearPeopleSuggestions()
@@ -211,7 +216,6 @@
                     leftMenu.appendChild(encapsulatingA)
                     encapsulatingA.appendChild(newButton)
                 }
-                
             }
         }
         getLeftMenu()

@@ -4,6 +4,9 @@ app = express()
 app.use(cors())
 
 const getPeople = require('./get_people.js')
+var multer = require('multer')
+var upload = multer({ dest: 'photos/'})
+const addGuestToVisit = require('./addGuestToVisit.js')
 const addVisit = require('./addVisit.js')
 const getVisitId = require('./getVisitId.js')
 const getLeftMenu = require('./sendLeftMenu.js')
@@ -13,7 +16,7 @@ const getAllCliques = require('./getAllCliques.js')
 const peopleFromString = require('./selectPeopleFromSubstring.js')
 const getHumanClique = require('./addCliquesToHumans.js')
 const getHumanFromClique = require('./addHumansToClique.js')
-const getVisitorsOfTheDay = require('./getVisitorsOfDay.js')
+const getVisitors = require('./getVisitorsOfDay.js')
 const getAllWeddings = require('./getAllWeddings.js')
 const getSuggestedCliques = require('./getSuggestestedCliques.js')
 const getMeetings = require('./getAllMeetings.js')
@@ -22,6 +25,7 @@ const addMeeting = require('./addMeeting.js')
 const getIdFromIdentifiers = require('./getIdFromIdentifiers.js')
 const getMeetingId = require('./getMeetingId.js')
 const addPersonToMeeting = require('./addPersonToMeting.js')
+const uploadHumanPhoto = require('./uploadHumanPhoto.js')
 app.use((err,req,res,next) => {
     console.error(err.stack)
     res.status(500).send('something broke')
@@ -38,7 +42,6 @@ app.get('/visits', async (req, res) => {
 })
 
 app.get('/get_visit_id', async (req, res) => {
-    console.log(req.query)
     const date = req.query.date
     const duration = req.query.duration
     const description = req.query.description
@@ -82,7 +85,7 @@ app.get('/add_visits_to_calendar', async (req, res) => {
     const daysVisitsJson = await getVisitors()
     res.send(JSON.stringify(daysVisitsJson))
 })
-app.post ('/add_guest_to_visit', async (req, res) => {
+app.post('/add_guest_to_visit', async (req, res) => {
     const idOfGuest = req.query.guest_id
     const idOfVisit = req.query.visit_id
     await addGuestToVisit(idOfVisit, idOfGuest)
@@ -90,8 +93,6 @@ app.post ('/add_guest_to_visit', async (req, res) => {
 app.post('/add_human_to_meeting', async (req, res) => {
     const meeting = req.query.meeting
     const human = req.query.human
-    console.log(meeting)
-    console.log(human)
     addPersonToMeeting(meeting, human)
 })
 
@@ -119,7 +120,12 @@ app.get('/meeting_id_from_date', async (req, res) => {
     const idInTable = await getMeetingId(dateToSend)
     res.send(idInTable)
 })
-
+app.post ('/upload_human_photo', upload.single('photo'), (req, res) => {
+    const file = req.file
+    console.log(file)
+    const description = req.body.description
+    res.send("OK")
+})
 app.post('/add_human', async (req, res) => {
     const nameToSave = req.query.name
     const surnameToSave = req.query.surname
@@ -143,7 +149,6 @@ app.get('/get_meeting_id', async (res, req) => {
     const date = req.query.date
     const duration = req.query.duration
     const description = req.query.description
-    console.log(req.query)
     const getVIsitIdResponse = await getVisitId(date, duration, description)
     res.send(getVIsitIdResponse)
 })
