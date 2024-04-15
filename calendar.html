@@ -29,7 +29,6 @@
         function makeCalendar() {
             const startDay = new Date("12/01/2023")
             const lastDay = new Date("12/31/2024")
-            //let currentDay = new Date(startDay)
             let daysCounter = 0
             const monthJson = {0: "Styczeń", 1:"Luty", 2: "Marzec", 3: "Kwiecień", 4: "Maj", 5: "Czerwiec", 6:"Lipiec", 7: "Sierpień", 8:"Wrzesień", 9:"Październik", 10: "Listopad", 11:"Grudzień"}
             const weekdaysArray = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]
@@ -163,7 +162,6 @@
                 const jsonOfMeeting = meetingsJson[record]
                 let modifiedDiv = document.getElementById(dateId)
                 modifiedDiv.innerHTML = ""
-                modifiedDiv.setAttribute("onclick", `showMeetingDetails(${record})`)
                 let createdSlider = document.createElement("div")
                 createdSlider.setAttribute("class", "slider")
                 const sliderId = dateId + "_slider"
@@ -196,12 +194,6 @@
                 photoSlider()
             }
     }
-        async function showMeetingDetails(dateOfMeeting) {
-            let modalForInfo = document.createElement("div")
-            modalForInfo.class = "meetingModal"
-            modalForInfo.setAttribute("id", "meetingModal")
-            
-        }
         async function getLeftMenu() {
             let leftMenu = document.getElementsByClassName("left-menu")[0]
             const arrrayOfButtons = await fetch("http://localhost:3000/left_menu")
