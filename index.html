@@ -47,63 +47,8 @@
                     
                 }
         }
-        getLeftMenu()
-            function validateVisitForm() {
-                let content_box = document.getElementById("main_content")
-                let numberOfGuests = document.getElementById("guestsNumber").value
-                let numberOfDays = document.getElementById("daysNumber").value
-                var humanInputFields = document.getElementById('guests_inputs');
-                if (humanInputFields == null)
-                {
-                    var humanInputFields = document.createElement("div")
-                    humanInputFields.setAttribute("class", "humanInputFields")
-                    humanInputFields.setAttribute("id", "guests_inputs")
-                    content_box.appendChild(humanInputFields)
-                }
-                else {
-                    humanInputFields.innerHTML = ""
-                }
-                for (let i=0; i < numberOfGuests; i++) {
-                    let inputFieldID = `input_field_${i.toString()}`
-                    humanInputFields.innerHTML += `<input type="text" id=${inputFieldID}><br>`
-                }
-                humanInputFields.innerHTML += `<button type="button" onclick="confirmGuests()">Zatwierdź listę gości!</button>`
-            }
-
-            async function menuShowAllCliques() {
-                clearMainContent()
-                const local_fetch = await fetch("http://localhost:3000/all_cliques")
-                const cliques_json = await local_fetch.json()
-                const numberOfCliques = cliques_json.length
-                for (let i = 0; i < numberOfCliques; i++) {
-                    const analzyedClique = cliques_json[i]
-                    createCliqueDiv(analzyedClique)
-                }
-                addHumansToClique()
-            }
- 
-            function createCliqueDiv(analzyedCliqueJson) {
-                let main_content = document.getElementById("main_content")
-                
-                let newCliqueDiv = document.createElement("div")
-                newCliqueDiv.setAttribute("class", "clique_div")
-                main_content.appendChild(newCliqueDiv)
-                
-                let photoDiv = document.createElement("img")
-                photoDiv.setAttribute("class", "clique_photo")
-                photoDiv.setAttribute("src", analzyedCliqueJson["photoPath"])
-                newCliqueDiv.appendChild(photoDiv)
-
-                let nameDiv = document.createElement("div")
-                nameDiv.setAttribute("class", "nameDiv")
-                const nameOfClique = analzyedCliqueJson["known_from"]
-                newCliqueDiv.setAttribute("nameOfClique", nameOfClique)
-                nameDiv.innerHTML = nameOfClique
-                newCliqueDiv.appendChild(nameDiv)
-                let placeForHumanPhotos = document.createElement("div")
-                placeForHumanPhotos.setAttribute("class", "placeForHumanPhotos")
-                newCliqueDiv.appendChild(placeForHumanPhotos)
-            }
+            getLeftMenu()
+            
             function clearMainContent() {
                 let mainContentDiv = document.getElementById("main_content")
                 mainContentDiv.innerHTML = ""
@@ -167,36 +112,6 @@
                     }
                 }
             }
-
-            async function addHumansToClique() {
-                const addHumansReq = await fetch("http://localhost:3000/add_humans_to_clique")
-                const humanPhotoCliqueNameJson = await addHumansReq.json()
-                const numberOfPeople = humanPhotoCliqueNameJson.length
-                let all_cliques = document.getElementsByClassName("clique_div")
-                for (let i = 0; i < numberOfPeople; i++) {
-                    const analyzedRecord = humanPhotoCliqueNameJson[i]
-                    const nameOfCheckedClique = analyzedRecord.known_from
-                    const photoDir = analyzedRecord.photoDir
-                    const nameOfGuy = analyzedRecord.nameAndSurname
-                    for (let j = 0; j < all_cliques.length; j++) {
-                        let analyzedElement = all_cliques[j]
-                        let placeForHumanPhotos = analyzedElement.getElementsByClassName("placeForHumanPhotos")
-                        const nameOnDIv = analyzedElement.getAttribute("nameOfClique")
-                         if (nameOnDIv == nameOfCheckedClique) {
-                            let aForPhoto = document.createElement("a")
-                            aForPhoto.setAttribute("href", analyzedRecord.fb_link)
-                            aForPhoto.setAttribute("target", "_blank")
-                            let photoToAdd = document.createElement("img")
-                            photoToAdd.setAttribute("src", photoDir)
-                            photoToAdd.setAttribute("class", "humanInClique")
-                            photoToAdd.setAttribute("title", nameOfGuy)
-                            placeForHumanPhotos[0].appendChild(aForPhoto)
-                            aForPhoto.appendChild(photoToAdd)
-                         }
-                    }
-                }
-            }
-
         </script>
     </body>
 </html>
