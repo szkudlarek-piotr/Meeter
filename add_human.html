@@ -86,10 +86,8 @@
                 const nameToSend = document.getElementById("nameInputField").value
                 const surnameToSend = document.getElementById("surnameInputField").value
                 const cityToSend = document.getElementById("cityInputField").value
-                const addedImage = document.getElementById("humanPhotoInput").files[0].name
-                console.log(addedImage)
                 const fbLinkToSend = document.getElementById("fbInputField").value
-                const cliqueNumber = document.getElementById("cliqueInputField").value
+                const cliqueNumber = document.getElementById("cliqueInputField").getAttribute("chosen_clique_id")
                 const gender = document.querySelector('input[name="gender"]:checked').value
                 let jsonToSend = {}
                 jsonToSend["name"] = nameToSend
@@ -108,12 +106,41 @@
                 document.getElementById("fbInputField").value = ""
                 document.getElementById("cliqueInputField").value = ""
             }
-            function suggestCliques() {
+            async function suggestCliques() {
+                clearSuggestionsDiv()
                 const currentValue = document.getElementById("cliqueInputField").value
-                console.log(currentValue)
-
+                let allSuggestionsDiv = document.getElementById("cliqueSuggestionsContainer")
+                if (currentValue.length >1) {
+                    const suggestedCliquesReq = await fetch(`http://localhost:3000/suggested_cliques?subs=${currentValue}`)
+                    const cliquesJson = await suggestedCliquesReq.json()
+                    for (clique of cliquesJson) {
+                        const idOfClique = clique["id"]
+                        const cliqueName = clique["known_from"]
+                        const cliquePhoto = clique["clique_photo"]
+                        let suggestionDiv = document.createElement("div")
+                        suggestionDiv.setAttribute("onclick", `choseClique("${idOfClique}", "${cliqueName}")`)
+                        suggestionDiv.setAttribute("class", "cliqueSuggestion")
+                        allSuggestionsDiv.appendChild(suggestionDiv)
+                        let suggestedCliqueName = document.createElement("div")
+                        suggestedCliqueName.setAttribute("class", "nameOfClique")
+                        suggestedCliqueName.innerText = cliqueName
+                        suggestionDiv.appendChild(suggestedCliqueName)
+                        let divForCliquePhoto = document.createElement("div")
+                        divForCliquePhoto.setAttribute("class", "photoOfClique")
+                        suggestionDiv.appendChild(divForCliquePhoto)
+                        let photoOfClique = document.createElement("img")
+                        photoOfClique.setAttribute("src", cliquePhoto)
+                        divForCliquePhoto.appendChild(photoOfClique)
+                    }
+                }
             }
-
+            function choseClique(idNumber, nameOfClique) {
+                let cliqueInputField = document.getElementById("cliqueInputField")
+                cliqueInputField.setAttribute("chosen_clique_id", idNumber.toString())
+                cliqueInputField.value = ""
+                cliqueInputField.setAttribute("placeholder", nameOfClique)
+                clearSuggestionsDiv()
+            }
         </script>
     </body>
 </html>
