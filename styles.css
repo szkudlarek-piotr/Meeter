@@ -239,11 +239,12 @@ a {
     left: 10%;
 }
 #cliqueInputDiv {
-    width: 80%;
+   margin-left: auto;
+   margin-right: auto;
 }
 
 .cliqueSuggestion {
-    height: 30px;
+    height: 36px;
     display: flex;
     flex-wrap: wrap;
     border-bottom: 1px dashed black;
@@ -253,11 +254,14 @@ a {
 }
 .cliqueSuggestion>.nameOfClique {
     font-size: 24px;
-    width:80%;
+    width:90%;
+    margin-left: 2%;
     text-align: left;
 }
 .cliqueSuggestion>.photoOfClique {
-    width: 20% !important;
+    height: 30px;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 .photoOfClique>img {
     height: 26px;
