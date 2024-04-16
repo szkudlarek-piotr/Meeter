@@ -115,7 +115,7 @@
                     const idOfSlider = checkedDateId + "_slider"
                     curSlider.setAttribute("id", idOfSlider)
                     modifiedDiv.appendChild(curSlider)
-                    modifiedDiv.setAttribute("title", datePhotosJson[dateOfVisit])
+                    modifiedDiv.setAttribute("title", datePhotosJson[dateOfVisit]["title"])
                     modifiedDiv.style['background-color'] = "#90EE90"
                     const todaysDate = new Date()
                     const divDate = new Date(dateOfVisit)
@@ -127,9 +127,10 @@
                         const opacityValue = 1 - fractionToSubstract
                         modifiedDiv.style["opacity"] = opacityValue
                     }
-                    const photosOfTheDay = datePhotosJson[dateOfVisit]
+                    const photosOfTheDay = datePhotosJson[dateOfVisit]["photos"]
+                    console.log(datePhotosJson[dateOfVisit])
                     let imgInGivenSlider = document.createElement("img")
-                    imgInGivenSlider.setAttribute("src", datePhotosJson[dateOfVisit][0])
+                    imgInGivenSlider.setAttribute("src", datePhotosJson[dateOfVisit]["photos"][0])
                     curSlider.appendChild(imgInGivenSlider)
                     function photoSlider() {
                         let index = 0

@@ -16,7 +16,7 @@ const getAllCliques = require('./getAllCliques.js')
 const peopleFromString = require('./selectPeopleFromSubstring.js')
 const getHumanClique = require('./addCliquesToHumans.js')
 const getHumanFromClique = require('./addHumansToClique.js')
-const getVisitors = require('./getVisitorsOfDay.js')
+const getVisitorsSecond = require('./getVisitorsOfDay2.js')
 const getAllWeddings = require('./getAllWeddings.js')
 const getSuggestedCliques = require('./getSuggestestedCliques.js')
 const getMeetings = require('./getAllMeetings.js')
@@ -82,7 +82,7 @@ app.get('/add_humans_to_clique', async (req, res) => {
 })
 
 app.get('/add_visits_to_calendar', async (req, res) => {
-    const daysVisitsJson = await getVisitors()
+    const daysVisitsJson = await getVisitorsSecond()
     res.send(JSON.stringify(daysVisitsJson))
 })
 app.post('/add_guest_to_visit', async (req, res) => {
