@@ -1,5 +1,5 @@
 function sendLeftMenu() {
-    const menuButtonsArray = [{"id":"mainPage","text": "Strona główna", "onclick": "showMainPage()"}, {"id":"addNewHuman","href": "add_human.html", "text": "Dodaj nowego człowieka"},
+    const menuButtonsArray = [{"id":"mainPage","text": "Strona główna", "href": "index.html"}, {"id":"addNewHuman","href": "add_human.html", "text": "Dodaj nowego człowieka"},
      {"id": "calendar","href": "calendar.html", "text": "Zobacz kalendarz"},
       {"id": "showAllCliques","href": "all_cliques.html", "text": "Pokaż wszystkie kliki"},
        {"id": "showAllPeople","href": "all_people.html", "text": "Zobacz wszystkich ludzi"}, 
