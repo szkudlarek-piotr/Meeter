@@ -21,6 +21,7 @@ const getAllWeddings = require('./getAllWeddings.js')
 const getSuggestedCliques = require('./getSuggestestedCliques.js')
 const getMeetings = require('./getAllMeetings.js')
 const addHuman = require('./addHuman.js')
+const meetingsNumber = require('./getNumberOfMeetings.js')
 const getEvents = require('./getEvents.js')
 const addMeeting = require('./addMeeting.js')
 const getIdFromIdentifiers = require('./getIdFromIdentifiers.js')
@@ -35,6 +36,11 @@ app.use((err,req,res,next) => {
 app.get("/people", async (req, res) => {
     const people = await getPeople()
     res.send(JSON.stringify(people))
+})
+
+app.get("/meetings-number", async (req, res) => {
+    const numbersOfMeetings = await meetingsNumber()
+    res.send(JSON.stringify(numbersOfMeetings))
 })
 
 app.get('/visits', async (req, res) => {
@@ -150,7 +156,7 @@ app.post('/add_visit', async (req,res) => {
     //res.send(postRequest.status)
     res.send(postRequest)
 })
-app.get('/get_meeting_id', async (res, req) => {
+app.get('/get_visit_id', async (res, req) => {
     const date = req.query.date
     const duration = req.query.duration
     const description = req.query.description
