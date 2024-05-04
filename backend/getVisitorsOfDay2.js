@@ -17,9 +17,7 @@ async function getVisitorsOfTheDay() {
     let returnedJson = {}
     for (let i = 0; i < requestedData.length; i++) {
         const checkedRecord = requestedData[i]
-        console.log(checkedRecord)
         const timeFromDatabase = checkedRecord.visit_date
-        //console.log(timeFromDatabase)
         //on to czyta jakby brał datę z UK, czyli wychodzi dzień wcześniej o 23
         const dateOfVisitStart = datetime.addHours(timeFromDatabase,13)
         const guestId = checkedRecord.guest_id.toString()
@@ -48,9 +46,6 @@ async function getVisitorsOfTheDay() {
             }
         }
     }
-    console.log(returnedJson)
     return returnedJson
-    //console.log(returnedJson)
 }
-//getVisitorsOfTheDay()
 module.exports = getVisitorsOfTheDay

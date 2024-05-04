@@ -54,7 +54,6 @@
                 if (stringToSearch.length > 1) {
                     const suggestedPeopleRequest = await fetch(`http://localhost:3000/people_from_substring?substring=${stringToSearch}`)
                     const jsonOfSuggestions = await suggestedPeopleRequest.json()
-                    console.log(jsonOfSuggestions)
                     for (person of jsonOfSuggestions) {
                         let suggestedPeopleContainer = document.getElementById("place_for_suggested_people")
                         let createdPersonTile = document.createElement("div")
@@ -192,9 +191,9 @@
             const duration = document.getElementById("visitDurationInputField").value
             const decriptionOfVisit = document.getElementById("visitDescriptionInput").value
             const stringToSend = encodeURI(decriptionOfVisit)
-            const getMeetingIdRequest = await getOwnVisitId(dateOfVisit, duration, stringToSend)
+            const getVisitIdRequest = await getOwnVisitId(dateOfVisit, duration, stringToSend)
             //const encapsulatedVisitId = await getMeetingIdRequest.json()
-            const idOfAddedMeeting = getMeetingIdRequest[0]["visit_id"]
+            const idOfAddedMeeting = getVisitIdRequest[0]["visit_id"]
             const arrayOfAllChosenPeople = []
             const allChosenPeopleDivs = document.getElementsByClassName("chosen_person_tile")
             console.log(allChosenPeopleDivs)
