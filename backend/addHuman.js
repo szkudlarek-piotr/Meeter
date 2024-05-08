@@ -9,6 +9,5 @@ const pool = mysql.createPool({
 
 async function addHuman(name, surname, gender, fbLink, city, clique_id) {
     await pool.query("INSERT INTO `party_people` (`ID`, `name`, `surname`, `lives_where`, `gender`, `klika_id`, `fb_link`) VALUES (NULL, ?, ?, ?, ?, ?, ?);", [name, surname, city, gender, clique_id, fbLink])
-    return `Skutecznie zapisano dane człowieka o personalizach ${name} ${surname}.`
 }
 module.exports = addHuman
