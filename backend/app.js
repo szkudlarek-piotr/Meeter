@@ -99,12 +99,44 @@ app.get('/add_visits_to_calendar', async (req, res) => {
 app.post('/add_guest_to_visit', async (req, res) => {
     const idOfGuest = req.query.guest_id
     const idOfVisit = req.query.visit_id
+    try {
     await addGuestToVisit(idOfVisit, idOfGuest)
+        res.status(200).send("Guest added succesfully.")
+    }
+    catch (error) {
+        if (error.code === 'ER_NO_REFERENCED_ROW') {
+            res.status(400).send("Visit with a given ID was not found.")
+        }
+        if (error.code === 'ER_NO_REFERENCED_ROW_2') {
+            res.status(400).send("Guest with a given ID was not found.")
+        }
+        else {
+            console.error(error)
+            res.status(50).send("Internal server error.")
+        }
+    }
+    
 })
 app.post('/add_human_to_meeting', async (req, res) => {
     const meeting = req.query.meeting
     const human = req.query.human
-    addPersonToMeeting(meeting, human)
+    try {
+        await addPersonToMeeting(meeting, human)
+        res.status(200).send("Human was succesfully added to a meeting")
+    }
+    catch (error) {
+        if (error.code === 'ER_NO_REFERENCED_ROW') {
+            res.status(400).send("Meeting with a given ID was not found.")
+        }
+        if (error.code === 'ER_NO_REFERENCED_ROW_2') {
+            res.status(400).send("Human with a given ID was not found.")
+        }
+        else {
+            console.error(error)
+            res.status(500).send("Internal server error.")
+        }
+    }
+    
 })
 
 app.get('/meetings', async (req, res) => {
@@ -144,8 +176,21 @@ app.post('/add_human', async (req, res) => {
     const cliqueToSave = req.query.clique
     const fbToSave = req.query.fb
     const cityToSave = req.query.city
+    try {
     const serverResonse = await addHuman(nameToSave,surnameToSave,genderToSave,fbToSave,cityToSave,cliqueToSave)
     res.send(serverResonse)
+    }
+    catch (error) {
+        if (error.code == "ER_NO_REFERENCED_ROW_2") {
+            res.status(400).send("Clique with a given ID was not found.")
+        }
+        else {
+            console.error(error)
+            res.status(500).send("Internal server error.")
+        }
+        
+    }
+
 })
 
 app.post('/add_visit', async (req,res) => {
