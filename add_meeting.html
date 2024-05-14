@@ -20,16 +20,22 @@
                 
             </nav>
             <main class="content" id="main_content">
-                <form action="javascript:;" onsubmit=" addMeeting( this ) " enctype="multipart/form-data">
+                <form action="javascript:;" enctype="multipart/form-data">
                     <fieldset>
-                        <h3>Miejsce spotkania</h3><br>
-                        <input type="text" id="meetingPlaceInputField" placeholder="Miejsce spotkania">
                         <h3>Data</h3>
                         <input type="date" id="meetingDateInputField"></br></br>
+                        <h3>Miejsce spotkania</h3>
+                        <input type="text" id="meetingPlaceInputField" placeholder="Podaj miejsce spotkania"></br></br>
                         <h3>Krótki opis spotkania</h3>
                         <input type="text" id="meetingDescriptionInput"></br></br>
-                        <input type="submit" value="Dodaj spotkanie!"></br></br>
-
+                        <input type="submit" onclick="createHumanSearch()" value="Dodaj spotkanie!"></br></br>
+                        <h3 id="titleOfNameInputField"></h3></br></br>
+                        <div id="placeForNameInput"></div>
+                        <h3 id="titleOfSuggesionsDiv"></h3></br></br>
+                        <div id="place_for_suggested_people"></div>
+                        <h3 id="titleOfChosen"></h3></br></br>
+                        <div id="place_for_chosen_people"></div>
+                        <div id="div_for_accept_button"></div>
                     </fieldset>
                 </form>
             </main>
@@ -72,6 +78,137 @@
                 const stringToSend = encodeURI(decriptionOfMeeting)
                 const addedMeetingRequest = await fetch(`http://localhost:3000/add_meeting?date=${dateOfMeeting}&place=${placeOfMeeting}&description=${stringToSend}`, {method: "POST"})
             }
+            function createHumanSearch() {
+                const divForInputTitle = document.getElementById("titleOfNameInputField")
+                divForInputTitle.innerText = "Wpisz imię lub nazwisko osoby, którą chcesz dodać"
+                
+                const divForInputField = document.getElementById("placeForNameInput")
+                let nameInputField = document.createElement("input")
+                nameInputField.type = "text"
+                nameInputField.setAttribute("placeholder", "Wyszukaj osobę...")
+                nameInputField.id = "inputToSearchPeople"
+                nameInputField.setAttribute("onkeyup", "getSuggestedPeople()")
+                divForInputField.appendChild(nameInputField)
+
+                let titleOfSuggesionsDiv = document.getElementById("titleOfSuggesionsDiv")
+                titleOfSuggesionsDiv.innerText ="Proponowani ludzie"
+
+                let titleOfChosenPeople = document.getElementById("titleOfChosen")
+                titleOfChosenPeople.innerText = "Wybrani ludzie"
+            }
+            async function addMeeting() {
+                const dateOfVisit = document.getElementById("meetingDateInputField").value
+                const decriptionOfVisit = document.getElementById("meetingDescriptionInput").value
+                const meetingPlace = document.getElementById("meetingPlaceInputField").value
+                const stringToSend = encodeURI(decriptionOfVisit)
+                const addedMeetingRequest = await fetch(`http://localhost:3000/add_meeting?date=${dateOfVisit}&description=${stringToSend}&place=${meetingPlace}`, {method: "POST"})
+                const encapsulatedMeetingId = await getOwnMeetingId(dateOfVisit)
+                const idOfAddedMeeting = encapsulatedMeetingId[0]
+        }
+        async function getOwnMeetingId(dateOfVisit) {
+            const idOfMeeting = await fetch(`http://localhost:3000/meeting_id_from_date?date=${dateOfVisit}`)
+            const encapsulatedMeetingId = await idOfMeeting.json()
+            console.log(encapsulatedMeetingId)
+            return encapsulatedMeetingId
+        }
+        async function getSuggestedPeople() {
+                clearSuggestions()
+                const stringToSearch = document.getElementById("inputToSearchPeople").value
+                if (stringToSearch.length > 1) {
+                    const suggestedPeopleRequest = await fetch(`http://localhost:3000/people_from_substring?substring=${stringToSearch}`)
+                    const jsonOfSuggestions = await suggestedPeopleRequest.json()
+                    console.log(jsonOfSuggestions)
+                    for (person of jsonOfSuggestions) {
+                        let suggestedPeopleContainer = document.getElementById("place_for_suggested_people")
+                        let createdPersonTile = document.createElement("div")
+                        createdPersonTile.setAttribute("class", "person_tile")
+                        createdPersonTile.setAttribute("addedToChosen", false)
+                        createdPersonTile.setAttribute("id", `human_tile_${person.id}`)
+                        const photoDirWithForwardSlashes = person.photoDir.replace(/\\/g, '/');
+                        createdPersonTile.setAttribute("onclick", `addToChosen("${person.nameAndSurname}", "${person.id}", "${photoDirWithForwardSlashes}")`)
+                        suggestedPeopleContainer.appendChild(createdPersonTile)
+                        
+                        let divForPhoto = document.createElement("div")
+                        divForPhoto.setAttribute("class", "photo_in_tile")
+                        createdPersonTile.appendChild(divForPhoto)
+                        
+                        let photoOfPrerson = document.createElement("img")
+                        photoOfPrerson.setAttribute("src", person.photoDir)
+                        divForPhoto.appendChild(photoOfPrerson)
+                        
+                        let nameOfHuman = document.createElement("div")
+                        nameOfHuman.innerText = person.nameAndSurname
+                        nameOfHuman.setAttribute("class", "name_in_tile")
+                        createdPersonTile.appendChild(nameOfHuman)
+                    }
+                }        
+            }
+            function clearSuggestions() {
+                const placeForPeopleSuggestions = document.getElementById("place_for_suggested_people")
+                placeForPeopleSuggestions.innerHTML = ""
+            }
+            function addToChosen(nameAndSurname, id, photoDir) {
+                const chosenPersonTileId = id.toString() + "-chosen"
+                if (!document.getElementById(chosenPersonTileId)) {
+                    let placeForAddedPeople = document.getElementById("place_for_chosen_people")
+                    let createdDiv = document.createElement("div")
+                    createdDiv.setAttribute("class", "chosen_person_tile")
+                    createdDiv.setAttribute("id", chosenPersonTileId)
+                    placeForAddedPeople.appendChild(createdDiv)
+                    let divForPhoto = document.createElement("div")
+                    divForPhoto.setAttribute("class", "photo_in_tile")
+                    createdDiv.appendChild(divForPhoto)
+                    let photoOfPerson = document.createElement("img")
+                    photoOfPerson.setAttribute("src", photoDir)
+                    divForPhoto.appendChild(photoOfPerson)
+                    let divForName = document.createElement("div")
+                    divForName.setAttribute("class", "name_in_tile")
+                    divForName.innerText = nameAndSurname
+                    createdDiv.appendChild(divForName)
+                    let closingDiv = document.createElement("div")
+                    closingDiv.innerHTML = "x"
+                    closingDiv.setAttribute("onclick", `removeDiv("${chosenPersonTileId}")`)
+                    closingDiv.setAttribute("class", "closing_div")
+                    createdDiv.prepend(closingDiv)
+                    if (!document.getElementById("accept_people_button")) {
+                        let divForAcceptButton = document.getElementById("div_for_accept_button")
+                        let createdButton = document.createElement("button")
+                        createdButton.id = "accept_people_button"
+                        createdButton.setAttribute("onclick", "addPeopleToMeeting()")
+                        createdButton.style["margin-bottom"] = "20px"
+                        createdButton.innerHTML = "Zaakceptuj!"
+                        divForAcceptButton.appendChild(createdButton)                      
+                    }
+                }
+                else {
+                    console.log("Dodałeś już tę osobę.")
+                }
+            }
+            function removeDiv(id) {
+                let removedElement = document.getElementById(id)
+                removedElement.remove()
+            }
+            async function addPeopleToMeeting() {
+                addMeeting()
+                const dateOfVisit = document.getElementById("meetingDateInputField").value
+                const encapsulatedVisitId = await getOwnMeetingId(dateOfVisit)
+                const idOfAddedMeeting = await encapsulatedVisitId[0]["ID"]
+                debugger
+                const arrayOfAllChosenPeople = []
+                const allChosenPeopleDivs = document.getElementsByClassName("chosen_person_tile")
+                console.log(allChosenPeopleDivs)
+                for (humanTile of allChosenPeopleDivs) {
+                    const idOfTile = humanTile.getAttribute("id").replace("-chosen", "")
+                    arrayOfAllChosenPeople.push(humanTile.getAttribute("id").replace("-chosen", ""))
+                }
+                for (let i=0; i<arrayOfAllChosenPeople.length; i++) {
+                    const humanId = arrayOfAllChosenPeople[i]
+                    addSingleHuman(humanId, idOfAddedMeeting)
+                }
+        }
+        async function addSingleHuman(humanId, meeting) {
+            const postReq = await fetch(`http://localhost:3000/add_human_to_meeting?meeting=${meeting}&human=${humanId}`, {method: "POST"})
+        }
         </script>
     </body>
 </html>
