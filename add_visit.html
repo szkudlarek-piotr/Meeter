@@ -177,26 +177,26 @@
             }
             const addedMeetingRequest = await fetch(`http://localhost:3000/add_visit?date=${dateOfVisit}&description=${stringToSend}&duration=${duration}`, {method: "POST"})
             const encapsulatedVisitId = await getOwnVisitId(dateOfVisit, duration, stringToSend)
-            const idOfAddedMeeting = encapsulatedVisitId[0]["visit_id"]
+            const idOfAddedMeeting = encapsulatedVisitId[0]
             createHumanSearch()
         }
         async function getOwnVisitId(dateOfVisit, duration, description) {
             const idOfMeeting = await fetch(`http://localhost:3000/get_visit_id?date=${dateOfVisit}&description=${description}&duration=${duration}`)
             const encapsulatedVisitId = await idOfMeeting.json()
-            console.log(encapsulatedVisitId)
             return encapsulatedVisitId
         }
         async function addPeopleToMeeting() {
             const dateOfVisit = document.getElementById("visitDateInputField").value
-            const duration = document.getElementById("visitDurationInputField").value
+            let duration = document.getElementById("visitDurationInputField").value
+            if (duration == "") {
+                duration = 1
+            }
             const decriptionOfVisit = document.getElementById("visitDescriptionInput").value
             const stringToSend = encodeURI(decriptionOfVisit)
-            const getVisitIdRequest = await getOwnVisitId(dateOfVisit, duration, stringToSend)
-            //const encapsulatedVisitId = await getMeetingIdRequest.json()
-            const idOfAddedMeeting = getVisitIdRequest[0]["visit_id"]
+            const encapsulatedVisitId = await getOwnVisitId(dateOfVisit, duration, stringToSend)
+            const idOfAddedMeeting = encapsulatedVisitId[0]["visit_id"]
             const arrayOfAllChosenPeople = []
             const allChosenPeopleDivs = document.getElementsByClassName("chosen_person_tile")
-            console.log(allChosenPeopleDivs)
             for (humanTile of allChosenPeopleDivs) {
                 arrayOfAllChosenPeople.push(humanTile.getAttribute("id").replace("-chosen", ""))
             }
