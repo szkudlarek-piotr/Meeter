@@ -72,8 +72,8 @@
             addWeddingsToCalendar()
             addMeetingsToCalendar()
             getEvents()
-            paintToday()
             addMortgagePayments()
+            paintToday()
         }
         makeCalendar()
         function addMortgagePayments() {
@@ -82,8 +82,9 @@
             const mortgagePaymentImgPath = "C:/Users/piotr/OneDrive/Pulpit/projekty/req_tst/backend/functionalPhotos/mortgagePayment.jpg"
             for (let day = startDay; day <= lastDay; day.setDate(day.getDate() + 1)) {
                 let dateId = createDateId(day)
-                if (day.getDate() == 15) {
-                    let currentCalendarTile = document.getElementById(dateId)
+                let currentCalendarTile = document.getElementById(dateId)
+                if (day.getDate() == 15 && !currentCalendarTile.querySelector(".slider")) {
+                    
                     if (currentCalendarTile.innerText.length > 1) {
                         currentCalendarTile.innerText = ""
                         let paymentSlider = document.createElement("div")
@@ -238,6 +239,7 @@
                 let weddingDate = new Date(wedding.date)
                 let manPhoto = wedding.manPhoto
                 let womanPhoto = wedding.womanPhoto
+                let partnerPhoto = wedding.partnerPhoto
                 let dayOfMonth = weddingDate.getDate().toString()
                 let trimmedMonth = monthJson[weddingDate.getMonth()].substring(0,3)
                 let fullYear = weddingDate.getFullYear().toString()
@@ -249,14 +251,25 @@
                 imgOfMan.setAttribute("src", manPhoto)
                 imgOfMan.setAttribute("class", "weddingManPhoto")
                 divToModify.appendChild(imgOfMan)
-                let imgOfWoman = document.createElement("img")
-                imgOfWoman.setAttribute("src", womanPhoto)
-                imgOfWoman.setAttribute("class", "weddingWomanPhoto")
-                divToModify.appendChild(imgOfWoman)
                 let imgOfRings = document.createElement("img")
                 imgOfRings.setAttribute("class", "ringsPhoto")
                 imgOfRings.setAttribute("src", weddingRingsDir)
                 divToModify.appendChild(imgOfRings)
+                let imgOfWoman = document.createElement("img")
+                imgOfWoman.setAttribute("src", womanPhoto)
+                imgOfWoman.setAttribute("class", "weddingWomanPhoto")
+                divToModify.appendChild(imgOfWoman)
+
+                if (wedding.hasOwnProperty("partnerPhoto")) {
+                    let imgOfPartner = document.createElement("img")
+                    imgOfPartner.setAttribute("src", partnerPhoto)
+                    imgOfPartner.setAttribute("class", "weddingPartnerPhoto")
+                    divToModify.appendChild(imgOfPartner)
+                    imgOfMan.setAttribute("class", "weddingManPhotoWithPartner")
+                    imgOfWoman.setAttribute("class", "weddingWomanPhotoWithPartner")
+                    imgOfRings.setAttribute("class", "ringsPhotoWithPartner")
+
+                }
                 divToModify.setAttribute("title", wedding.info_after_hover)
             }
         }
@@ -268,15 +281,24 @@
                 const dateId = createDateId(date)
                 const jsonOfDate = eventsJson[date]
                 let modifiedDiv = document.getElementById(dateId)
-                modifiedDiv.innerText = ""
-                modifiedDiv.title = jsonOfDate.titleAfterHover
-                let createdSlider = document.createElement("div")
-                createdSlider.setAttribute("class", "slider")
-                modifiedDiv.appendChild(createdSlider)
-                modifiedDiv.style["background-color"] = "rgb(194, 233, 56, 1)"
-                let createdImage = document.createElement("img")
-                createdImage.setAttribute("src", jsonOfDate.eventPhoto)
-                createdSlider.appendChild(createdImage)
+                if (modifiedDiv.getElementsByClassName("slider").length > 0) {
+                    const oldTitle = modifiedDiv.getAttribute("title")
+                    console.log(`Będę poszerzał ${oldTitle}`)
+                    const partToAdd = jsonOfDate.titleAfterHover.split("w miejscu")[0]
+                    modifiedDiv.setAttribute("title", `${oldTitle}, potem ${jsonOfDate.titleAfterHover}`)
+                }
+                else {
+                    modifiedDiv.innerText = ""
+                    modifiedDiv.title = jsonOfDate.titleAfterHover
+                    let createdSlider = document.createElement("div")
+                    createdSlider.setAttribute("class", "slider")
+                    modifiedDiv.appendChild(createdSlider)
+                    modifiedDiv.style["background-color"] = "rgb(194, 233, 56, 1)"
+                    let createdImage = document.createElement("img")
+                    createdImage.setAttribute("src", jsonOfDate.eventPhoto)
+                    createdSlider.appendChild(createdImage)
+                }
+
             }
         }
 

@@ -91,9 +91,8 @@ main.content {
   .visits_number {
     font-family: "Patrick Hand";
     text-align: center;
-    font-size: 24px;
+    font-size: 20px;
     position: relative;
-    top: -10px;
   }
   .clique_div {
     width: 26%;
@@ -107,8 +106,9 @@ main.content {
     background-color: red;
   }
   .clique_photo {
-    margin-top: 10%;
-    width: 80%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 20%;
     aspect-ratio: 1/1;
     border: 1px solid black;
 }
@@ -221,17 +221,48 @@ a {
 .weddingWomanPhoto {
     width: 40%;
     position: relative;
-    left: 20%;
+    left: -10%;
     top: 25%;
     z-index: 50;
 }
+
 .ringsPhoto {
     width: 30%;
     position: relative;
-    left: -40%;
-    top: -5%;
+    left: 0%;
+    top: 0%;
     background-color: none;
     z-index: 100;
+}
+
+.weddingManPhotoWithPartner {
+    width: 30%;
+    position: relative;
+    right: -20%;
+    bottom: 25%;
+    z-index: 50;
+}
+.weddingWomanPhotoWithPartner {
+    width: 30%;
+    position: relative;
+    right: 30%;
+    bottom: -25%;
+    z-index: 50;
+}
+.ringsPhotoWithPartner {
+    width: 20%;
+    position: relative;
+    left: -5%;
+    top: 0%;
+    background-color: none;
+    z-index: 25;
+}
+.weddingPartnerPhoto {
+    width: 40%;
+    position: relative;
+    left: -15%;
+    top: 0%;
+    z-index: 50;
 }
 #cliqueSuggestionsContainer {
     width: 80%;
