@@ -13,6 +13,7 @@ const getLeftMenu = require('./sendLeftMenu.js')
 const getAllMeetingsDates = require('./getAllMeetingsDates.js')
 const getNumberOfVisists = require('./getNumberOfVisits.js')
 const getAllCliques = require('./getAllCliques.js')
+const peopleWithMeetings = require('./allPeopleWithMeetings.js')
 const peopleFromString = require('./selectPeopleFromSubstring.js')
 const getHumanClique = require('./addCliquesToHumans.js')
 const getHumanFromClique = require('./addHumansToClique.js')
@@ -58,6 +59,11 @@ app.get('/get_visit_id', async (req, res) => {
     const description = req.query.description
     const obtainedId = await getVisitId(date, duration, description)
     res.send(obtainedId)
+})
+
+app.get('/people-with-meetings', async (req, res) => {
+    const peopleArray = await peopleWithMeetings()
+    res.send(peopleArray)
 })
 
 app.get('/weddings', async (req, res) =>{
