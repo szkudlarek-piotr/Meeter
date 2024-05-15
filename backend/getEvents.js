@@ -24,6 +24,9 @@ async function getDateEventsJson() {
         if (fs.existsSync(path.join(__dirname, "events", `${idOfEvent.toString()}.png`))) {
             pathToEventPhoto = path.join(__dirname, "events", `${idOfEvent.toString()}.png`)
         }
+        if (record.Generic_photo != null) {
+            pathToEventPhoto = path.join(__dirname, "events", record.Generic_photo)
+        }
         const startDateFromDb = record.dateStart
         const modifiedStartDate = date.addHours(startDateFromDb, 12)
         const stopDateFromDb = record.dateStop
