@@ -22,22 +22,19 @@ async function getAllWeddings() {
         const manPhotoName = wedding.man_id.toString() + ".jpg"
         const womanPhotoName = wedding.woman_id.toString() + ".jpg"
         let partnerPhotoName = ""
-        if ( wedding["wedding_partner"] != null ) {
-            partnerPhotoName = wedding.wedding_partner.toString() + ".jpg"
+        if ( wedding["partner_id"] != null ) {
+            partnerPhotoName = wedding.partner_id.toString() + ".jpg"
         } 
-        //const partnerPhotoName = wedding.wedding_partner.toString() + ".jpg"
         const manPhotoPath = path.join(__dirname, "photos", manPhotoName)
         const womanPhotoPath = path.join(__dirname, "photos", womanPhotoName)
         const partnerPhotoPath = path.join(__dirname, "photos", partnerPhotoName)
         const infoAfterHover = wedding.info_after_hover
         let jsonToAdd = {"manPhoto": manPhotoPath, "womanPhoto": womanPhotoPath, "date": realWeddingDate, "info_after_hover": infoAfterHover}
-        if ( wedding["wedding_partner"] != null ) {
+        if ( wedding["partner_id"] != null ) {
             jsonToAdd["partnerPhoto"] = partnerPhotoPath
         }
         returnedArray.push(jsonToAdd)
     }
-    //console.log(returnedArray)
     return returnedArray
 }
-//getAllWeddings()
 module.exports = getAllWeddings
