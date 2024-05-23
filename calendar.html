@@ -265,6 +265,7 @@
                 const returnedId = `${numberOfDay}_${monthJson[numberOfMonth].substring(0,3)}_${fullMonth}`
                 return returnedId
             }
+        
         async function addWeddingsToCalendar() {
             const monthJson = {0: "Styczeń", 1:"Luty", 2: "Marzec", 3: "Kwiecień", 4: "Maj", 5: "Czerwiec", 6:"Lipiec", 7: "Sierpień", 8:"Wrzesień", 9:"Październik", 10: "Listopad", 11:"Grudzień"}
             const weekdaysArray = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]
@@ -305,37 +306,8 @@
                     imgOfMan.setAttribute("class", "weddingManPhotoWithPartner")
                     imgOfWoman.setAttribute("class", "weddingWomanPhotoWithPartner")
                     imgOfRings.setAttribute("class", "ringsPhotoWithPartner")
-
                 }
                 divToModify.setAttribute("title", wedding.info_after_hover)
-            }
-        }
-
-        async function getEvents() {
-            const eventsFetch = await fetch("http://localhost:3000/events")
-            const eventsJson = await eventsFetch.json()
-            for (const date in eventsJson) {
-                const dateId = createDateId(date)
-                const jsonOfDate = eventsJson[date]
-                let modifiedDiv = document.getElementById(dateId)
-                if (modifiedDiv.getElementsByClassName("slider").length > 0) {
-                    const oldTitle = modifiedDiv.getAttribute("title")
-                    console.log(`Będę poszerzał ${oldTitle}`)
-                    const partToAdd = jsonOfDate.titleAfterHover.split("w miejscu")[0]
-                    modifiedDiv.setAttribute("title", `${oldTitle}, potem ${jsonOfDate.titleAfterHover}`)
-                }
-                else {
-                    modifiedDiv.innerText = ""
-                    modifiedDiv.title = jsonOfDate.titleAfterHover
-                    let createdSlider = document.createElement("div")
-                    createdSlider.setAttribute("class", "slider")
-                    modifiedDiv.appendChild(createdSlider)
-                    modifiedDiv.style["background-color"] = "rgb(194, 233, 56, 1)"
-                    let createdImage = document.createElement("img")
-                    createdImage.setAttribute("src", jsonOfDate.eventPhoto)
-                    createdSlider.appendChild(createdImage)
-                }
-
             }
         }
 
