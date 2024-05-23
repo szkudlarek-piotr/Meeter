@@ -71,7 +71,7 @@
             getVisitorsJson()
             addWeddingsToCalendar()
             addMeetingsToCalendar()
-            getEvents()
+            getEventsWithCompanion()
             addMortgagePayments()
             paintToday()
         }
@@ -95,6 +95,41 @@
                         paymentSlider.append(paymentPhoto)
                         currentCalendarTile.setAttribute("title", "Płatność raty. Zapewnij na koncie Santandera odpowiednio wysokie saldo.")
                     }
+                }
+            }
+        }
+        async function getEventsWithCompanion() {
+            const requestAllEvents = await fetch("http://localhost:3000/events-with-companion")
+            const eventsArr = await requestAllEvents.json()
+            const eventsJson = eventsArr[0]
+            for (eventDate in eventsJson) {
+                const dateId = createDateId(eventDate)
+                const eventDetails = eventsJson[eventDate]
+                console.log(eventDetails)
+                const photosArr =  eventDetails["allPhotos"]
+                let modifiedDiv = document.getElementById(dateId)
+                if (modifiedDiv.innerText != "") {
+                    modifiedDiv.innerText = ""
+                    debugger
+                    modifiedDiv.style.backgroundColor = "orange"
+                    debugger
+                    let createdSlider = document.createElement("div")
+                    createdSlider.setAttribute("class", "slider")
+                    modifiedDiv.appendChild(createdSlider)
+                    let createdImage = document.createElement("img")
+                    createdImage.setAttribute("src", photosArr[0])
+                    createdSlider.appendChild(createdImage)
+                    createdSlider.setAttribute("title", eventDetails["title"])  
+                    function photoSlider() {
+                        let index = 0
+                        function newImage() {
+                            createdImage.setAttribute("src", photosArr[index])
+                            index = (index + 1) % photosArr.length
+                            createdSlider.appendChild(createdImage)
+                        }
+                        setInterval(newImage,2000)
+                    }
+                    photoSlider()
                 }
             }
         }
@@ -218,7 +253,9 @@
                 
             }
         }
+        
         getLeftMenu()
+        
         function createDateId(recievedDate) {
                 const dateToProcess = new Date(recievedDate)
                 const numberOfDay = dateToProcess.getDate()
