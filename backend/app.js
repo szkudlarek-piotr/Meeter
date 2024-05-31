@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const bodyParser = require('body-parser')
 app = express()
 app.use(cors())
 
@@ -8,12 +9,13 @@ var multer = require('multer')
 var upload = multer({ dest: 'photos/'})
 const addGuestToVisit = require('./addGuestToVisit.js')
 const addVisit = require('./addVisit.js')
+const getEventsWithCompanion = require('./getEventsWithCompanion.js')
 const getVisitId = require('./getVisitId.js')
 const getLeftMenu = require('./sendLeftMenu.js')
 const getAllMeetingsDates = require('./getAllMeetingsDates.js')
 const getNumberOfVisists = require('./getNumberOfVisits.js')
 const getAllCliques = require('./getAllCliques.js')
-const peopleWithMeetings = require('./allPeopleWithMeetings.js')
+const fixedHumans = require('./fixedHumans.js')
 const peopleFromString = require('./selectPeopleFromSubstring.js')
 const getHumanClique = require('./addCliquesToHumans.js')
 const getHumanFromClique = require('./addHumansToClique.js')
@@ -53,6 +55,10 @@ app.get('/events', async (req, res) => {
     res.send(JSON.stringify(eventsJson))
 })
 
+app.get('/events-with-companion', async (req, res) => {
+    const eventsCompanionsJson = await getEventsWithCompanion()
+    res.send(JSON.stringify(eventsCompanionsJson))
+})
 app.get('/get_visit_id', async (req, res) => {
     const date = req.query.date
     const duration = req.query.duration
@@ -62,7 +68,7 @@ app.get('/get_visit_id', async (req, res) => {
 })
 
 app.get('/people-with-meetings', async (req, res) => {
-    const peopleArray = await peopleWithMeetings()
+    const peopleArray = await fixedHumans()
     res.send(peopleArray)
 })
 
@@ -145,6 +151,9 @@ app.post('/add_human_to_meeting', async (req, res) => {
     
 })
 
+app.post('/add-event', async (req, res) => {
+    await console.log(req.body)
+})
 app.get('/meetings', async (req, res) => {
     const allMeetings = await getMeetings()
     res.json(allMeetings)
@@ -161,8 +170,8 @@ app.post('/add_meeting', async (req, res) => {
     const placeOfMeeting = req.query.place
     const dateOfMeeting = req.query.date
     const description = req.query.description
-    res.send(`Otrzymałem dane o spotkaniu w dniu ${dateOfMeeting} w ${placeOfMeeting}.`)
-    await addMeeting(placeOfMeeting, dateOfMeeting, description)
+    const returnedId = await addMeeting(placeOfMeeting, dateOfMeeting, description)
+    res.send(returnedId)
 })
 app.get('/meeting_id_from_date', async (req, res) => {
     const dateToSend = req.query.date
