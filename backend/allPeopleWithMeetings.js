@@ -13,7 +13,7 @@ async function getVisitsAndMettings() {
     let returnedArray = []
     const cliquesPhotosDir = path.join(__dirname, "cliques_photos")
     const humanPhotosDir = path.join(__dirname, "photos")
-    const [databaseArray] = await pool.query(`SELECT pp.ID, pp.name, pp.surname, COALESCE(vg_visits.visits_count, 0) AS visits_count, COUNT(DISTINCT mh.human_id) + COUNT(DISTINCT ec.human_id) AS other_meetings, nk.known_from AS clique_name FROM party_people pp LEFT JOIN event_companion ec ON pp.ID = ec.human_id LEFT JOIN (SELECT guest_id, COUNT(*) AS visits_count FROM visit_guest GROUP BY guest_id) AS vg_visits ON pp.ID = vg_visits.guest_id LEFT JOIN meeting_human mh ON pp.ID = mh.human_id LEFT JOIN nazwy_klik nk ON pp.klika_id = nk.id GROUP BY pp.ID ORDER BY visits_count DESC, other_meetings DESC, pp.surname, pp.name;`)
+    const [databaseArray] = await pool.query(`SELECT pp.ID, pp.name, pp.surname, COALESCE(vg_visits.visits_count, 0) AS visits_count, COUNT(DISTINCT mh.human_id) + COUNT(ec.human_id) AS other_meetings, nk.known_from AS clique_name FROM party_people pp LEFT JOIN event_companion ec ON pp.ID = ec.human_id LEFT JOIN (SELECT guest_id, COUNT(*) AS visits_count FROM visit_guest GROUP BY guest_id) AS vg_visits ON pp.ID = vg_visits.guest_id LEFT JOIN meeting_human mh ON pp.ID = mh.human_id LEFT JOIN nazwy_klik nk ON pp.klika_id = nk.id GROUP BY pp.ID ORDER BY visits_count DESC, other_meetings DESC, pp.surname, pp.name;`)
     for (person of databaseArray) {
         let cliquePhoto = ""
         let humanPhoto = path.join(humanPhotosDir, "anonymous.jpg")
@@ -35,3 +35,6 @@ async function getVisitsAndMettings() {
     return returnedArray
 }
 module.exports = getVisitsAndMettings
+
+
+//aktualnie nieużywane
