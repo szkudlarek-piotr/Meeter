@@ -300,3 +300,17 @@ a {
 .cliqueSuggestion:hover {
     font-weight: 700;
 }
+.cliqueInAllCliques {
+    margin-top: 30px;
+    margin-bottom: 0;
+    width: 70%;
+    aspect-ratio: 1/1;
+    border: 1px solid black;
+}
+.golden_quote {
+    font-style: italic;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 10px;
+    font-family: serif;
+}
