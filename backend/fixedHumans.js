@@ -20,7 +20,7 @@ async function getPeople() {
             humanPhotoDir = path.join(__dirname, "photos", `${person.person_id}.jpg`)
         }
         else {
-            humanPhotoDir = path.join(__dirname, "photos", `annonymous.jpg`)
+            humanPhotoDir = path.join(__dirname, "photos", `anonymous.jpg`)
         }
         let realCliquePhotoPath = ""
         const pngCliquePhotoPath = path.join(__dirname, "cliques_photos", `${person.known_from}.png`)
@@ -33,6 +33,9 @@ async function getPeople() {
         }
 
         let jsonToAdd = {"nameAndSurname": `${person.name} ${person.surname}`, "photoPath": `${humanPhotoDir}`, "visitCount": person.visit_count, "otherMeetings":person.meetings_count, "clique": person.known_from, "cliquePhoto": `${realCliquePhotoPath}`}
+        if (person.random_quote != null) {
+            jsonToAdd["goldenQuote"] = person.random_quote
+        }
         humansArr.push(jsonToAdd)
     }
     return humansArr

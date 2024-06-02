@@ -52,12 +52,22 @@
                 meetingsNumberDiv.setAttribute("class", "visits_number")
                 meetingsNumberDiv.innerText = `Liczba spotkań: ${human.otherMeetings}`
                 humanTile.appendChild(meetingsNumberDiv)
-                //debugger
+
+
                 let cliqueImage = document.createElement("img")
                 cliqueImage.setAttribute("src", human.cliquePhoto)
                 cliqueImage.setAttribute("class", "clique_photo")
                 cliqueImage.setAttribute("title", human.clique)
                 humanTile.appendChild(cliqueImage)
+                                
+                if (human.hasOwnProperty("goldenQuote")) {
+                    console.log(human.goldenQuote)
+                    const quoteInQuotationMark = `"${human.goldenQuote}"`
+                    let quoteDiv = document.createElement("div")
+                    quoteDiv.setAttribute("class", "golden_quote")
+                    quoteDiv.innerText = quoteInQuotationMark
+                    humanTile.appendChild(quoteDiv)
+                }
             }
         }
         async function getLeftMenu() {
