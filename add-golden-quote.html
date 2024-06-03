@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Meeter - portal dla wszystkich oprócz Amerykanów</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <header>
+            Baza danych spotkań
+        </header>
+        <div class="container">
+            <nav class="left-menu">
+            </nav>
+            <main class="content" id="main_content">
+                <form action="javascript:;" enctype="multipart/form-data">
+                    <fieldset>
+                        <h1>Dodaj złoty cytat</h1>
+
+                        <h3>Autor cytatu</h3>
+                        <div id="inputAndSuggestionsForQuoteAuthor">
+                            <input type="text" id="quoteAuthorInput" onkeyup="getSuggestedPeople()">
+                            <div id="quoteAuthorSuggestions"></div>
+                        </div>
+                        <h3>Cytat</h3>
+                        <textarea rows="8" id="quoteTextarea" maxlength="300" placeholder="Wpisz cytat..." wrap="soft"></textarea></br>
+                        <input type="submit" onclick="addQuote()" value="Dodaj cytat!"></br></br>
+                    </fieldset>
+                </form>
+            </main>
+            <aside class="right-menu">
+                <!-- Right menu content goes here -->
+            </aside>
+        </div>
+    </body>
+    <script>
+            function clearSuggestions() {
+                let suggestionsDiv = document.getElementById("quoteAuthorSuggestions")
+                suggestionsDiv.innerHTML = ""
+            }
+            async function getSuggestedPeople() {
+                clearSuggestions()
+                const stringToSearch = document.getElementById("quoteAuthorInput").value
+                if (stringToSearch.length > 1) {
+                    const suggestedPeopleRequest = await fetch(`http://localhost:3000/people_from_substring?substring=${stringToSearch}`)
+                    const suggestedPeopleJson = await suggestedPeopleRequest.json()
+                    console.log(suggestedPeopleJson)
+                    let authorSuggestionsDiv = document.getElementById("quoteAuthorSuggestions")
+                    for (person of suggestedPeopleJson) {
+                        console.log(person)
+                        let suggestionDiv = document.createElement("div")
+                        suggestionDiv.setAttribute("class", "quoteAuthorSuggestion")
+                        suggestionDiv.setAttribute("onclick", `chooseQuoteAuthor(${person.id}, "${person.nameAndSurname}")`)
+                        authorSuggestionsDiv.appendChild(suggestionDiv)
+                        
+                        let photoOfSuggestedPerson = document.createElement("img")
+                        photoOfSuggestedPerson.setAttribute("src", person.photoDir)
+                        suggestionDiv.appendChild(photoOfSuggestedPerson)
+
+                        let nameDiv = document.createElement("div")
+                        nameDiv.className = "quoteAuthorName"
+                        nameDiv.innerText = person.nameAndSurname
+                        suggestionDiv.appendChild(nameDiv)
+                    }
+                }
+            }
+        function chooseQuoteAuthor(quoteId, authorName) {
+            clearSuggestions()
+            let authorInputField = document.getElementById("quoteAuthorInput")
+            authorInputField.value = ""
+            authorInputField.setAttribute("chsoenAuthor", quoteId)
+            authorInputField.setAttribute("placeholder", authorName)
+        }
+        async function getLeftMenu() {
+            let leftMenu = document.getElementsByClassName("left-menu")[0]
+            const arrrayOfButtons = await fetch("http://localhost:3000/left_menu")
+            const jsonOfButtons = await arrrayOfButtons.json()
+            for (button of jsonOfButtons) {
+                let newButton = document.createElement("div")
+                newButton.setAttribute("class", "left_option")
+                newButton.setAttribute("id", button.id)
+                newButton.innerText = button.text
+                if (button.hasOwnProperty("onclick")) {
+                    newButton.setAttribute("onclick", button.onclick)
+                    leftMenu.appendChild(newButton)
+                }
+                if (button.hasOwnProperty("href")) {
+                    let encapsulatingA = document.createElement("a")
+                    encapsulatingA.setAttribute("href", button.href)
+                    leftMenu.appendChild(encapsulatingA)
+                    encapsulatingA.appendChild(newButton)
+                }
+                
+            }
+        }
+        
+        async function addQuote() {
+            const idOfAuthor = document.getElementById("quoteAuthorInput").getAttribute("chsoenAuthor").toString()
+            const quoteToSave = encodeURI(document.getElementById("quoteTextarea").value)
+            const postRequest = await fetch(`http://localhost:3000/save-quote?author=${idOfAuthor}&quote=${quoteToSave}`, {method: "POST"})
+            document.getElementById("quoteAuthorInput").removeAttribute("chsoenAuthor")
+            document.getElementById("quoteAuthorInput").setAttribute("placeholder", "")
+            document.getElementById("quoteTextarea").value = ""
+        }
+        getLeftMenu()
+
+    </script>
+</html>

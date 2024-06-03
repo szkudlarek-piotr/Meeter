@@ -12,6 +12,7 @@ const addVisit = require('./addVisit.js')
 const getEventsWithCompanion = require('./getEventsWithCompanion.js')
 const getVisitId = require('./getVisitId.js')
 const getLeftMenu = require('./sendLeftMenu.js')
+const addGoldenQuote = require('./addGoldenQuote.js')
 const getAllMeetingsDates = require('./getAllMeetingsDates.js')
 const getNumberOfVisists = require('./getNumberOfVisits.js')
 const getAllCliques = require('./getAllCliques.js')
@@ -107,6 +108,19 @@ app.get('/add_humans_to_clique', async (req, res) => {
 app.get('/add_visits_to_calendar', async (req, res) => {
     const daysVisitsJson = await getVisitorsSecond()
     res.send(JSON.stringify(daysVisitsJson))
+})
+app.post('/save-quote', async(req, res) => {
+    const authorId = req.query.author
+    const quote = req.query.quote
+    try {
+        const postQuoteReq = await addGoldenQuote(authorId, quote)
+        res.status(200).send("Good")
+    }
+    catch (error) {
+        if (error.code === 'ER_NO_REFERENCED_ROW_2') {
+            res.status(400).send("Nie udało się")
+        }
+    }
 })
 app.post('/add_guest_to_visit', async (req, res) => {
     const idOfGuest = req.query.guest_id
