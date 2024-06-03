@@ -117,7 +117,6 @@
                 if (stringToSearch.length > 1) {
                     const suggestedPeopleRequest = await fetch(`http://localhost:3000/people_from_substring?substring=${stringToSearch}`)
                     const jsonOfSuggestions = await suggestedPeopleRequest.json()
-                    console.log(jsonOfSuggestions)
                     for (person of jsonOfSuggestions) {
                         let suggestedPeopleContainer = document.getElementById("place_for_suggested_people")
                         let createdPersonTile = document.createElement("div")
@@ -196,11 +195,13 @@
                 debugger
                 const arrayOfAllChosenPeople = []
                 const allChosenPeopleDivs = document.getElementsByClassName("chosen_person_tile")
+                debugger
                 console.log(allChosenPeopleDivs)
                 for (humanTile of allChosenPeopleDivs) {
                     const idOfTile = humanTile.getAttribute("id").replace("-chosen", "")
                     arrayOfAllChosenPeople.push(humanTile.getAttribute("id").replace("-chosen", ""))
                 }
+                debugger
                 for (let i=0; i<arrayOfAllChosenPeople.length; i++) {
                     const humanId = arrayOfAllChosenPeople[i]
                     addSingleHuman(humanId, idOfAddedMeeting)
