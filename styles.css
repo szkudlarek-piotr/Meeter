@@ -314,3 +314,44 @@ a {
     margin-bottom: 10px;
     font-family: serif;
 }
+#adding_quote_header {
+    margin-bottom: 20px;
+    padding-bottom: 0px;
+}
+.quoteAuthorSuggestion {
+    height: 50px;
+    display: flex;
+    border-bottom: 1px dashed gray;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    padding-top: 5px;
+    padding-top: 5px;
+}
+.quoteAuthorSuggestion > img {
+    height: 80%;
+    padding-top: auto;
+    padding-bottom: auto;
+    border-radius: 50%;
+    margin-left: 5px;
+    aspect-ratio: 1/1;
+}
+.quoteAuthorSuggestion > .quoteAuthorName {
+    font-family: cursive; 
+    font-size: 25px;
+    height: 80%;
+    margin-top: auto;
+    margin-left: 10px;
+    margin-bottom: auto;
+}
+#quoteAuthorSuggestions {
+    background-color: wheat;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+#quoteTextarea {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+}
