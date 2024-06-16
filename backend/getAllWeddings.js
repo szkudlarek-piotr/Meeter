@@ -29,7 +29,7 @@ async function getAllWeddings() {
         const womanPhotoPath = path.join(__dirname, "photos", womanPhotoName)
         const partnerPhotoPath = path.join(__dirname, "photos", partnerPhotoName)
         const infoAfterHover = wedding.info_after_hover
-        let jsonToAdd = {"manPhoto": manPhotoPath, "womanPhoto": womanPhotoPath, "date": realWeddingDate, "info_after_hover": infoAfterHover}
+        let jsonToAdd = {"weddingID": wedding.id ,"manPhoto": manPhotoPath, "womanPhoto": womanPhotoPath, "date": realWeddingDate, "info_after_hover": infoAfterHover}
         if ( wedding["partner_id"] != null ) {
             jsonToAdd["partnerPhoto"] = partnerPhotoPath
         }
