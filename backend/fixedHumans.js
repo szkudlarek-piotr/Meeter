@@ -32,7 +32,7 @@ async function getPeople() {
             realCliquePhotoPath = jpgCliquePhotoPath
         }
 
-        let jsonToAdd = {"nameAndSurname": `${person.name} ${person.surname}`, "photoPath": `${humanPhotoDir}`, "visitCount": person.visit_count, "otherMeetings":person.meetings_count, "clique": person.known_from, "cliquePhoto": `${realCliquePhotoPath}`}
+        let jsonToAdd = {"nameAndSurname": `${person.name} ${person.surname}`, "photoPath": `${humanPhotoDir}`, "visitCount": person.visit_count, "otherMeetings":person.nonvisits_count, "clique": person.known_from, "cliquePhoto": `${realCliquePhotoPath}`}
         if (person.random_quote != null) {
             jsonToAdd["goldenQuote"] = person.random_quote
         }
