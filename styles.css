@@ -355,3 +355,87 @@ a {
     margin-right: auto;
     margin-bottom: 20px;
 }
+.calendarModal {
+    display: none;
+    width:70%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 70%;
+    background-color: antiquewhite;
+    position: fixed;
+    border: 1px solid black;
+    margin-bottom: 10px;
+    z-index: 100;
+    border-radius: 10px;
+}
+.calendarModal > .leftModalMenu {
+    width: 30%;
+    height: 100%;
+}
+.leftModalMenu > .modalButton {
+    font-size: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.leftModalMenu > .modalButton:hover {
+    font-weight: 700;
+}
+.leftModalMenu > .leftModalHeader {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    font-size: 30px;
+    font-weight: 700;
+}
+.editableModalPart > .closingDiv {
+    height: 30px;
+    border: 1px solid black;
+    font-size: 30px;
+    border-radius: 15px;
+    width: 30px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+.calendarModal > .closingDiv:hover {
+    cursor: pointer;
+}
+.editableModalPart {
+    width: 100%;
+    min-height: 100px;
+}
+#headerOfEditable {
+    font-size: 30px;
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    font-family: cursive;
+}
+#weddingDescriptionDiv {
+    width: 80%;
+    font-size: 20px;
+    font-weight: 500;
+    font-family: cursive;
+    margin-left: auto;
+    margin-right: auto;
+}
+#weddingCharactersDiv {
+    width:80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+#weddingCharactersDiv > .lovebirdPhoto {
+    width: 20%;
+    aspect-ratio: 1/1;
+    margin-left: 2%;
+    margin-right: 2%;
+    border: 1px solid black;
+}
+
+#weddingCharactersDiv > #partnerPhoto {
+    width: 20%;
+    aspect-ratio: 1/1;
+    margin-left: 2%;
+    margin-right: 2%;
+    border: 1px solid black;
+}
