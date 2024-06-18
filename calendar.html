@@ -317,5 +317,78 @@
             let todaysCalendarDiv = document.getElementById(todaysDateId)
             todaysCalendarDiv.style["background-color"] = "red"
         }
+        async function weddingOnclick(weddingID) {
+            const weddingDetailsReq = await fetch(`http://localhost:3000/get-wedding-details?wedding=${weddingID}`)
+            const weddingDetailsJson = await weddingDetailsReq.json()
+            console.log(weddingDetailsJson)
+            let modalForWedding = document.getElementById("modal")
+            modalForWedding.setAttribute("class", "calendarModal")
+            modalForWedding.style.display = "flex"
+            let leftModalMenu = document.createElement("div")
+            leftModalMenu.setAttribute("class", "leftModalMenu")
+            let leftModalHeader = document.createElement("div")
+            leftModalHeader.innerText = "Menu"
+            leftModalHeader.setAttribute("class", "leftModalHeader")
+            leftModalMenu.appendChild(leftModalHeader)
+            modalForWedding.appendChild(leftModalMenu)
+            const buttonsArr = [{"id": "basicInfoModal", "funtion": `showWeddingInformations(${weddingID})`, "text": "Podstawowe informacje"}, {"id": "groomModal", "funtion": "showGroom()", "text": "Pan Młody"}, {"id": "brideModal", "funtion": "showBride()", "text": "Panna Młoda"}]
+            for (button of buttonsArr) {
+                let createdButton = document.createElement("div")
+                createdButton.setAttribute("class", "modalButton")
+                leftModalMenu.appendChild(createdButton)
+                createdButton.setAttribute("id", button["id"])
+                createdButton.setAttribute("onclick", button["funtion"])
+                createdButton.innerText = button["text"]
+            }
+            let editableModalPart = document.createElement("div")
+            editableModalPart.setAttribute("id", "editableModalPart")
+            editableModalPart.setAttribute("class", "editableModalPart")
+            modalForWedding.appendChild(editableModalPart)
+            let closingDiv = document.createElement("div")
+            closingDiv.setAttribute("class", "closingDiv")
+            closingDiv.innerText = "x"
+            closingDiv.setAttribute("onclick", "closeModal()")
+            editableModalPart.appendChild(closingDiv)
+            showWeddingInformations(weddingID)
+        }
+        function closeModal() {
+            let modal = document.getElementById("modal")
+            modal.innerHTML = ""
+            modal.style["display"] = "none"
+        }
+        async function showWeddingInformations(weddingID) {
+            let modifiedDiv = document.getElementById("editableModalPart")
+            let headerOfEditable = document.createElement("div")
+            headerOfEditable.setAttribute("id", "headerOfEditable")
+            headerOfEditable.innerText = "Informacje o weselu"
+            modifiedDiv.appendChild(headerOfEditable)
+            const givenWeddingReq = await fetch(`http://localhost:3000/single-wedding?number=${weddingID}`)
+            const givenWeddingJson = await givenWeddingReq.json()
+            let weddingCharactersDiv = document.createElement("div")
+            weddingCharactersDiv.setAttribute("id", "weddingCharactersDiv")
+            modifiedDiv.appendChild(weddingCharactersDiv)
+
+            let imageOfGroom = document.createElement("img")
+            imageOfGroom.setAttribute("class", "lovebirdPhoto")
+            imageOfGroom.setAttribute("src", givenWeddingJson[0]["groom_photo_dir"])
+            weddingCharactersDiv.appendChild(imageOfGroom)
+            console.log(givenWeddingJson[0])
+            if (givenWeddingJson[0].hasOwnProperty("partner_photo_dir")) {
+                imgOfPartner = document.createElement("img")
+                imgOfPartner.setAttribute("id", "partnerPhoto")
+                imgOfPartner.setAttribute("src", givenWeddingJson[0]["partner_photo_dir"])
+                weddingCharactersDiv.appendChild(imgOfPartner)
+            }
+
+            let imageOfBride = document.createElement("img")
+            imageOfBride.setAttribute("class", "lovebirdPhoto")
+            imageOfBride.setAttribute("src", givenWeddingJson[0]["bride_photo_dir"])
+            weddingCharactersDiv.appendChild(imageOfBride)
+
+            let weddingDescriptionDiv = document.createElement("div")
+            weddingDescriptionDiv.setAttribute("id", "weddingDescriptionDiv")
+            weddingDescriptionDiv.innerText = `\t${givenWeddingJson[0]["description"]}`
+            modifiedDiv.appendChild(weddingDescriptionDiv)
+        }
     </script>
 </html>

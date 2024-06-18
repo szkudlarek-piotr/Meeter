@@ -9,6 +9,7 @@ var multer = require('multer')
 var upload = multer({ dest: 'photos/'})
 const addGuestToVisit = require('./addGuestToVisit.js')
 const addVisit = require('./addVisit.js')
+const getWeddingDetails = require('./getSingleWedding.js')
 const getEventsWithCompanion = require('./getEventsWithCompanion.js')
 const getVisitId = require('./getVisitId.js')
 const getLeftMenu = require('./sendLeftMenu.js')
@@ -54,6 +55,12 @@ app.get('/visits', async (req, res) => {
 app.get('/events', async (req, res) => {
     const eventsJson = await getEvents()
     res.send(JSON.stringify(eventsJson))
+})
+
+app.get('/single-wedding', async (req, res) => {
+    const weddingNumber = req.query.number
+    const weddingJson = await getSingleWedding(weddingNumber)
+    res.send(JSON.stringify(weddingJson))
 })
 
 app.get('/events-with-companion', async (req, res) => {
