@@ -28,6 +28,11 @@ async function getSingleWedding(weddingId) {
     returnedJson["hotel_long"] = weddingJson.hotel_long
     returnedJson["church_name"] = weddingJson.church_name
     returnedJson["wed_hal_name"] = weddingJson.wed_hal_name
+    returnedJson["groom_id"] = weddingJson.groom_photo.replace(".jpg", "")
+    returnedJson["bride_id"] = weddingJson.bride_photo.replace(".jpg", "")
+    if (weddingJson.my_partner_photo != null) {
+        returnedJson["partner_id"] = weddingJson.my_partner_photo.replace(".jpg", "")
+    }
     returnedJson["groom_photo_dir"] = path.join(__dirname, "photos", weddingJson.groom_photo)
     returnedJson["bride_photo_dir"] = path.join(__dirname, "photos", weddingJson.bride_photo)
     const lovebirdsStatement = `Dnia ${dateInWords} ślub biorą ${weddingJson.groom_name} oraz ${weddingJson.bride_name}.\n\tKościół: ${returnedJson["church_name"]}.\n\tSala: ${returnedJson["wed_hal_name"]}.\n`
@@ -36,7 +41,6 @@ async function getSingleWedding(weddingId) {
     if (weddingJson.my_partner_photo != null) {
         returnedJson["partner_photo_dir"] = path.join(__dirname, "photos", weddingJson.my_partner_photo)
     }
-    console.log(returnedJson)
     return [ returnedJson ]
 }
 module.exports = getSingleWedding

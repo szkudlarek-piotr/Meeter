@@ -11,6 +11,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
     </head>
     <body>
+        </div>
         <header>
             Baza danych spotkań
         </header>
@@ -18,6 +19,7 @@
             <nav class="left-menu">
             </nav>
             <main class="content" id="main_content">
+                <div class="calendarModal" id="modal"></div>
                 <!-- Main content goes here -->
             </main>
             <aside class="right-menu">
@@ -72,7 +74,6 @@
             addWeddingsToCalendar()
             addMeetingsToCalendar()
             getEventsWithCompanion()
-            addMortgagePayments()
             paintToday()
         }
         makeCalendar()
@@ -105,14 +106,11 @@
             for (eventDate in eventsJson) {
                 const dateId = createDateId(eventDate)
                 const eventDetails = eventsJson[eventDate]
-                console.log(eventDetails)
                 const photosArr =  eventDetails["allPhotos"]
                 let modifiedDiv = document.getElementById(dateId)
                 if (modifiedDiv.innerText != "") {
                     modifiedDiv.innerText = ""
-                    debugger
                     modifiedDiv.style.backgroundColor = "orange"
-                    debugger
                     let createdSlider = document.createElement("div")
                     createdSlider.setAttribute("class", "slider")
                     modifiedDiv.appendChild(createdSlider)
@@ -266,7 +264,7 @@
                 return returnedId
             }
         
-        async function addWeddingsToCalendar() {
+            async function addWeddingsToCalendar() {
             const monthJson = {0: "Styczeń", 1:"Luty", 2: "Marzec", 3: "Kwiecień", 4: "Maj", 5: "Czerwiec", 6:"Lipiec", 7: "Sierpień", 8:"Wrzesień", 9:"Październik", 10: "Listopad", 11:"Grudzień"}
             const weekdaysArray = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota", "Niedziela"]
             const weddingsReq = await fetch("http://localhost:3000/weddings")
@@ -278,12 +276,14 @@
                 let manPhoto = wedding.manPhoto
                 let womanPhoto = wedding.womanPhoto
                 let partnerPhoto = wedding.partnerPhoto
+                let weddingID = wedding.weddingID
                 let dayOfMonth = weddingDate.getDate().toString()
                 let trimmedMonth = monthJson[weddingDate.getMonth()].substring(0,3)
                 let fullYear = weddingDate.getFullYear().toString()
                 const modifiedDayRectangleId = `${dayOfMonth}_${trimmedMonth}_${fullYear}`
                 const divToModify = document.getElementById(modifiedDayRectangleId)
                 divToModify.innerHTML = ""
+                divToModify.setAttribute("onclick", `weddingOnclick(${weddingID})`)
                 divToModify.style["background-color"] = "#eb73d7a6"
                 let imgOfMan = document.createElement("img")
                 imgOfMan.setAttribute("src", manPhoto)
@@ -318,7 +318,7 @@
             todaysCalendarDiv.style["background-color"] = "red"
         }
         async function weddingOnclick(weddingID) {
-            const weddingDetailsReq = await fetch(`http://localhost:3000/get-wedding-details?wedding=${weddingID}`)
+            const weddingDetailsReq = await fetch(`http://localhost:3000/single-wedding?number=${weddingID}`)
             const weddingDetailsJson = await weddingDetailsReq.json()
             console.log(weddingDetailsJson)
             let modalForWedding = document.getElementById("modal")
@@ -331,13 +331,19 @@
             leftModalHeader.setAttribute("class", "leftModalHeader")
             leftModalMenu.appendChild(leftModalHeader)
             modalForWedding.appendChild(leftModalMenu)
-            const buttonsArr = [{"id": "basicInfoModal", "funtion": `showWeddingInformations(${weddingID})`, "text": "Podstawowe informacje"}, {"id": "groomModal", "funtion": "showGroom()", "text": "Pan Młody"}, {"id": "brideModal", "funtion": "showBride()", "text": "Panna Młoda"}]
+            const groom_id = weddingDetailsJson[0]["groom_id"]
+            const bride_id = weddingDetailsJson[0]["bride_id"]
+            let my_partner_id = weddingDetailsJson[0]["partner_id"]
+            if (my_partner_id == null) {
+                my_partner_id = 0
+            }
+            const buttonsArr = [{"id": "basicInfoModal", "function": `showWeddingInformations(${weddingID})`, "text": "Podstawowe informacje"}, {"id": "groomModal", "function": `showGroom(${groom_id})`, "text": "Pan Młody"}, {"id": "brideModal", "function": `showBride(${bride_id})`, "text": "Panna Młoda"}, {"id": "weddingPartnerModal", "function": `showWeddingPartnerDetails(${my_partner_id}, ${weddingID})`, "text": "Partnerka"}]
             for (button of buttonsArr) {
                 let createdButton = document.createElement("div")
                 createdButton.setAttribute("class", "modalButton")
                 leftModalMenu.appendChild(createdButton)
                 createdButton.setAttribute("id", button["id"])
-                createdButton.setAttribute("onclick", button["funtion"])
+                createdButton.setAttribute("onclick", button["function"])
                 createdButton.innerText = button["text"]
             }
             let editableModalPart = document.createElement("div")
@@ -351,12 +357,35 @@
             editableModalPart.appendChild(closingDiv)
             showWeddingInformations(weddingID)
         }
+        function cleanEditableModalPart() {
+            let editableModalPart = document.getElementById("editableModalPart")
+            let arrayOfElements = editableModalPart.querySelectorAll("div")
+            if (arrayOfElements.length > 1) {
+                for (elementInDiv of arrayOfElements) {
+                    if (elementInDiv.getAttribute("class") != "closingDiv") {
+                        elementInDiv.remove()
+                    }
+                }
+            }
+            let arrayOfInputs = editableModalPart.querySelectorAll("input")
+            if (arrayOfInputs.length > 1) {
+                for (inputElement of arrayOfInputs) {
+                    debugger
+                    inputElement.remove()
+                }
+            }
+            let arrayOfButtons = editableModalPart.querySelectorAll("button")
+            if (arrayOfButtons.length > 0) {
+                arrayOfButtons[0].remove()
+            }
+        }
         function closeModal() {
             let modal = document.getElementById("modal")
             modal.innerHTML = ""
             modal.style["display"] = "none"
         }
         async function showWeddingInformations(weddingID) {
+            cleanEditableModalPart()
             let modifiedDiv = document.getElementById("editableModalPart")
             let headerOfEditable = document.createElement("div")
             headerOfEditable.setAttribute("id", "headerOfEditable")
@@ -372,7 +401,6 @@
             imageOfGroom.setAttribute("class", "lovebirdPhoto")
             imageOfGroom.setAttribute("src", givenWeddingJson[0]["groom_photo_dir"])
             weddingCharactersDiv.appendChild(imageOfGroom)
-            console.log(givenWeddingJson[0])
             if (givenWeddingJson[0].hasOwnProperty("partner_photo_dir")) {
                 imgOfPartner = document.createElement("img")
                 imgOfPartner.setAttribute("id", "partnerPhoto")
@@ -389,6 +417,140 @@
             weddingDescriptionDiv.setAttribute("id", "weddingDescriptionDiv")
             weddingDescriptionDiv.innerText = `\t${givenWeddingJson[0]["description"]}`
             modifiedDiv.appendChild(weddingDescriptionDiv)
+        }
+        async function showGroom(groom_id) {
+            cleanEditableModalPart()
+            const groomRequest = await fetch(`http://localhost:3000/human-details?id=${groom_id}`)
+            const groomJson = await groomRequest.json()
+            const groomName = groomJson[0]["human_name"]
+            let modifiedDiv = document.getElementById("editableModalPart")
+            let headerOfEditable = document.createElement("div")
+            headerOfEditable.setAttribute("id", "headerOfEditable")
+            headerOfEditable.innerText = `Pan Młody - ${groomName}`
+            modifiedDiv.appendChild(headerOfEditable)
+        }
+        async function showBride(bride_id) {
+            cleanEditableModalPart()
+            const brideRequest = await fetch(`http://localhost:3000/human-details?id=${bride_id}`)
+            const brideJson = await brideRequest.json()
+            const brideName = brideJson[0]["human_name"]
+            let modifiedDiv = document.getElementById("editableModalPart")
+            let headerOfEditable = document.createElement("div")
+            headerOfEditable.setAttribute("id", "headerOfEditable")
+            headerOfEditable.innerText = `Panna Młoda - ${brideName}`
+            modifiedDiv.appendChild(headerOfEditable)
+        }
+        async function showWeddingPartnerDetails(partner_id, weddingID) {
+            let modifiedDiv = document.getElementById("editableModalPart")
+            cleanEditableModalPart()
+            if (partner_id != 0) {
+                const partnerRequest = await fetch(`http://localhost:3000/human-details?id=${partner_id}`)
+                const partnerJson = await partnerRequest.json()
+                let headerOfEditable = document.createElement("div")
+                headerOfEditable.setAttribute("id", "headerOfEditable")
+                headerOfEditable.innerText = `Partnerka - ${partnerJson[0]["human_name"]}`
+                modifiedDiv.appendChild(headerOfEditable)
+                let divForRemovePartnerButton = document.createElement("button")
+                divForRemovePartnerButton.setAttribute("id", "removeWeddingPartnerButton")
+                divForRemovePartnerButton.innerText = "Usuń partnerkę"
+                divForRemovePartnerButton.setAttribute("onclick", `removeWeddingPartner(${weddingID})`)
+                modifiedDiv.appendChild(divForRemovePartnerButton)
+            }
+            else {
+                let headerOfEditable = document.createElement("div")
+                headerOfEditable.setAttribute("id", "headerOfEditable")
+                headerOfEditable.innerText = "Dotychczas nie wybrałeś partnerki na to wesele"
+                modifiedDiv.appendChild(headerOfEditable)
+                let partnerSearch = document.createElement("input")
+                partnerSearch.setAttribute("id", "weddingPartnerSearchInput")
+                partnerSearch.setAttribute("placeholder", "Wyszukaj partnerkę...")
+                modifiedDiv.appendChild(partnerSearch)
+                partnerSearch.setAttribute("onkeyup", `showPossiblePartners()`)
+                let placeForPossiblePartners = document.createElement("div")
+                placeForPossiblePartners.setAttribute("id", "placeForPossiblePartners")
+                modifiedDiv.appendChild(placeForPossiblePartners)
+
+                let acceptPartnerButtonDiv = document.createElement("div")
+                acceptPartnerButtonDiv.setAttribute("class", "acceptPartnerButtonDiv")
+                modifiedDiv.appendChild(acceptPartnerButtonDiv)
+                let acceptPartnerButton = document.createElement("button")
+                acceptPartnerButton.setAttribute("onclick", `updateWeddingPartner(${weddingID})`)
+                acceptPartnerButton.innerText ="Dodaj partnerkę!"
+                acceptPartnerButtonDiv.appendChild(acceptPartnerButton)
+            }
+        }
+        async function updateWeddingPartner(weddingId) {
+            const partnerId = document.getElementById("weddingPartnerSearchInput").getAttribute("chosenpartner")
+            if (partnerId == null) {
+                alert("Póki co nie wygrałeś żadnej partnerki.")
+            }
+            else {
+                console.log(`Zamierzam partnerką na wesele ${weddingId} uczynić pannę ${partnerId}.`)
+                const weddingPartnerAddReq = await fetch(`http://localhost:3000/wedding-partner-change?partner=${partnerId}&wedding=${weddingId}`, {method:"PATCH"})
+                const weddingPartnerJson = await weddingPartnerAddReq.json()
+                const receivedMessage = weddingPartnerJson[0]["message"]
+                if (receivedMessage == "Pomyślnie zapisano partnerkę weselną.") {
+                    showWeddingPartnerDetails(partnerId)
+                    let changedPartnerButton = document.getElementById("weddingPartnerModal")
+                    changedPartnerButton.setAttribute("onclick", `showWeddingPartnerDetails(${partnerId}, ${weddingId})`)
+                }
+                console.log(weddingPartnerJson)
+            }
+        }
+        async function removeWeddingPartner(weddingId) {
+            const weddingPartnerAddReq = await fetch(`http://localhost:3000/wedding-partner-change?partner=null&wedding=${weddingId}`, {method:"PATCH"})
+            const weddingPartnerJson = await weddingPartnerAddReq.json()
+            const receivedMessage = weddingPartnerJson[0]["message"]
+            if (receivedMessage.includes("Usunięto")) {
+                showWeddingPartnerDetails("0")
+                
+            }
+        }
+        function removeWeddingPartnersSuggestions() {
+            let allDivs = document.querySelectorAll(".partnerInModalSearch")
+            for (div of allDivs) {
+                div.remove()
+            }
+        }
+        async function showPossiblePartners() {
+            removeWeddingPartnersSuggestions()
+            const delivered_string = document.getElementById("weddingPartnerSearchInput").value
+            console.log(delivered_string)
+            const reqOfPartners = await fetch(`http://localhost:3000/wedding-partner-search?subs=${delivered_string}`)
+            const partnersJson = await reqOfPartners.json()
+            let placeForPossiblePartners = document.getElementById("placeForPossiblePartners")
+            for (woman of partnersJson) {
+                let createdDiv = document.createElement("div")
+                const createdDivId = `partnerDiv${woman.id}`
+                createdDiv.setAttribute("id", createdDivId)
+                createdDiv.setAttribute("class", "partnerInModalSearch")
+                placeForPossiblePartners.appendChild(createdDiv)
+                
+                let possiblePartnerPhoto = document.createElement("img")
+                possiblePartnerPhoto.setAttribute("src", woman.photoDir)
+                createdDiv.appendChild(possiblePartnerPhoto)
+
+                let nameDiv = document.createElement("div")
+                nameDiv.setAttribute("class", "possiblePartnerName")
+                nameDiv.innerText = woman.nameAndSurname
+                createdDiv.appendChild(nameDiv)
+                createdDiv.setAttribute("onclick", `chooseWeddingPartner("${woman.id}")`)
+            }
+
+        }
+        function chooseWeddingPartner(partnerId) {
+            let allPartnerDivs = document.querySelectorAll(".partnerInModalSearch")
+            let weddingPartnerSearchInput = document.getElementById("weddingPartnerSearchInput")
+            weddingPartnerSearchInput.setAttribute("chosenPartner", partnerId)
+            let idOfChosenDiv = `partnerDiv${partnerId}`
+            let previouslyChosenDivs = document.getElementsByClassName("chosenPartnerInModalSearch")
+            if (previouslyChosenDivs.length > 0) {
+                for (redDiv of previouslyChosenDivs) {
+                    redDiv.setAttribute("class", "partnerInModalSearch")
+                }
+            }
+            let divToPaint = document.getElementById(idOfChosenDiv)
+            divToPaint.setAttribute("class", "chosenPartnerInModalSearch")
         }
     </script>
 </html>

@@ -232,7 +232,7 @@ a {
     left: 0%;
     top: 0%;
     background-color: none;
-    z-index: 100;
+    z-index: 90;
 }
 
 .weddingManPhotoWithPartner {
@@ -402,6 +402,7 @@ a {
 .editableModalPart {
     width: 100%;
     min-height: 100px;
+    overflow-y: scroll;
 }
 #headerOfEditable {
     font-size: 30px;
@@ -438,4 +439,76 @@ a {
     margin-left: 2%;
     margin-right: 2%;
     border: 1px solid black;
+}
+#weddingPartnerSearchInput {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    max-height: 40%;
+}
+#placeForPossiblePartners {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 200px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+.partnerInModalSearch {
+    width: 30%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    aspect-ratio: 4/5;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+.partnerInModalSearch > img {
+    width: 80%;
+    aspect-ratio: 1/1;
+    border: 1px solid black;
+    margin-top: 20px;
+}
+.possiblePartnerName {
+    height: 40px;
+    font-family: cursive;
+    font-size: 20px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+.chosenPartnerInModalSearch {
+    width: 30%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    aspect-ratio: 4/5;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: red;
+}
+.chosenPartnerInModalSearch > img {
+    width: 80%;
+    aspect-ratio: 1/1;
+    border: 1px solid black;
+    margin-top: 20px;   
+}
+.acceptPartnerButtonDiv {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+#removeWeddingPartnerButton {
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 50px;
+    font-size: 30px;
+    margin-top: auto;
+    margin-bottom: auto;
+    border-radius: 25px;
+    color: #ccc;
+    background-color: rgb(128, 17, 17);
 }
