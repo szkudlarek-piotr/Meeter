@@ -12,12 +12,14 @@ const addVisit = require('./addVisit.js')
 const getWeddingDetails = require('./getSingleWedding.js')
 const getEventsWithCompanion = require('./getEventsWithCompanion.js')
 const getVisitId = require('./getVisitId.js')
+const humanDetails = require('./getHumanDetails.js')
 const getLeftMenu = require('./sendLeftMenu.js')
 const addGoldenQuote = require('./addGoldenQuote.js')
 const getAllMeetingsDates = require('./getAllMeetingsDates.js')
 const getNumberOfVisists = require('./getNumberOfVisits.js')
 const getAllCliques = require('./getAllCliques.js')
 const fixedHumans = require('./fixedHumans.js')
+const getSingleWedding = require('./getSingleWedding.js')
 const peopleFromString = require('./selectPeopleFromSubstring.js')
 const getHumanClique = require('./addCliquesToHumans.js')
 const getHumanFromClique = require('./addHumansToClique.js')
@@ -29,10 +31,13 @@ const addHuman = require('./addHuman.js')
 const meetingsNumber = require('./getNumberOfMeetings.js')
 const getEvents = require('./getEvents.js')
 const addMeeting = require('./addMeeting.js')
+const addEvent = require('./addEvent.js')
 const getIdFromIdentifiers = require('./getIdFromIdentifiers.js')
 const getMeetingId = require('./getMeetingId.js')
 const addPersonToMeeting = require('./addPersonToMeting.js')
+const weddingPartners = require('./weddingPartnerFromSubsting.js')
 const uploadHumanPhoto = require('./uploadHumanPhoto.js')
+const addPartnerToWedding = require('./addPartnerToWedding.js')
 app.use((err,req,res,next) => {
     console.error(err.stack)
     res.status(500).send('something broke')
@@ -55,6 +60,12 @@ app.get('/visits', async (req, res) => {
 app.get('/events', async (req, res) => {
     const eventsJson = await getEvents()
     res.send(JSON.stringify(eventsJson))
+})
+
+app.get('/wedding-partner-search', async (req, res) => {
+    const substring = req.query.subs
+    const potentialPartners = await weddingPartners(substring)
+    res.send(potentialPartners)
 })
 
 app.get('/single-wedding', async (req, res) => {
@@ -90,6 +101,12 @@ app.get('/left_menu', async (req, res) => {
     res.send(JSON.stringify(jsonOfButtons))
 })
 
+app.get('/human-details', async (req, res) => {
+    const humanId = req.query.id
+    const humanDetailsJson = await humanDetails(humanId)
+    res.send(JSON.stringify(humanDetailsJson))
+})
+
 app.get('/all_meetings_dates', async (req, res) => {
     const allDates = await getAllMeetingsDates()
     res.send(allDates)
@@ -116,6 +133,15 @@ app.get('/add_visits_to_calendar', async (req, res) => {
     const daysVisitsJson = await getVisitorsSecond()
     res.send(JSON.stringify(daysVisitsJson))
 })
+app.patch('/wedding-partner-change', async(req, res) => {
+    console.log(req.query)
+    const weddingId = req.query.wedding
+    const partnerId = req.query.partner
+    console.log(`Zamierzam uczynić pannę ${partnerId} twoją partnerką na wesele ${weddingId}.`)
+    const addingMessage = await addPartnerToWedding(partnerId, weddingId)
+    console.log(addingMessage)
+    res.send(JSON.stringify(addingMessage))
+})
 app.post('/save-quote', async(req, res) => {
     const authorId = req.query.author
     const quote = req.query.quote
@@ -133,7 +159,7 @@ app.post('/add_guest_to_visit', async (req, res) => {
     const idOfGuest = req.query.guest_id
     const idOfVisit = req.query.visit_id
     try {
-    await addGuestToVisit(idOfVisit, idOfGuest)
+        await addGuestToVisit(idOfVisit, idOfGuest)
         res.status(200).send("Guest added succesfully.")
     }
     catch (error) {
@@ -237,6 +263,7 @@ app.post('/add_visit', async (req,res) => {
     //res.send(postRequest.status)
     res.send(postRequest)
 })
+
 app.get('/get_visit_id', async (res, req) => {
     const date = req.query.date
     const duration = req.query.duration
