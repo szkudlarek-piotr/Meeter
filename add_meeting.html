@@ -192,16 +192,13 @@
                 const dateOfVisit = document.getElementById("meetingDateInputField").value
                 const encapsulatedVisitId = await getOwnMeetingId(dateOfVisit)
                 const idOfAddedMeeting = await encapsulatedVisitId[0]["ID"]
-                debugger
                 const arrayOfAllChosenPeople = []
                 const allChosenPeopleDivs = document.getElementsByClassName("chosen_person_tile")
-                debugger
                 console.log(allChosenPeopleDivs)
                 for (humanTile of allChosenPeopleDivs) {
                     const idOfTile = humanTile.getAttribute("id").replace("-chosen", "")
                     arrayOfAllChosenPeople.push(humanTile.getAttribute("id").replace("-chosen", ""))
                 }
-                debugger
                 for (let i=0; i<arrayOfAllChosenPeople.length; i++) {
                     const humanId = arrayOfAllChosenPeople[i]
                     addSingleHuman(humanId, idOfAddedMeeting)
