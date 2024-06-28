@@ -9,6 +9,9 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
         <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
     </head>
     <body>
         </div>
@@ -422,23 +425,26 @@
             cleanEditableModalPart()
             const groomRequest = await fetch(`http://localhost:3000/human-details?id=${groom_id}`)
             const groomJson = await groomRequest.json()
-            const groomName = groomJson[0]["human_name"]
+            const groomName = groomJson["name"]
             let modifiedDiv = document.getElementById("editableModalPart")
             let headerOfEditable = document.createElement("div")
             headerOfEditable.setAttribute("id", "headerOfEditable")
             headerOfEditable.innerText = `Pan Młody - ${groomName}`
             modifiedDiv.appendChild(headerOfEditable)
+            printHumanDetails(groomJson)
         }
         async function showBride(bride_id) {
             cleanEditableModalPart()
             const brideRequest = await fetch(`http://localhost:3000/human-details?id=${bride_id}`)
             const brideJson = await brideRequest.json()
-            const brideName = brideJson[0]["human_name"]
+            console.log(brideJson)
+            const brideName = brideJson["name"]
             let modifiedDiv = document.getElementById("editableModalPart")
             let headerOfEditable = document.createElement("div")
             headerOfEditable.setAttribute("id", "headerOfEditable")
             headerOfEditable.innerText = `Panna Młoda - ${brideName}`
             modifiedDiv.appendChild(headerOfEditable)
+            printHumanDetails(brideJson)
         }
         async function showWeddingPartnerDetails(partner_id, weddingID) {
             let modifiedDiv = document.getElementById("editableModalPart")
@@ -448,13 +454,14 @@
                 const partnerJson = await partnerRequest.json()
                 let headerOfEditable = document.createElement("div")
                 headerOfEditable.setAttribute("id", "headerOfEditable")
-                headerOfEditable.innerText = `Partnerka - ${partnerJson[0]["human_name"]}`
+                headerOfEditable.innerText = `Partnerka - ${partnerJson["name"]}`
                 modifiedDiv.appendChild(headerOfEditable)
                 let divForRemovePartnerButton = document.createElement("button")
                 divForRemovePartnerButton.setAttribute("id", "removeWeddingPartnerButton")
                 divForRemovePartnerButton.innerText = "Usuń partnerkę"
                 divForRemovePartnerButton.setAttribute("onclick", `removeWeddingPartner(${weddingID})`)
                 modifiedDiv.appendChild(divForRemovePartnerButton)
+                printHumanDetails(partnerJson)
             }
             else {
                 let headerOfEditable = document.createElement("div")
@@ -508,8 +515,8 @@
         }
         function removeWeddingPartnersSuggestions() {
             let allDivs = document.querySelectorAll(".partnerInModalSearch")
-            for (div of allDivs) {
-                div.remove()
+            for (divInModal of allDivs) {
+                divInModal.remove()
             }
         }
         async function showPossiblePartners() {
@@ -551,6 +558,95 @@
             }
             let divToPaint = document.getElementById(idOfChosenDiv)
             divToPaint.setAttribute("class", "chosenPartnerInModalSearch")
+        }
+        function dateToText(dateToChange) {
+            const monthsJson = {0: "stycznia", 1:"lutego", 2: "marca", 3: "kwietnia", 4: "maja", 5: "czerwca", 6:"lipca", 7: "sierpnia", 8:"września", 9:"października", 10: "listopada", 11:"grudnia"}
+            const dateObject = new Date(dateToChange)
+            const dayOfMonth = dateObject.getDate()
+            const monthInWords = monthsJson[dateObject.getMonth()]
+            const yearNumber = dateObject.getFullYear()
+            const dateInWords = `${dayOfMonth} ${monthInWords} ${yearNumber}`
+            return dateInWords
+        }
+        function printHumanDetails(humanJson) {
+            
+            let modifiedDiv = document.getElementById("editableModalPart")
+            let photoDiv = document.createElement("div")
+            photoDiv.setAttribute("class", "photoInHumanInfo")
+            modifiedDiv.appendChild(photoDiv)
+            let imageOfHuman = document.createElement("img")
+            imageOfHuman.setAttribute("src", humanJson["photoDir"])
+            photoDiv.appendChild(imageOfHuman)
+
+            if (humanJson.hasOwnProperty("quote")) {
+                let quoteDiv = document.createElement("div")
+                quoteDiv.setAttribute("class", "quoteInModal")
+                quoteDiv.innerText = humanJson["quote"]
+                modifiedDiv.appendChild(quoteDiv)
+            }
+            if (humanJson["visits"] != {}) {
+                let createdVisitsDiv = document.createElement("div")
+                createdVisitsDiv.setAttribute("id", "allVisitsDiv")
+                modifiedDiv.appendChild(createdVisitsDiv)
+                createdVisitsDiv.innerHTML += `<h3>Wizyty</h3>`
+                const visitsJson = humanJson["visits"]
+                for (const [visitDate, description] of Object.entries(visitsJson)) {
+                    const dateInWords = dateToText(visitDate)
+                    
+                    let dateHeader = document.createElement("div")
+                    dateHeader.setAttribute("class", "dateHeader")
+                    dateHeader.innerText = dateInWords
+                    createdVisitsDiv.appendChild(dateHeader)
+
+                    let interationDescription = document.createElement("div")
+                    interationDescription.setAttribute("class", "interactionDescription")
+                    interationDescription.innerHTML = `\t${description}`
+                    createdVisitsDiv.appendChild(interationDescription)
+                }
+            }
+            if (humanJson["meetings"] != {}) {
+                let meetingsDiv = document.createElement("div")
+                meetingsDiv.setAttribute("id", "allMeetingsDiv")
+                meetingsDiv.innerHTML += `<h3>Spotkania</h3>`
+                modifiedDiv.appendChild(meetingsDiv)
+                const meetingsJson = humanJson["meetings"]
+                const numberOfMeetings = Object.keys(meetingsJson).length
+                if (numberOfMeetings > 0) {
+                    for (const [meetingDate, description] of Object.entries(meetingsJson)) {
+                    const dateInWords = dateToText(meetingDate)
+                    let dateHeader = document.createElement("div")
+                    dateHeader.setAttribute("class", "dateHeader")
+                    dateHeader.innerHTML = dateInWords
+                    meetingsDiv.appendChild(dateHeader)
+
+                    let meetingDescription = document.createElement("div")
+                    meetingDescription.setAttribute("class", "interactionDescription")
+                    meetingDescription.innerHTML = `\t${description}`
+                    meetingsDiv.appendChild(meetingDescription)
+                }
+                }
+            }
+            const evnetsJson = humanJson["events"]
+            const numberOfEvents = Object.keys(evnetsJson).length
+            console.log(numberOfEvents)
+            if (numberOfEvents > 0) {
+                let eventsDiv = document.createElement("div")
+                eventsDiv.setAttribute("id", "allEventsDiv")
+                eventsDiv.innerHTML = `<h3>Interakcje na eventach</h3>`
+                modifiedDiv.appendChild(eventsDiv)
+                for (const [eventDate, description] of Object.entries(evnetsJson)) {
+                    const dateInWords = dateToText(eventDate)
+                    let dateHeader = document.createElement("div")
+                    dateHeader.setAttribute("class", "dateHeader")
+                    dateHeader.innerHTML = dateInWords
+                    eventsDiv.appendChild(dateHeader)
+
+                    let eventDescription = document.createElement("div")
+                    eventDescription.setAttribute("class", "interactionDescription")
+                    eventDescription.innerHTML = `\t${description}`
+                    eventsDiv.appendChild(eventDescription)
+                }
+            }
         }
     </script>
 </html>
