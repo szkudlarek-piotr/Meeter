@@ -21,6 +21,7 @@ async function getSingleWedding(weddingId) {
     }
 
     returnedJson["church_lat"] = weddingJson.church_lat
+    returnedJson["wedding_map"] = weddingJson.wedding_map
     returnedJson["church_long"] = weddingJson.church_long
     returnedJson["wed_hal_lat"] = weddingJson.wed_hal_lat
     returnedJson["wed_hal_long"] = weddingJson.wed_hal_long

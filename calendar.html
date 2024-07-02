@@ -419,6 +419,11 @@
             weddingDescriptionDiv.setAttribute("id", "weddingDescriptionDiv")
             weddingDescriptionDiv.innerText = `\t${givenWeddingJson[0]["description"]}`
             modifiedDiv.appendChild(weddingDescriptionDiv)
+
+            let mapDiv = document.createElement("div")
+            mapDiv.innerHTML = givenWeddingJson[0]["wedding_map"]
+            modifiedDiv.appendChild(mapDiv)
+            
         }
         async function showGroom(groom_id) {
             cleanEditableModalPart()
