@@ -29,6 +29,11 @@
                         </div>
                         <h3>Cytat</h3>
                         <textarea rows="8" id="quoteTextarea" maxlength="300" placeholder="Wpisz cytat..." wrap="soft"></textarea></br>
+                        <h3>Czy cytat ma być publiczny?</h3>
+                        <input type="radio" name="isPublic" value="1">
+                        <label for="1">Tak</label>
+                        <input type="radio" name="isPublic" value="0">
+                        <label for="0">Nie</label></br></br>
                         <input type="submit" onclick="addQuote()" value="Dodaj cytat!"></br></br>
                     </fieldset>
                 </form>
@@ -100,12 +105,22 @@
         }
         
         async function addQuote() {
-            const idOfAuthor = document.getElementById("quoteAuthorInput").getAttribute("chsoenAuthor").toString()
-            const quoteToSave = encodeURI(document.getElementById("quoteTextarea").value)
-            const postRequest = await fetch(`http://localhost:3000/save-quote?author=${idOfAuthor}&quote=${quoteToSave}`, {method: "POST"})
-            document.getElementById("quoteAuthorInput").removeAttribute("chsoenAuthor")
-            document.getElementById("quoteAuthorInput").setAttribute("placeholder", "")
-            document.getElementById("quoteTextarea").value = ""
+            let quoteAuthorInputElement = document.getElementById("quoteAuthorInput")
+            let idOfAuthor = ""
+            let checkedPublicRadio = document.querySelector('input[name="isPublic"]:checked')
+            if (quoteAuthorInputElement.hasAttribute("chsoenAuthor") && checkedPublicRadio != null) {
+                idOfAuthor = quoteAuthorInputElement.getAttribute("chsoenAuthor").toString()
+                const quoteToSave = encodeURI(document.getElementById("quoteTextarea").value)
+                const isPublic = document.querySelector('input[name="isPublic"]:checked').value
+                const postRequest = await fetch(`http://localhost:3000/save-quote?author=${idOfAuthor}&quote=${quoteToSave}&ispublic=${isPublic}`, {method: "POST"})
+                document.getElementById("quoteAuthorInput").removeAttribute("chsoenAuthor")
+                document.getElementById("quoteAuthorInput").setAttribute("placeholder", "")
+                document.getElementById("quoteTextarea").value = ""
+            }
+            else {
+                alert("Dostarczone prez Ciebie dane zostały uznane za niepełne.")
+            }
+
         }
         getLeftMenu()
 

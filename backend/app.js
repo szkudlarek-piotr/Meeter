@@ -145,8 +145,9 @@ app.patch('/wedding-partner-change', async(req, res) => {
 app.post('/save-quote', async(req, res) => {
     const authorId = req.query.author
     const quote = req.query.quote
+    const public = req.query.ispublic
     try {
-        const postQuoteReq = await addGoldenQuote(authorId, quote)
+        const postQuoteReq = await addGoldenQuote(authorId, quote, public)
         res.status(200).send("Good")
     }
     catch (error) {
