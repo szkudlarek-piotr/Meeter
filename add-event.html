@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Meeter - portal dla wszystkich oprócz Amerykanów</title>
+        <script src="add_human.js" defer></script>
+        <link rel="stylesheet" href="style_add_to_meeting.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <header>
+            Baza danych spotkań
+        </header>
+        <div class="container">
+            <nav class="left-menu">  
+            </nav>
+            <main class="content" id="main_content">
+                <form action="javascript:;" enctype="multipart/form-data">
+                    <fieldset>
+                        <h3>Nazwa wydarzenia</h3>
+                        <input type="text" id="eventNameInput">
+                        <h3>Miejsce wydarzenia</h3>
+                        <input type="text" id="eventPlaceInput">
+                        <h3>Data startu wydarzenia</h3>
+                        <input type="date" id="dateStartInput"></br></br>
+                        <h3>Data końca wydarzenia</h3>
+                        <input type="date" id="dateStopInput"></br></br>
+                        <h3>Data przybycia na wydarzenie</h3>
+                        <input type="date" id="meComingDateInput"></br></br>
+                        <h3>Data wyjazdu z wydarzenia</h3>
+                        <input type="date" id="meLeavingDateInput"></br></br>
+                        <h3>Czy wydarzenie jest powtarzalne?</h3>
+                        <div><label><input type="radio" onclick="createFileNameInput()"  name="isRepetitive" value="T">Tak</label></div><br>
+                        <div><label><input type="radio" onclick="removeFileNameInput()" name="isRepetitive" value="F">Nie</label></div><br>
+                        <div id="placeForGenericPhotoName"></div>
+                        <h3>Dodaj zdjęcie wydarzenia</h3>
+                        <input type="file" id="eventPhotoInput"><br><br><br>
+                        <input type="submit" onclick="createPeopleSearch()" value="Dodaj wydarzenie!"></br></br>
+                    </fieldset>
+                </form>
+            </main>
+            <aside class="right-menu">
+                <!-- Right menu content goes here -->
+            </aside>
+        </div>
+        <script>
+        async function getLeftMenu() {
+                let leftMenu = document.getElementsByClassName("left-menu")[0]
+                const arrrayOfButtons = await fetch("http://localhost:3000/left_menu")
+                const jsonOfButtons = await arrrayOfButtons.json()
+                for (button of jsonOfButtons) {
+                    let newButton = document.createElement("div")
+                    newButton.setAttribute("class", "left_option")
+                    newButton.setAttribute("id", button.id)
+                    newButton.innerText = button.text
+                    if (button.hasOwnProperty("onclick")) {
+                        newButton.setAttribute("onclick", button.onclick)
+                        leftMenu.appendChild(newButton)
+                    }
+                    if (button.hasOwnProperty("href")) {
+                        let encapsulatingA = document.createElement("a")
+                        encapsulatingA.setAttribute("href", button.href)
+                        leftMenu.appendChild(encapsulatingA)
+                        encapsulatingA.appendChild(newButton)
+                    }
+                    
+                }
+        }
+        getLeftMenu()
+        function createFileNameInput() {
+            let placeForGenericName = document.getElementById("placeForGenericPhotoName")
+            let titleOfGenericPhototTitle = document.createElement("h3")
+            placeForGenericName.appendChild(titleOfGenericPhototTitle)
+            titleOfGenericPhototTitle.innerText = "Podaj, jak chcesz nazwać zdjęcie tego wydarzenia"
+            let nameOfGenericPhotoInput = document.createElement("input")
+            placeForGenericName.appendChild(nameOfGenericPhotoInput)
+            nameOfGenericPhotoInput.type = "text"
+            nameOfGenericPhotoInput.id = "nameOfGenericInput"
+        }
+        function removeFileNameInput() {
+            let placeForGenericName = document.getElementById("placeForGenericPhotoName")
+            placeForGenericName.innerHTML = ""
+        }
+        async function createPeopleSearch() {
+            console.log("Tworzymy szukando...")
+        }
+        async function addEvent() {
+            const eventName = document.getElementById("eventNameInput").value
+            const placeName = document.getElementById("eventPlaceInput").value
+            const eventStartDate = document.getElementById("dateStartInput").value
+            const eventStopDate = document.getElementById("dateStopInput").value
+            const meComingDate = document.getElementById("meComingDateInput").value
+            const meLeavingDate = document.getElementById("meLeavingDateInput").value
+            let genericPhotoName = "NULL"
+            if (document.getElementById("nameOfGenericInput") && document.getElementById("placeForGenericPhotoName").value != "") {
+                genericPhotoName = document.getElementById("placeForGenericPhotoName").value
+            }
+            const postRequest = await fetch(`http://localhost:3000/add-event?eventName=${eventName}&placeName=${placeName}&eventStartDate=${eventStartDate}&eventStopDate=${eventStopDate}&comingDate=${meComingDate}&leavingDate=${meLeavingDate}&genericPhotoName=${genericPhotoName}`, {method: "POST"})
+            console.log(postRequest.status)
+        }
+        </script>
+    </body>
+</html>
