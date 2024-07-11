@@ -53,6 +53,7 @@
                     humanJsonToTile(humanJson)
                 }
                 writeNumberOfVisits()
+                writeMeetingsNumber()
                 addCliquesPhotos()
             }
         getPeople()
@@ -100,6 +101,27 @@
                     }
                 } 
             }
+        async function writeMeetingsNumber() {
+            const meetingsNumberFetch = await fetch("http://localhost:3000/meetings-number")
+            const meetingsNumbersJson = await meetingsNumberFetch.json()
+            console.log(meetingsNumbersJson)
+            for (record of meetingsNumbersJson) {
+                const humanId = record.id
+                console.log(typeof(humanId))
+                const meetingCount = record.meeting_count
+                let allHumans = document.getElementsByClassName("human")
+                for (humanDiv of allHumans) {
+                    const personIdOfDiv = humanDiv.getAttribute("person_id")
+                    if (humanId == personIdOfDiv) {
+                        let meetingsCount = document.createElement("div")
+                        meetingsCount.setAttribute("class", "meetingsCountDiv")
+                        meetingsCount.innerText = `Liczba spotkań od Wielkanocy: ${meetingCount}`
+                        humanDiv.appendChild(meetingsCount)
+                    }
+                }
+                console.log(meetingCount)
+            }
+        }
         
         async function getLeftMenu() {
             let leftMenu = document.getElementsByClassName("left-menu")[0]
