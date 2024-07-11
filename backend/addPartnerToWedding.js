@@ -18,15 +18,21 @@ async function addWeddingPartner(partnerID, weddingID) {
         return [{"message": `Usunięto partnerkę z wesela numer ${weddingID}.`}]
     }
     else {
-        const [genderCheckReqTest] = await pool.query("SELECT gender FROM party_people WHERE ID = ?", partnerID)
-        const partnerGender = genderCheckReqTest[0]["gender"]
-        if (partnerGender == "M") {
-            return [{"message": "Jeżeli osobą towarzyszącą ma być mężczyzna, dodaj taki rekord bezpośrednio w bazie danych."}]
+        try {
+            const [genderCheckReqTest] = await pool.query("SELECT gender FROM party_people WHERE ID = ?", partnerID)
+            const partnerGender = genderCheckReqTest[0]["gender"]
+            if (partnerGender == "M") {
+                return [{"message": "Jeżeli osobą towarzyszącą ma być mężczyzna, dodaj taki rekord bezpośrednio w bazie danych."}]
+            }
+            if (partnerGender == "F") {
+                const request_text = "UPDATE `weddings` SET `partner_id` = ? WHERE `weddings`.`id` = ?"
+                const patchRequest = await pool.query(request_text, [partnerID, weddingID])
+                const partnerPhotoDir = path.join(__dirname, "photos", partnerID + ".jpg")
+                return [{"message": "Pomyślnie zapisano partnerkę weselną.", "photoDir": partnerPhotoDir}]
         }
-        if (partnerGender == "F") {
-            const request_text = "UPDATE `weddings` SET `partner_id` = ? WHERE `weddings`.`id` = ?"
-            const patchRequest = await pool.query(request_text, [partnerID, weddingID])
-            return [{"message": "Pomyślnie zapisano partnerkę weselną."}]
+        }
+        catch (error) {
+            return [{"message": "Coś poszło nie tak."}]
         }
     }
 }
