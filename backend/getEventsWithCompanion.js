@@ -60,14 +60,12 @@ async function getEventsWithCompanion() {
         }
     }
     for (eventFromDb of eventsArr) {
-        console.log(eventFromDb)
         const startDateOfEvent = eventFromDb.startDate
         const stopDateOfEvent = eventFromDb.stopDate
         const detailsOfStartDay = jsonOfDates[startDateOfEvent]
         const dayAfterStart = datetime.addDays(startDateOfEvent, 1)
         let checkedDay = dayAfterStart
         if (startDateOfEvent != stopDateOfEvent) {
-            console.log(`Sprawdzam teraz ${checkedDay}`)
             while (checkedDay <= stopDateOfEvent) {
                 if (!jsonOfDates.hasOwnProperty(checkedDay)) {
                     jsonOfDates[checkedDay] = detailsOfStartDay
@@ -75,7 +73,6 @@ async function getEventsWithCompanion() {
                 checkedDay = datetime.addDays(checkedDay, 1)
         }
     }
-    console.log(jsonOfDates)
     for (eventFromDb of eventsArr) {
         const startDateOfEvent = eventFromDb.startDate
         const stopDateOfEvent = eventFromDb.stopDate
@@ -88,7 +85,6 @@ async function getEventsWithCompanion() {
             }
         }
     }
-
     return [jsonOfDates]
     }
 }
