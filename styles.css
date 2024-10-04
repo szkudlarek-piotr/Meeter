@@ -37,6 +37,14 @@ main.content {
     flex-wrap: wrap;
     justify-content: space-evenly;
 }
+#main_content_for_news {
+    flex: 1; /* Main content will take up the remaining space */
+    padding: 60px;
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
 .left_option {
     font-family: 'Times New Roman', Times, serif;
     font-weight: 300;
@@ -167,7 +175,7 @@ form {
     border-radius: 5%;
 }
 .ghostDayRectangle {
-    width: calc(11% + 4px);
+    width: calc(11% + 3px);
     margin-left: 2%;
     aspect-ratio: 1/1;
     margin-bottom: 10px;
@@ -504,7 +512,6 @@ a {
     width: 30%;
     margin-left: auto;
     margin-right: auto;
-    height: 50px;
     font-size: 30px;
     margin-top: auto;
     margin-bottom: auto;
@@ -526,11 +533,9 @@ a {
     aspect-ratio: 1/1;
 }
 .quoteInModal {
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 30px;
-    font-family: "Dancing Script", cursive;
+    font-family: "Comic Sans MS";
+    font-weight: 400;
+    font-style: normal;
     font-optical-sizing: auto;
     font-weight: 600;
     font-size: 20px;
@@ -566,4 +571,103 @@ a {
     margin-left: auto;
     margin-right: auto;
     margin-top: 30px;
+}
+.headerOfNews {
+    font-size: 20px;
+    font-family: 'Trebuchet MS', sans-serif;
+    max-height: 30px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+.newsDate {
+    font-family: cursive;
+    font-size: 12px;
+    max-height: 30px;
+    margin-top: auto;
+    margin-bottom: auto;
+
+}
+.newsDiv {
+    margin-left: 10%;
+    margin-right: 10%;
+    text-align: center;
+}
+.textOfNews {
+    font-size: 16px;
+}
+#divForVisitGuests {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+#divForVisitGuests > .singleGuest {
+    width: 15%;
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 10px;
+    aspect-ratio: 2/3;
+    border: 1px black solid;
+    border-radius: 5px;
+}
+.guestPicture {
+    width: 80%;
+    margin-top: 10px;
+    border: 1px black solid;
+    margin-left: 10%;
+    margin-right: 10%;
+    border-radius: 5px;
+    aspect-ratio: 1/1;
+}
+.nameOfGuest {
+    font-family: cursive;
+    font-size: 14px;
+}
+.weddingWithPartner > .weddingManPhoto {
+    width: 30%;
+    position: relative;
+    left: 15%;
+    bottom: 25%;
+    z-index: 50;
+}
+.weddingWithPartner > .weddingWomanPhoto {
+    width: 30%;
+    position: relative;
+    left: -35%;
+    top: 25%;
+    z-index: 50;
+}
+.weddingWithPartner > .weddingPartnerPhoto {
+    width: 40%;
+    position: relative;
+    left: -20%;
+    top: 0%;
+    z-index: 50;
+}
+.weddingWithPartner > .ringsPhoto {
+    width: 20%;
+    position: relative;
+    left: -10%;
+    top: 0%;
+    background-color: none;
+    z-index: 90;
+}
+.weddingWoPartner > .weddingManPhoto {
+    position: relative;
+    left: 10%;
+    bottom: 25%;
+    z-index: 50;
+}
+.weddingWoPartner > .weddingWomanPhoto {
+    position: relative;
+    right: 10%;
+    top: 25%;
+    z-index: 50;
+}
+.weddingWoPartner > .ringsPhoto {
+    width: 30%;
+    position: relative;
+    left: 0%;
+    top: 0%;
+    background-color: none;
+    z-index: 90;
 }
