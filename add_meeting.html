@@ -28,6 +28,9 @@
                         <input type="text" id="meetingPlaceInputField" placeholder="Podaj miejsce spotkania"></br></br>
                         <h3>Krótki opis spotkania</h3>
                         <input type="text" id="meetingDescriptionInput"></br></br>
+                        
+                        <h3>Dłuższy opis spotkania</h3>
+                        <textarea id="longDesc" rows="12" cols="110"></textarea></br></br>
                         <input type="submit" onclick="createHumanSearch()" value="Dodaj spotkanie!"></br></br>
                         <h3 id="titleOfNameInputField"></h3></br></br>
                         <div id="placeForNameInput"></div>
@@ -71,13 +74,6 @@
                 let mainContentDiv = document.getElementById("main_content")
                 mainContentDiv.innerHTML = ""
             }
-            async function addMeeting() {
-                const dateOfMeeting = document.getElementById("meetingDateInputField").value
-                const placeOfMeeting = document.getElementById("meetingPlaceInputField").value
-                const decriptionOfMeeting = document.getElementById("meetingDescriptionInput").value
-                const stringToSend = encodeURI(decriptionOfMeeting)
-                const addedMeetingRequest = await fetch(`http://localhost:3000/add_meeting?date=${dateOfMeeting}&place=${placeOfMeeting}&description=${stringToSend}`, {method: "POST"})
-            }
             function createHumanSearch() {
                 const divForInputTitle = document.getElementById("titleOfNameInputField")
                 divForInputTitle.innerText = "Wpisz imię lub nazwisko osoby, którą chcesz dodać"
@@ -101,7 +97,9 @@
                 const decriptionOfVisit = document.getElementById("meetingDescriptionInput").value
                 const meetingPlace = document.getElementById("meetingPlaceInputField").value
                 const stringToSend = encodeURI(decriptionOfVisit)
-                const addedMeetingRequest = await fetch(`http://localhost:3000/add_meeting?date=${dateOfVisit}&description=${stringToSend}&place=${meetingPlace}`, {method: "POST"})
+                const longMeetingDescription = document.getElementById("longDesc").value
+                const encodedLongDescription = encodeURI(longMeetingDescription)
+                const addedMeetingRequest = await fetch(`http://localhost:3000/add_meeting?date=${dateOfVisit}&description=${stringToSend}&place=${meetingPlace}&longdesc=${encodedLongDescription}`, {method: "POST"})
                 const encapsulatedMeetingId = await getOwnMeetingId(dateOfVisit)
                 const idOfAddedMeeting = encapsulatedMeetingId[0]
         }
@@ -188,7 +186,7 @@
                 removedElement.remove()
             }
             async function addPeopleToMeeting() {
-                addMeeting()
+                await addMeeting()
                 const dateOfVisit = document.getElementById("meetingDateInputField").value
                 const encapsulatedVisitId = await getOwnMeetingId(dateOfVisit)
                 const idOfAddedMeeting = await encapsulatedVisitId[0]["ID"]

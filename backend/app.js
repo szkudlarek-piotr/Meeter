@@ -251,7 +251,8 @@ app.post('/add_meeting', async (req, res) => {
     const placeOfMeeting = req.query.place
     const dateOfMeeting = req.query.date
     const description = req.query.description
-    const returnedId = await addMeeting(placeOfMeeting, dateOfMeeting, description)
+    const longDescription = req.query.longdesc
+    const returnedId = await addMeeting(placeOfMeeting, dateOfMeeting, description, longDescription)
     res.send(returnedId)
 })
 app.get('/meeting_id_from_date', async (req, res) => {
