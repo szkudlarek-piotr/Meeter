@@ -21,7 +21,7 @@ function shuffleArray(array) {
 
 async function wholeCalendar(){
     let daysJson = {}
-    let weddingsQueryText = `SELECT ADDDATE(weddings.date, INTERVAL 12 HOUR) AS wed_date, man_id, woman_id, partner_id, id FROM weddings`
+    let weddingsQueryText = `SELECT id, ADDDATE(weddings.date, INTERVAL 12 HOUR) AS wed_date, man_id, woman_id, partner_id, info_after_hover AS info FROM weddings`
     const [weddingsQuery] = await pool.query(weddingsQueryText)
     for (record of weddingsQuery) {
         let wedDate = record.wed_date
@@ -31,6 +31,7 @@ async function wholeCalendar(){
         const womanPhotoPath = path.join(__dirname, "photos", womanId + ".jpg") 
         const weddingId = record.id
         const partnerId = record.partner_id
+        const afterHover = record.info
         let partnerPhotoPath = ""
         if (partnerId != null) {
             partnerPhotoPath = path.join(__dirname, "photos", partnerId + ".jpg") 
@@ -38,7 +39,7 @@ async function wholeCalendar(){
         else {
             partnerPhotoPath = null
         }
-        daysJson[wedDate] = {"class": "wedding" ,"man": manPhotoPath, "woman": womanPhotoPath, "wedding_id": weddingId, "partnerPhoto": partnerPhotoPath}
+        daysJson[wedDate] = {"class": "wedding" ,"man": manPhotoPath, "woman": womanPhotoPath, "wedding_id": weddingId, "partnerPhoto": partnerPhotoPath, "info": afterHover}
     }
 
 
@@ -56,7 +57,7 @@ async function wholeCalendar(){
                 daysJson[day]["photos"].push(path.join(__dirname, "photos", record["photo_name"]))
             }
             else {
-                daysJson[day] = {"photos": [path.join(__dirname, "photos", record["photo_name"])], "class": "visit", "visit_id": record.visit_id, "on_hover": onHover}
+                daysJson[day] = {"photos": [path.join(__dirname, "photos", record["photo_name"])], "class": "visit", "visit_id": record.visit_id, "info": onHover}
             }
         }
 
@@ -76,7 +77,7 @@ async function wholeCalendar(){
         }
         for (let checkedDay = moment(startDate); checkedDay.diff(stopDate, 'days') <= 0; checkedDay.add(1, 'days')) {
             const shuffledPhotosArr = shuffleArray(listOfTripPhotosPaths)
-            daysJson[checkedDay.toDate()]  = {"place": record.Place, "class": "citybreak", "citybreakId": citybreakId, "photos": shuffledPhotosArr}
+            daysJson[checkedDay.toDate()]  = {"info": record.Place, "class": "citybreak", "citybreakId": citybreakId, "photos": shuffledPhotosArr}
         }
     }
     const meetingsText = `SELECT ADDDATE(meetings.meeting_date, INTERVAL 10 HOUR) AS meeting_date, meetings.ID as meeting_id, meetings.title_after_hover AS meeting_desc, CONCAT(meeting_human.human_id, ".jpg") as human_photo FROM meeting_human JOIN meetings ON meetings.ID = meeting_human.meeting_id`
@@ -90,7 +91,7 @@ async function wholeCalendar(){
             photo_to_add = path.join(__dirname, "photos", "anonymous.jpg")
         }
         if (!(meetingDate in daysJson)) {
-            daysJson[meetingDate] = {"photos": [photo_to_add], "class": "meeting", "meetingId": meetingId, "onhover": onhover}
+            daysJson[meetingDate] = {"photos": [photo_to_add], "class": "meeting", "meetingId": meetingId, "info": onhover}
         }
         else {
             if (daysJson[meetingDate]["class"] === "meeting") {
@@ -106,6 +107,7 @@ async function wholeCalendar(){
         const eventId = record.event_id
         const textOnHover = record.hover_description
         let humanPhotoName = record.human_photo_name
+        let description_to_add = textOnHover[0].toLowerCase() + textOnHover.slice(1)
         let humanPhotoPath = ""
         if (humanPhotoName != null) {
             if (fs.existsSync(path.join(__dirname, "photos", humanPhotoName))) {
@@ -132,13 +134,17 @@ async function wholeCalendar(){
         }
         for (let checkedDay = moment(startDate); checkedDay.diff(stopDate, 'days') <= 0; checkedDay.add(1, 'days')) {
             if (!(checkedDay.toDate() in daysJson)) {
-                daysJson[checkedDay.toDate()] = {"class": "event", "photos": [event_photo_path], "eventDescription": textOnHover}
+                daysJson[checkedDay.toDate()] = {"class": "event", "photos": [event_photo_path], "info": textOnHover}
                 if (humanPhotoName != null) {
                     daysJson[checkedDay.toDate()]["photos"].push(humanPhotoPath)
                 }
             }
             else {
-                if (!(humanPhotoPath in daysJson[checkedDay.toDate()]["photos"])) {
+                let currentTileInfo = daysJson[checkedDay.toDate()]["info"]
+                if (!(currentTileInfo.includes(description_to_add)) && !(currentTileInfo.includes(textOnHover))) {
+                    daysJson[checkedDay.toDate()]["info"] += ` oraz ${description_to_add}`
+                }
+                if (!(humanPhotoPath in daysJson[checkedDay.toDate()]["photos"]) && daysJson[checkedDay.toDate()]["class"] != "citybreak") {
                     daysJson[checkedDay.toDate()]["photos"].push(humanPhotoPath)
                 }
             }
