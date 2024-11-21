@@ -103,8 +103,8 @@
                 const encapsulatedMeetingId = await getOwnMeetingId(dateOfVisit)
                 const idOfAddedMeeting = encapsulatedMeetingId[0]
         }
-        async function getOwnMeetingId(dateOfVisit) {
-            const idOfMeeting = await fetch(`http://localhost:3000/meeting_id_from_date?date=${dateOfVisit}`)
+        async function getOwnMeetingId(dateOfVisit, shortDesc) {
+            const idOfMeeting = await fetch(`http://localhost:3000/meeting_id_from_date?date=${dateOfVisit}&shortdesc=${shortDesc}`)
             const encapsulatedMeetingId = await idOfMeeting.json()
             console.log(encapsulatedMeetingId)
             return encapsulatedMeetingId
@@ -188,7 +188,9 @@
             async function addPeopleToMeeting() {
                 await addMeeting()
                 const dateOfVisit = document.getElementById("meetingDateInputField").value
-                const encapsulatedVisitId = await getOwnMeetingId(dateOfVisit)
+                const shortDescription = document.getElementById("meetingDescriptionInput").value
+                const encapsulatedVisitId = await getOwnMeetingId(dateOfVisit, shortDescription)
+                console.log(encapsulatedVisitId)
                 const idOfAddedMeeting = await encapsulatedVisitId[0]["ID"]
                 const arrayOfAllChosenPeople = []
                 const allChosenPeopleDivs = document.getElementsByClassName("chosen_person_tile")

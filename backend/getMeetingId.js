@@ -12,9 +12,9 @@ const pool = mysql.createPool({
     database : process.env.MYSQL_DATABASE
 }).promise()
 
-async function getMeetingId(date) {
-    const requestToAsk = "SELECT ID FROM meetings WHERE meeting_date = ?"
-    const [ idOfMeeting ] = await pool.query(requestToAsk, [date])
+async function getMeetingId(date, shortdesc) {
+    const requestToAsk = "SELECT ID FROM meetings WHERE meeting_date = ? AND title_after_hover = ?"
+    const [ idOfMeeting ] = await pool.query(requestToAsk, [date, shortdesc])
     return idOfMeeting
 }
 module.exports = getMeetingId

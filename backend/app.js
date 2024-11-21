@@ -257,7 +257,8 @@ app.post('/add_meeting', async (req, res) => {
 })
 app.get('/meeting_id_from_date', async (req, res) => {
     const dateToSend = req.query.date
-    const idInTable = await getMeetingId(dateToSend)
+    const shortdesc = req.query.shortdesc
+    const idInTable = await getMeetingId(dateToSend, shortdesc)
     res.send(idInTable)
 })
 app.post ('/upload_human_photo', upload.single('photo'), (req, res) => {
