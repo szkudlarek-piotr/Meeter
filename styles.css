@@ -55,7 +55,8 @@ main.content {
 .left_option:hover {
     font-weight: 600;
 }
-.human {
+
+.human_tile {
     width: 26%;
     margin-bottom: 40px;
     border-radius: 35px;
@@ -63,12 +64,14 @@ main.content {
     text-align: center;
     border: 1px solid black;
 }
-.human:hover {
+.human_tile:hover {
     background-color: red;
 }
-.human:hover>.person_photo {
+
+.human_tile:hover>.person_photo {
     opacity: 100%;
 }
+
 .person_photo {
     margin-top: 10%;
     width: 80%;
@@ -412,6 +415,9 @@ a {
     width: 100%;
     min-height: 100px;
     overflow-y: scroll;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 30px;
 }
 #headerOfEditable {
     font-size: 30px;
@@ -537,6 +543,8 @@ a {
     font-family: "Comic Sans MS";
     font-weight: 400;
     font-style: normal;
+    margin-left: 20px;
+    margin-right: 20px;
     font-optical-sizing: auto;
     font-weight: 600;
     font-size: 20px;
