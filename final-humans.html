@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Meeter - portal dla wszystkich oprócz Amerykanów</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <header>
+            Baza danych spotkań
+        </header>
+        <div class="container">
+            <nav class="left-menu">
+            </nav>
+            <main class="content" id="main_content">
+                <!-- Main content goes here -->
+            </main>
+            <aside class="right-menu">
+                <!-- Right menu content goes here -->
+            </aside>
+        </div>
+    </body>
+    <script>
+        async function getLeftMenu() {
+            let leftMenu = document.getElementsByClassName("left-menu")[0]
+            const arrrayOfButtons = await fetch("http://localhost:3000/left_menu")
+            const jsonOfButtons = await arrrayOfButtons.json()
+            for (button of jsonOfButtons) {
+                let newButton = document.createElement("div")
+                newButton.setAttribute("class", "left_option")
+                newButton.setAttribute("id", button.id)
+                newButton.innerText = button.text
+                if (button.hasOwnProperty("onclick")) {
+                    newButton.setAttribute("onclick", button.onclick)
+                    leftMenu.appendChild(newButton)
+                }
+                if (button.hasOwnProperty("href")) {
+                    let encapsulatingA = document.createElement("a")
+                    encapsulatingA.setAttribute("href", button.href)
+                    leftMenu.appendChild(encapsulatingA)
+                    encapsulatingA.appendChild(newButton)
+                }
+                
+            }
+        }
+        getLeftMenu()
+        async function createHumanTiles() {
+            const humansQuery = await fetch("http://localhost:3000/get-humans")
+            const humansJson = await humansQuery.json()
+            const mainContent = document.getElementById("main_content")
+            for (human of humansJson) {
+                let createdHumanTile = document.createElement("div")
+                createdHumanTile.setAttribute("class", "human_tile")
+                let humanPhoto = human.photoDir
+                let humanImageElement = document.createElement("img")
+                humanImageElement.setAttribute("src", humanPhoto)
+                humanImageElement.setAttribute("class", "person_photo")
+                createdHumanTile.appendChild(humanImageElement)
+                mainContent.appendChild(createdHumanTile)
+
+                let humanNameDiv = document.createElement("div")
+                humanNameDiv.setAttribute("class", "nameDiv")
+                humanNameDiv.innerText = human.name
+                createdHumanTile.appendChild(humanNameDiv)
+
+                let visitsNumberDiv = document.createElement("div")
+                visitsNumberDiv.setAttribute("class", "visits_number")
+                visitsNumberDiv.innerText = `Liczba wizyt: ${human.visits}`
+                createdHumanTile.appendChild(visitsNumberDiv)
+
+                let meetingsNumberDiv = document.createElement("div")
+                meetingsNumberDiv.setAttribute("class", "visits_number")
+                meetingsNumberDiv.innerText = `Liczba spotkań: ${human.meetings}`
+                createdHumanTile.appendChild(meetingsNumberDiv)
+
+                let cliquePhotoDiv = document.createElement("img")
+                cliquePhotoDiv.setAttribute("class", "clique_photo")
+                cliquePhotoDiv.setAttribute("title", human.cliqueName)
+                cliquePhotoDiv.setAttribute("src", human.cliquePhoto)
+                createdHumanTile.appendChild(cliquePhotoDiv)
+
+                if (human.quote != null) {
+                    let quoteDiv = document.createElement("div")
+                    quoteDiv.setAttribute("class", "golden_quote")
+                    quoteDiv.innerHTML = human.quote
+                    createdHumanTile.appendChild(quoteDiv)
+                }
+
+            }
+        }
+        createHumanTiles()
+    </script>
+</html>

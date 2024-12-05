@@ -6,10 +6,10 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const getPeople = require('./get_people.js')
 var multer = require('multer')
 var upload = multer({ dest: 'photos/'})
 const addGuestToVisit = require('./addGuestToVisit.js')
+const finalHumans = require('./get_final_humans.js')
 const addVisit = require('./addVisit.js')
 const getEventsWithCompanion = require('./getEventsWithCompanion.js')
 const getVisitId = require('./getVisitId.js')
@@ -17,20 +17,17 @@ const humanDetails = require('./getHumanDetails.js')
 const getLeftMenu = require('./sendLeftMenu.js')
 const addGoldenQuote = require('./addGoldenQuote.js')
 const getAllMeetingsDates = require('./getAllMeetingsDates.js')
-const getNumberOfVisists = require('./getNumberOfVisits.js')
 const getAllCliques = require('./getAllCliques.js')
 const fixedHumans = require('./fixedHumans.js')
 const singleVisitDetails = require('./getSingleVisit.js')
 const getSingleWedding = require('./getSingleWedding.js')
 const peopleFromString = require('./selectPeopleFromSubstring.js')
-const getHumanClique = require('./addCliquesToHumans.js')
 const getHumanFromClique = require('./addHumansToClique.js')
 const getVisitorsSecond = require('./getVisitorsOfDay2.js')
 const getAllWeddings = require('./getAllWeddings.js')
 const getSuggestedCliques = require('./getSuggestestedCliques.js')
 const getMeetings = require('./getAllMeetings.js')
 const addHuman = require('./addHuman.js')
-const meetingsNumber = require('./getNumberOfMeetings.js')
 const getEvents = require('./getEvents.js')
 const addMeeting = require('./addMeeting.js')
 const addEvent = require('./addEvent.js')
@@ -47,24 +44,12 @@ app.use((err,req,res,next) => {
     res.status(500).send('something broke')
 })
 
-app.get("/people", async (req, res) => {
-    const people = await getPeople()
-    res.send(JSON.stringify(people))
-})
 
 app.get("/whole-calendar", async (req, res) => {
     const daysToAdd = await wholeCalendar()
     res.send(JSON.stringify(daysToAdd))
 })
-app.get("/meetings-number", async (req, res) => {
-    const numbersOfMeetings = await meetingsNumber()
-    res.send(JSON.stringify(numbersOfMeetings))
-})
 
-app.get('/visits', async (req, res) => {
-    const arrayOfVisits = await getNumberOfVisists()
-    res.send(JSON.stringify(arrayOfVisits))
-})
 app.get('/events', async (req, res) => {
     const eventsJson = await getEvents()
     res.send(JSON.stringify(eventsJson))
@@ -80,6 +65,11 @@ app.get('/wedding-partner-search', async (req, res) => {
     const substring = req.query.subs
     const potentialPartners = await weddingPartners(substring)
     res.send(potentialPartners)
+})
+
+app.get('/get-humans', async (req, res) => {
+    const sendedArray = await finalHumans()
+    res.send(sendedArray)
 })
 
 app.get('/get-news', async (req, res) => {
@@ -138,10 +128,7 @@ app.get('/suggested_cliques', async (req, res) => {
     const returnedCliques = await getSuggestedCliques(req.query.subs)
     res.send(JSON.stringify(returnedCliques))
 })
-app.get('/get_human_cliques', async (req, res) => {
-    const humanCliqueNameArr = await getHumanClique()
-    res.send(JSON.stringify(humanCliqueNameArr))
-})
+
 
 app.get('/add_humans_to_clique', async (req, res) => {
     const cliqueNamePhotoDir = await getHumanFromClique()
