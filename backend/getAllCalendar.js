@@ -52,6 +52,10 @@ async function wholeCalendar(){
         const startAsMoment = moment(record["visit_date"])
         const onHover = record["on_hover"]
         const endAsMoment = startAsMoment.add(record["duration"], "days")
+        let photoPath = path.join(__dirname, "photos", record["photo_name"])
+        if (!(fs.existsSync(path.join(__dirname, "photos", record["photo_name"])))) {
+            photoPath = path.join(__dirname, "photos", "anonymous.jpg")
+        }
         for (let day = moment(record["visit_date"]); day.isBefore(endAsMoment); day.add(1, "days")) {
             if (day in daysJson) {
                 daysJson[day]["photos"].push(path.join(__dirname, "photos", record["photo_name"]))
@@ -60,8 +64,6 @@ async function wholeCalendar(){
                 daysJson[day] = {"photos": [path.join(__dirname, "photos", record["photo_name"])], "class": "visit", "visit_id": record.visit_id, "info": onHover}
             }
         }
-
-       
     }
     const citybrakesQueryText = `SELECT citybreaks.ID as citybreakId, ADDDATE(citybreaks.Date_start, INTERVAL 10 HOUR) as start_date, ADDDATE(citybreaks.Date_stop, INTERVAL 10 HOUR) as stop_date, citybreaks.Place FROM citybreaks;`
     const [citybrakesReq] = await pool.query(citybrakesQueryText)
