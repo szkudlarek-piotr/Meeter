@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Meeter - portal dla wszystkich oprócz Amerykanów</title>
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="final_humans.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
@@ -18,7 +18,20 @@
             <nav class="left-menu">
             </nav>
             <main class="content" id="main_content">
-                <!-- Main content goes here -->
+                <div id="human_modal" style="display: none">
+                    <div id="topOfHumanModal">
+                        <div class="closingDiv" onclick="closeModal()">X</div>
+                    </div>
+                    <div id="restOfModal">
+                        <div id="leftModalMenu">
+                            <h1>Menu</h1>
+                        </div>
+                        <div id="placeForHumanInfo">
+
+                        </div>
+                    </div>
+                </div>
+
             </main>
             <aside class="right-menu">
                 <!-- Right menu content goes here -->
@@ -84,6 +97,8 @@
                 cliquePhotoDiv.setAttribute("src", human.cliquePhoto)
                 createdHumanTile.appendChild(cliquePhotoDiv)
 
+                createdHumanTile.setAttribute("onclick", `showHumanModal(${human.id})`)
+
                 if (human.quote != null) {
                     let quoteDiv = document.createElement("div")
                     quoteDiv.setAttribute("class", "golden_quote")
@@ -94,5 +109,98 @@
             }
         }
         createHumanTiles()
+        async function showHumanModal(human_id) {
+            let humanModal = document.getElementById("human_modal")
+            let computedStyle = window.getComputedStyle(humanModal)
+            if (computedStyle.display == "none") {
+                humanModal.style.display = "flex"
+
+                addButtonsToLeftModalMenu(human_id)
+                showGeneralInfo(human_id)
+
+            }
+            else {
+                console.log("Masz już otwarty jakiś modal.")
+            }
+            
+        }
+        function addButtonsToLeftModalMenu(human_id) {
+            let leftModalMenu = document.getElementById("leftModalMenu");
+            if (leftModalMenu.children.length > 1) {
+                return; // Przyciski już istnieją
+            }
+
+
+            const humansModalButtons = [
+                {"text": "Ogólniki", "function": `showGeneralInfo(${human_id})`, "id": "showGeneralInfoButton"},
+                {"text": "Cytaty", "function": `showQuotes(${human_id})`, "id": "quotesButton"},
+                {"text": "Wizyty", "function": `showVisits(${human_id})`, "id": "visitsButton"},
+                {"text": "Spotkania", "function": `showMeetings(${human_id})`, "id": "meetingsButton"},
+                {"text": "Eventy", "function": `showEvents(${human_id})`, "id": "eventsButton"}
+            ];
+            for (const button of humansModalButtons) {
+                let createdButton = document.createElement("div");
+                createdButton.setAttribute("onclick", button.function);
+                createdButton.innerText = button.text;
+                createdButton.setAttribute("id", button.id);
+                createdButton.setAttribute("class", "left_modal_option");
+                leftModalMenu.appendChild(createdButton);
+            }
+        }
+        function closeModal() {
+            let humanModal = document.getElementById("human_modal");
+            humanModal.style.display = "none";
+            let placeForHumanInfo = document.getElementById("placeForHumanInfo");
+            placeForHumanInfo.innerHTML = ""; // Resetuj dynamiczne dane
+        }
+        function clearModalContent() {
+            let restOfModal = document.getElementById("placeForHumanInfo")
+            restOfModal.innerHTML = ""
+        }
+        async function showGeneralInfo(human_id) {
+            clearModalContent()
+            const generalInfoReq = await fetch(`http://localhost:3000/general-human-info?human_id=${human_id}`)
+            const generalHumanInfoJson = await generalInfoReq.json()
+            let placeForHumanInfo = document.getElementById("placeForHumanInfo")
+            
+            let humanPhotoDir = generalHumanInfoJson.photoDir
+            let humanPhoto = document.createElement("img")
+            humanPhoto.setAttribute("src", humanPhotoDir)
+            humanPhoto.setAttribute("class", "humanPhotoInModal")
+            placeForHumanInfo.appendChild(humanPhoto)
+
+            let nameInGeneralInfo = document.createElement("h1")
+            nameInGeneralInfo.setAttribute("class", "nameInGeneralInfo")
+            nameInGeneralInfo.innerText = generalHumanInfoJson.name
+            placeForHumanInfo.appendChild(nameInGeneralInfo)
+
+            let generalHumanInfo = document.createElement("div")
+            generalHumanInfo.style.display = "flex"
+            placeForHumanInfo.appendChild(generalHumanInfo)
+
+            const detailsHtml = 
+            `Liczba wizyt: ${generalHumanInfoJson.visits_c} <br>
+            Innych interakcji: ${generalHumanInfoJson.others_c} <br>
+            Osoba należy do kliki: ${generalHumanInfoJson.clique_name} <br>
+            <h2> Ma najwięcej interakcji z:</h2>`
+            placeForHumanInfo.innerHTML += detailsHtml
+
+            let placeForInteractingPeople = document.createElement("div")
+            placeForInteractingPeople.setAttribute("id", "placeForInteractingPeople")
+            placeForHumanInfo.appendChild(placeForInteractingPeople)
+
+            const interactingPeopleReq = await fetch(`http://localhost:3000/often-seen-with?humanId=${human_id}`)
+            const interactingPeopleJson = await interactingPeopleReq.json()
+            console.log(interactingPeopleJson)
+            const interactingPeopleNumber = interactingPeopleJson.length
+
+            for (person of interactingPeopleJson) {
+                let createdElement = document.createElement("img")
+                createdElement.setAttribute("class", "interactingPersonImage")
+                createdElement.setAttribute("src", person[1].photoDir)
+                createdElement.setAttribute("title", person[1].humanName)
+                placeForInteractingPeople.appendChild(createdElement)
+            }
+        }
     </script>
 </html>

@@ -39,6 +39,8 @@ const weddingPartners = require('./weddingPartnerFromSubsting.js')
 const uploadHumanPhoto = require('./uploadHumanPhoto.js')
 const addPartnerToWedding = require('./addPartnerToWedding.js')
 const wholeCalendar = require('./getAllCalendar.js')
+const getOftenSeenWith = require('./getOftenSeenWith.js')
+const generalHumanInfo = require('./getGeneralHumanInfo.js')
 app.use((err,req,res,next) => {
     console.error(err.stack)
     res.status(500).send('something broke')
@@ -59,6 +61,12 @@ app.get('/visit-details', async(req, res) => {
     const visitId = req.query.visit_id
     const visitJson = await singleVisitDetails(visitId)
     res.send(JSON.stringify(visitJson))
+})
+
+app.get('/general-human-info', async(req,res) => {
+    const human_id = req.query.human_id
+    const generalInfoJson = await generalHumanInfo(human_id)
+    res.send(generalInfoJson)
 })
 
 app.get('/wedding-partner-search', async (req, res) => {
@@ -139,6 +147,13 @@ app.get('/add_visits_to_calendar', async (req, res) => {
     const daysVisitsJson = await getVisitorsSecond()
     res.send(JSON.stringify(daysVisitsJson))
 })
+
+app.get('/often-seen-with', async(req, res) => {
+    const humanId = req.query.humanId
+    const peopleSeenWIth = await getOftenSeenWith(humanId)
+    res.send(peopleSeenWIth)
+})
+
 app.patch('/wedding-partner-change', async(req, res) => {
     const weddingId = req.query.wedding
     const partnerId = req.query.partner
