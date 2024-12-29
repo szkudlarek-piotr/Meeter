@@ -126,10 +126,6 @@
         }
         function addButtonsToLeftModalMenu(human_id) {
             let leftModalMenu = document.getElementById("leftModalMenu");
-            if (leftModalMenu.children.length > 1) {
-                return; // Przyciski już istnieją
-            }
-
 
             const humansModalButtons = [
                 {"text": "Ogólniki", "function": `showGeneralInfo(${human_id})`, "id": "showGeneralInfoButton"},
@@ -148,10 +144,14 @@
             }
         }
         function closeModal() {
-            let humanModal = document.getElementById("human_modal");
-            humanModal.style.display = "none";
-            let placeForHumanInfo = document.getElementById("placeForHumanInfo");
-            placeForHumanInfo.innerHTML = ""; // Resetuj dynamiczne dane
+            let humanModal = document.getElementById("human_modal")
+            humanModal.style.display = "none"
+            let placeForHumanInfo = document.getElementById("placeForHumanInfo")
+            placeForHumanInfo.innerHTML = ""
+            let allMenuOptions = document.getElementsByClassName("left_modal_option")
+            while (allMenuOptions.length > 0) {
+                allMenuOptions[0].remove()
+            }
         }
         function clearModalContent() {
             let restOfModal = document.getElementById("placeForHumanInfo")
@@ -191,7 +191,6 @@
 
             const interactingPeopleReq = await fetch(`http://localhost:3000/often-seen-with?humanId=${human_id}`)
             const interactingPeopleJson = await interactingPeopleReq.json()
-            console.log(interactingPeopleJson)
             const interactingPeopleNumber = interactingPeopleJson.length
 
             for (person of interactingPeopleJson) {
@@ -200,6 +199,25 @@
                 createdElement.setAttribute("src", person[1].photoDir)
                 createdElement.setAttribute("title", person[1].humanName)
                 placeForInteractingPeople.appendChild(createdElement)
+            }
+        }
+        async function showQuotes(humanId) {
+            clearModalContent()
+            const placeForHumanInfo = document.getElementById("placeForHumanInfo")
+            const quotesReq = await fetch(`http://localhost:3000/quotes-from-id?humanId=${humanId}`)
+            const quotesJson = await quotesReq.json()
+
+            let quoteAuthorPhoto = document.createElement("img")
+            quoteAuthorPhoto.setAttribute("src", quotesJson["photo"])
+            quoteAuthorPhoto.setAttribute("class", "quoteAuthorPhoto")
+            placeForHumanInfo.appendChild(quoteAuthorPhoto)
+
+            for (quote of quotesJson["quotes"]) {
+                let quoteDiv = document.createElement("div")
+                quoteDiv.innerText = `"${quote.quote}"`
+                quoteDiv.innerHTML += `<hr color="black">`
+                quoteDiv.setAttribute("class", "quoteDivInModal")
+                placeForHumanInfo.appendChild(quoteDiv)
             }
         }
     </script>

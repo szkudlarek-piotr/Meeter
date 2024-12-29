@@ -13,6 +13,7 @@ const finalHumans = require('./get_final_humans.js')
 const addVisit = require('./addVisit.js')
 const getEventsWithCompanion = require('./getEventsWithCompanion.js')
 const getVisitId = require('./getVisitId.js')
+const publicQuotesFromId = require('./getQuotesFromId.js')
 const humanDetails = require('./getHumanDetails.js')
 const getLeftMenu = require('./sendLeftMenu.js')
 const addGoldenQuote = require('./addGoldenQuote.js')
@@ -55,6 +56,12 @@ app.get("/whole-calendar", async (req, res) => {
 app.get('/events', async (req, res) => {
     const eventsJson = await getEvents()
     res.send(JSON.stringify(eventsJson))
+})
+
+app.get('/quotes-from-id', async(req, res) =>{
+    const humanId = req.query.humanId
+    const sendedQuotes = await publicQuotesFromId(humanId)
+    res.send(sendedQuotes)
 })
 
 app.get('/visit-details', async(req, res) => {
