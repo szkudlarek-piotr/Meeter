@@ -214,3 +214,11 @@ a {
     width:30%;
     border: 1px solid black;
 }
+.visitDetailsDiv, .meetingsDetailsDiv, .eventDetailsDiv {
+    text-align: justify;
+    font-family: 'Arial';
+    font-size: 18px;
+    margin-left: 10%;
+    width: 80%;
+    margin-left: 10%;
+}

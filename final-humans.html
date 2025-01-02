@@ -38,6 +38,7 @@
             </aside>
         </div>
     </body>
+    <script src="./dateToText.js"></script>
     <script>
         async function getLeftMenu() {
             let leftMenu = document.getElementsByClassName("left-menu")[0]
@@ -218,6 +219,136 @@
                 quoteDiv.innerHTML += `<hr color="black">`
                 quoteDiv.setAttribute("class", "quoteDivInModal")
                 placeForHumanInfo.appendChild(quoteDiv)
+            }
+        }
+        async function showVisits(humanId) {
+            clearModalContent()
+            const visitsReq = await fetch(`http://localhost:3000/visit-details-from-human-id?human_id=${humanId}`)
+            const visitsJson = await visitsReq.json()
+            console.log(visitsJson)
+            const placeForHumanInfo = document.getElementById("placeForHumanInfo")
+
+            let humanPhoto = document.createElement("img")
+            humanPhoto.setAttribute("class", "humanPhotoInModal")
+            humanPhoto.setAttribute("src", visitsJson["photo"])
+            placeForHumanInfo.appendChild(humanPhoto)
+
+            let humanNameHeader = document.createElement("h1")
+            humanNameHeader.setAttribute("class", "nameInGeneralInfo")
+            humanNameHeader.innerText = visitsJson["guestName"]
+            placeForHumanInfo.appendChild(humanNameHeader)
+
+            for (visit of visitsJson["visits"]) {
+                console.log(visit)
+                let visit_date = new Date(visit["date"])
+
+                let createdDateElement = document.createElement("h2")
+                createdDateElement.innerText = dateToText(visit_date)
+                placeForHumanInfo.appendChild(createdDateElement)
+
+                let visitDetailsDiv = document.createElement("div")
+                visitDetailsDiv.setAttribute("class", "visitDetailsDiv")
+                if (visit["longDesc"].length > 1) {
+                    visitDetailsDiv.innerText = visit["longDesc"]
+                }
+                else {
+                    visitDetailsDiv.innerText = visit["shortDesc"]
+                }
+                placeForHumanInfo.appendChild(visitDetailsDiv)
+            }
+        }
+        async function showMeetings(humanId) {
+            clearModalContent()
+            const meetingsReq = await fetch(`http://localhost:3000/meetings-details-from-human-id?human_id=${humanId}`)
+            const meetingsJson = await meetingsReq.json()
+            console.log(meetingsJson)
+            const placeForHumanInfo = document.getElementById("placeForHumanInfo")
+
+            let humanPhoto = document.createElement("img")
+            humanPhoto.setAttribute("class", "humanPhotoInModal")
+            humanPhoto.setAttribute("src", meetingsJson["photo"])
+            placeForHumanInfo.appendChild(humanPhoto)
+
+            let humanNameHeader = document.createElement("h1")
+            humanNameHeader.setAttribute("class", "nameInGeneralInfo")
+            humanNameHeader.innerText = meetingsJson["humanName"]
+            placeForHumanInfo.appendChild(humanNameHeader)
+
+            if (meetingsJson["meetings"].length > 0) {
+                for (meeting of meetingsJson["meetings"]) {
+                    let meetingDateElement = document.createElement("h1")
+                    meetingDateElement.innerText = dateToText(meeting["date"])
+                    placeForHumanInfo.appendChild(meetingDateElement)
+
+                    let meetingPlaceElement = document.createElement("h3")
+                    meetingPlaceElement.innerText = meeting["place"]
+                    placeForHumanInfo.appendChild(meetingPlaceElement)
+
+                    let meetingsDetailsDiv = document.createElement("div")
+                    meetingsDetailsDiv.setAttribute("class", "meetingsDetailsDiv")
+                    if (meeting["longDesc"] != null) {
+                        meetingsDetailsDiv.innerText = meeting["longDesc"]
+                    }
+                    else {
+                        meetingsDetailsDiv.innerText = meeting["shortDesc"]
+                    }
+                    placeForHumanInfo.appendChild(meetingsDetailsDiv)
+                }
+            }
+            else {
+                placeForHumanInfo.innerHTML += "<h2>W bazie nie ma żadnych spotkań z tą osobą.</h2>"
+            }
+            
+            
+        }
+        async function showEvents(humanId) {
+            clearModalContent()
+            const eventsReq = await fetch(`http://localhost:3000/events-details-from-human-id?human_id=${humanId}`)
+            const eventsJson = await eventsReq.json()
+            console.log(eventsJson)
+            const placeForHumanInfo = document.getElementById("placeForHumanInfo")
+
+            let humanPhoto = document.createElement("img")
+            humanPhoto.setAttribute("class", "humanPhotoInModal")
+            humanPhoto.setAttribute("src", eventsJson["humanPhoto"])
+            placeForHumanInfo.appendChild(humanPhoto)
+
+            let humanNameHeader = document.createElement("h1")
+            humanNameHeader.setAttribute("class", "nameInGeneralInfo")
+            humanNameHeader.innerText = eventsJson["humanName"]
+            placeForHumanInfo.appendChild(humanNameHeader)
+
+            console.log(eventsJson["events"])
+            for (eventFromDatabase of eventsJson["events"]) {
+                console.log(eventFromDatabase)
+                
+                let startDateOfEvent = new Date(eventFromDatabase.dateStart)
+                let stopDateOfEvent = new Date(eventFromDatabase["dateStop"])
+                let dateDivText = dateToText(startDateOfEvent)
+                if (startDateOfEvent.getTime() != stopDateOfEvent.getTime()) {
+                    let startDateOfEventAsText = dateToText(startDateOfEvent)
+                    let stopDateOfEventAsText = dateToText(stopDateOfEvent)
+                    dateDivText = `${startDateOfEventAsText} - ${stopDateOfEventAsText}`
+                }
+                let createdDateElement = document.createElement("h2")
+                createdDateElement.innerText = dateDivText
+                placeForHumanInfo.appendChild(createdDateElement)
+
+                let createdPlaceElement = document.createElement("h3")
+                createdPlaceElement.innerText = eventFromDatabase["place"]
+                placeForHumanInfo.appendChild(createdPlaceElement)
+
+                let eventDescription = document.createElement("div")
+                eventDescription.setAttribute("class", "eventDetailsDiv")
+                if (eventFromDatabase["description"] != null) {
+                    eventDescription.innerText = eventFromDatabase["description"]
+                }
+                else {
+                    eventDescription.innerText = eventFromDatabase["eventName"]
+                }
+                placeForHumanInfo.appendChild(eventDescription)
+
+
             }
         }
     </script>
