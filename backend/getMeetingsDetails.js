@@ -10,7 +10,7 @@ const pool = mysql.createPool({
 
 async function getMeetingsDetails(humanId) {
     const meetingsReqText = `
-    SELECT CONCAT(party_people.name, " ", party_people.surname) AS humanName ,ADDDATE(meetings.meeting_date, INTERVAL 12 HOUR) as meeting_date, meetings.Place as meeting_place ,meetings.title_after_hover as shortDesc, meetings.long_desc as longDesc FROM meeting_human 
+    SELECT CONCAT(party_people.name, " ", party_people.surname) AS humanName ,meetings.meeting_date as meeting_date, meetings.Place as meeting_place ,meetings.title_after_hover as shortDesc, meetings.long_desc as longDesc FROM meeting_human 
     JOIN meetings ON meetings.ID = meeting_human.meeting_id
     JOIN party_people ON party_people.ID = meeting_human.human_id
     WHERE meeting_human.human_id = ?

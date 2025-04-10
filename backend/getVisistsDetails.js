@@ -11,7 +11,7 @@ const pool = mysql.createPool({
 
 async function getVisitsDetails(humanId) {
     const visitsDetailsReqText = `
-    SELECT CONCAT(party_people.name, " ", party_people.surname) as guest_name, ADDDATE(visits.visit_date, INTERVAL 12 HOUR) as visit_date, visits.title_afte_hover as short_desc, visits.description as long_desc 
+    SELECT CONCAT(party_people.name, " ", party_people.surname) as guest_name, visits.visit_date as visit_date, visits.title_afte_hover as short_desc, visits.description as long_desc 
     FROM visit_guest
     JOIN visits ON visit_guest.visit_id = visits.visit_id
     JOIN party_people ON party_people.ID = visit_guest.guest_id
